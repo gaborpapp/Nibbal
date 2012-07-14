@@ -1,0 +1,11 @@
+env = Environment()
+
+env['APP_TARGET'] = 'FbxTestApp'
+env['APP_SOURCES'] = ['FbxTestApp.cpp']
+env['ASSETS'] = ['seymour.fbx', 'boy_10.jpg', 'config.xml']
+env['DEBUG'] = 0
+
+env = SConscript('../../../../../blocks/S9FBX/scons/SConscript', exports = 'env')
+
+SConscript('../../../../../scons/SConscript', exports = 'env')
+
