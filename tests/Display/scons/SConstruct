@@ -1,0 +1,8 @@
+env = Environment()
+
+env['APP_TARGET'] = 'DisplayApp'
+env['APP_SOURCES'] = ['Display.cpp', 'DisplayTimer.cpp', 'LedDigit.cpp',
+	'DisplayApp.cpp', 'LedBase.cpp', 'LedSeparator.cpp',
+	'DisplayCounter.cpp', 'LedCounter.cpp', 'LedTimer.cpp']
+
+SConscript('../../../../../scons/SConscript', exports = 'env')
