@@ -151,7 +151,7 @@ void BulletTestApp::draw()
 	btTransform btTrans;
 	mFallRigidBodyRef->getMotionState()->getWorldTransform( btTrans );
 
-	console() << "sphere height: " << fromBullet( btTrans ).getTranslate().y << endl;
+	console() << "sphere: " << fromBullet( btTrans ).getTranslate() << endl;
 
 	params::InterfaceGl::draw();
 }
