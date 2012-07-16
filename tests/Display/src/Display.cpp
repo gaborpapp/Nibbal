@@ -136,20 +136,20 @@ bool Display::getActive()
 	return mActive;
 }
 
-void Display::setTime( unsigned short second, unsigned short hundredths )
+void Display::setTime( unsigned short minutes, unsigned short seconds )
 {
-	mDisplayTimer.setTime( second, hundredths );
+	mDisplayTimer.setTime( minutes, seconds );
 	_updateFbo();
 }
 
-unsigned short Display::getSecond()
+unsigned short Display::getMinutes()
 {
-	return mDisplayTimer.getSecond();
+	return mDisplayTimer.getMinutes();
 }
 
-unsigned short Display::getHundredths()
+unsigned short Display::getSeconds()
 {
-	return mDisplayTimer.getHundredths();
+	return mDisplayTimer.getSeconds();
 }
 
 void Display::start()

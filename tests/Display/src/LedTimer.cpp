@@ -13,7 +13,7 @@ LedTimer::LedTimer()
 , mDistanceDigit( 0 )
 , mDistanceSeparator( 0 )
 , mLedSeparator()
-, mHundredths( 0 )
+, mSeconds( 0 )
 , mTimer( 0 )
 {
 }
@@ -24,7 +24,7 @@ LedTimer::LedTimer( float distanceDigit, float distanceSeparator, float sizeLed,
 , mDistanceDigit( distanceDigit )
 , mDistanceSeparator( distanceSeparator )
 , mLedSeparator( sizeLed, distanceLed, colorOn, colorOff )
-, mHundredths( 0 )
+, mSeconds( 0 )
 , mTimer( 0 )
 {
 	mListener= std::shared_ptr<Listener>( new Listener());
@@ -45,13 +45,13 @@ bool LedTimer::update()
 {
 	if( isRunning())
 	{
-		unsigned short timer = (int)( ci::app::getElapsedSeconds() * 100 );
-		mHundredths -= math<unsigned short>::min( timer - mTimer, mHundredths );
+		unsigned short timer = (int)ci::app::getElapsedSeconds();
+		mSeconds -= math<unsigned short>::min( timer - mTimer, mSeconds );
 		mTimer = timer;
 
 		_setTime();
 
-		if( mHundredths == 0 )
+		if( mSeconds == 0 )
 		{
 			stop();
 			mListener->callCallback();
@@ -107,33 +107,33 @@ bool LedTimer::getActive()
 	return mActive;
 }
 
-void LedTimer::setTime( unsigned short second, unsigned short hundredths )
+void LedTimer::setTime( unsigned short minutes, unsigned short seconds )
 {
 	stop();
 
-	if( second     < 59
-	 && hundredths < 99 )
-		mHundredths = 100 * second + hundredths;
+	if( minutes < 59
+	 && seconds < 59 )
+		mSeconds = 60 * minutes + seconds;
 	else
-		mHundredths = 0;
+		mSeconds = 0;
 
 	_setTime();
 }
 
-unsigned short LedTimer::getSecond()
+unsigned short LedTimer::getMinutes()
 {
-	return mHundredths / 100;
+	return mSeconds / 60;
 }
 
-unsigned short LedTimer::getHundredths()
+unsigned short LedTimer::getSeconds()
 {
-	return mHundredths % 100;
+	return mSeconds % 60;
 }
 
 void LedTimer::start()
 {
 	mRun   = true;
-	mTimer = (int)( ci::app::getElapsedSeconds() * 100 );
+	mTimer = (int)ci::app::getElapsedSeconds();
 }
 
 void LedTimer::stop()
@@ -184,13 +184,13 @@ ci::Vec2f LedTimer::_getPosSeparator( ci::Vec2f pos )
 
 void LedTimer::_setTime()
 {
-	unsigned short second     = getSecond();
-	unsigned short hundredths = getHundredths();
+	unsigned short minutes = getMinutes();
+	unsigned short seconds = getSeconds();
 
-	mLedDigits[0].setNumber( second     / 10 );
-	mLedDigits[1].setNumber( second     % 10 );
-	mLedDigits[2].setNumber( hundredths / 10 );
-	mLedDigits[3].setNumber( hundredths % 10 );
+	mLedDigits[0].setNumber( minutes / 10 );
+	mLedDigits[1].setNumber( minutes % 10 );
+	mLedDigits[2].setNumber( seconds / 10 );
+	mLedDigits[3].setNumber( seconds % 10 );
 }
 
 } // namespace DisplayTest

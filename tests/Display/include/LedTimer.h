@@ -27,9 +27,9 @@ public:
 	void           setActive( bool active );
 	bool           getActive();
 
-	void           setTime( unsigned short second, unsigned short hundredths );
-	unsigned short getSecond();
-	unsigned short getHundredths();
+	void           setTime( unsigned short minutes, unsigned short seconds );
+	unsigned short getMinutes();
+	unsigned short getSeconds();
 
 	void           start();
 	void           stop();
@@ -57,7 +57,7 @@ private:
 	float                      mDistanceDigit;
 	float                      mDistanceSeparator;
 
-	unsigned short             mHundredths;
+	unsigned short             mSeconds;
 	unsigned short             mTimer;
 
 	std::shared_ptr<Listener>  mListener;

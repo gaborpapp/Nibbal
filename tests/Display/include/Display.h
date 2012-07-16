@@ -26,9 +26,9 @@ public:
 	void           setActive( bool active );
 	bool           getActive();
 
-	void           setTime( unsigned short second, unsigned short hundredths );
-	unsigned short getSecond();
-	unsigned short getHundredths();
+	void           setTime( unsigned short minutes, unsigned short seconds );
+	unsigned short getMinutes();
+	unsigned short getSeconds();
 	void           start();
 	void           stop();
 	bool           isRunning();

@@ -66,7 +66,7 @@ void DisplayApp::keyDown( KeyEvent event )
 	}
 
 	if ( event.getChar() == 'r' )
-		mDisplay.setTime( 10, 0 );
+		mDisplay.setTime( 1, 1 );
  
 	if ( event.getChar() == 'q' )
 		mDisplay.setHome( mDisplay.getHome() + 1 );
