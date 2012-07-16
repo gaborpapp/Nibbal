@@ -136,9 +136,15 @@ bool Display::getActive()
 	return mActive;
 }
 
-void Display::setTime( unsigned short minutes, unsigned short seconds )
+void Display::setTimeMax( unsigned short minutes, unsigned short seconds )
 {
-	mDisplayTimer.setTime( minutes, seconds );
+	mDisplayTimer.setTimeMax( minutes, seconds );
+	_updateFbo();
+}
+
+void Display::setTimeAct( unsigned short minutes, unsigned short seconds )
+{
+	mDisplayTimer.setTimeAct( minutes, seconds );
 	_updateFbo();
 }
 

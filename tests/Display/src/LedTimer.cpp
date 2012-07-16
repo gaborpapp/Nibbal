@@ -13,7 +13,8 @@ LedTimer::LedTimer()
 , mDistanceDigit( 0 )
 , mDistanceSeparator( 0 )
 , mLedSeparator()
-, mSeconds( 0 )
+, mSecondsAct( 0 )
+, mSecondsMax( 0 )
 , mTimer( 0 )
 {
 }
@@ -24,7 +25,8 @@ LedTimer::LedTimer( float distanceDigit, float distanceSeparator, float sizeLed,
 , mDistanceDigit( distanceDigit )
 , mDistanceSeparator( distanceSeparator )
 , mLedSeparator( sizeLed, distanceLed, colorOn, colorOff )
-, mSeconds( 0 )
+, mSecondsAct( 0 )
+, mSecondsMax( 0 )
 , mTimer( 0 )
 {
 	mListener= std::shared_ptr<Listener>( new Listener());
@@ -46,12 +48,12 @@ bool LedTimer::update()
 	if( isRunning())
 	{
 		unsigned short timer = (int)ci::app::getElapsedSeconds();
-		mSeconds -= math<unsigned short>::min( timer - mTimer, mSeconds );
+		mSecondsAct += math<unsigned short>::min( timer - mTimer, mSecondsMax - mSecondsAct );
 		mTimer = timer;
 
 		_setTime();
 
-		if( mSeconds == 0 )
+		if( mSecondsAct == mSecondsMax )
 		{
 			stop();
 			mListener->callCallback();
@@ -107,27 +109,43 @@ bool LedTimer::getActive()
 	return mActive;
 }
 
-void LedTimer::setTime( unsigned short minutes, unsigned short seconds )
+void LedTimer::setTimeMax( unsigned short minutes, unsigned short seconds )
 {
 	stop();
 
 	if( minutes < 59
 	 && seconds < 59 )
-		mSeconds = 60 * minutes + seconds;
+		mSecondsMax = 60 * minutes + seconds;
 	else
-		mSeconds = 0;
+		mSecondsMax = 0;
+
+	mSecondsAct = 0;
+
+	_setTime();
+}
+
+void LedTimer::setTimeAct( unsigned short minutes, unsigned short seconds )
+{
+	stop();
+
+	if( minutes < 59
+	 && seconds < 59
+	 && 60 * minutes + seconds <= mSecondsMax )
+		mSecondsAct = 60 * minutes + seconds;
+	else
+		mSecondsAct = 0;
 
 	_setTime();
 }
 
 unsigned short LedTimer::getMinutes()
 {
-	return mSeconds / 60;
+	return mSecondsAct / 60;
 }
 
 unsigned short LedTimer::getSeconds()
 {
-	return mSeconds % 60;
+	return mSecondsAct % 60;
 }
 
 void LedTimer::start()

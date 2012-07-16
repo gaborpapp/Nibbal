@@ -27,7 +27,8 @@ public:
 	void           setActive( bool active );
 	bool           getActive();
 
-	void           setTime( unsigned short minutes, unsigned short seconds );
+	void           setTimeMax( unsigned short minutes, unsigned short seconds );
+	void           setTimeAct( unsigned short minutes, unsigned short seconds );
 	unsigned short getMinutes();
 	unsigned short getSeconds();
 
@@ -57,7 +58,8 @@ private:
 	float                      mDistanceDigit;
 	float                      mDistanceSeparator;
 
-	unsigned short             mSeconds;
+	unsigned short             mSecondsMax;
+	unsigned short             mSecondsAct;
 	unsigned short             mTimer;
 
 	std::shared_ptr<Listener>  mListener;

@@ -66,7 +66,10 @@ void DisplayApp::keyDown( KeyEvent event )
 	}
 
 	if ( event.getChar() == 'r' )
-		mDisplay.setTime( 1, 1 );
+	{
+		mDisplay.setTimeMax( 12, 00 );
+		mDisplay.setTimeAct( 11, 50 );
+	}
  
 	if ( event.getChar() == 'q' )
 		mDisplay.setHome( mDisplay.getHome() + 1 );
