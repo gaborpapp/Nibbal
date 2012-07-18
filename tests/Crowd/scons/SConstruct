@@ -1,0 +1,11 @@
+env = Environment()
+
+env['APP_TARGET'] = 'Crowd'
+env['APP_SOURCES'] = ['CPerson.cpp', 'Crowd.cpp', 'CrowdApp.cpp']
+env['APP_SOURCES'] += ['ParticleSystem/' + f for f in ['BaseParticle.cpp', 'ForceAttractor.cpp', 'ParticleSystem.cpp', 'BaseParticleForce.cpp', 'ParticleAttractorSpring.cpp', 'BaseParticleSpring.cpp',
+'ParticleEmpty.cpp']]
+env['ASSETS'] = ['Arm', 'Head', 'Leg', 'Torso']
+env['DEBUG'] = 0
+
+SConscript('../../../../../scons/SConscript', exports = 'env')
+

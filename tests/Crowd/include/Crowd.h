@@ -25,7 +25,6 @@ class Crowd
 
         std::vector<ci::ImageSourceRef> getImages( std::string dir );
         ci::ImageSourceRef  getRandomImage( std::vector<ci::ImageSourceRef> *list );
-		ci::ImageSourceRef _loadImage( std::string strImageName );
 
         void energize( float e );
         void wave( float e );

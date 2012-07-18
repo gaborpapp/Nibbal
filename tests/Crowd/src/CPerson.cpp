@@ -1,8 +1,8 @@
-#include "cinder\app\AppBasic.h"
-#include "cinder\Rand.h"
+#include "cinder/app/AppBasic.h"
+#include "cinder/Rand.h"
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
-#include "cinder/cindermath.h"
+#include "cinder/CinderMath.h"
 
 #include "CPerson.h"
 
@@ -294,8 +294,6 @@ void CPerson::drawLimb(BaseParticle * a, BaseParticle * b, gl::Texture img )
 
     if (img == NULL) return;
 
-    float w = img.getWidth();
-    float h = img.getHeight();
     float ratio = img.getHeight() / (float)img.getWidth();
     float length = ( a->position - b->position ).length() * 1.2;
 

@@ -1,4 +1,4 @@
-#include "cinder\app\AppBasic.h"
+#include "cinder/app/AppBasic.h"
 
 #include "ParticleSystem/BaseParticle.h"
 

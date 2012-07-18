@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "cinder/app/AppBasic.h"
 #include "cinder/Utilities.h"
 #include "cinder/Filesystem.h"
@@ -113,7 +115,7 @@ std::vector<ci::ImageSourceRef> Crowd::getImages( std::string dirName )
 	vector<ImageSourceRef> list;
 
 #if defined( CINDER_MAC )
-	fs::path p( getResourcePath() / "assets"  / dirName );
+	fs::path p( app::App::getResourcePath() / "assets"  / dirName );
 #else
 	fs::path p( getAppPath() / "../../assets" / dirName );
 #endif
@@ -132,27 +134,10 @@ std::vector<ci::ImageSourceRef> Crowd::getImages( std::string dirName )
 
 ImageSourceRef  Crowd::getRandomImage(vector<ImageSourceRef> * list)
 {
-	if (list->size() == 0) return NULL;
+
+	if (list->size() == 0) return ImageSourceRef();
 	int n = Rand::randInt( 0, list->size());
 	ImageSourceRef  img = (*(list->begin() + n));
 	return img;
 }
 
-
-// ci::ImageSourceRef Crowd::_loadImage( std::string strImageName )
-// {
-// 	if( ! strImageName.empty())
-// 	{
-// 		try
-// 		{
-// 			fs::path imagePath( getAssetPath( strImageName ));
-// 			return loadImage( imagePath );
-// 		}
-// 		catch( ... )
-// 		{
-// 			console() << "Unable to load the image: " << strImageName << std::endl;
-// 		}
-// 	}
-// 
-// 	return ImageSourceRef();
-// }
