@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\CPerson.h" />
+    <ClInclude Include="..\include\Crowd.h" />
+    <ClInclude Include="..\include\ParticleSystem\BaseParticle.h" />
+    <ClInclude Include="..\include\ParticleSystem\BaseParticleForce.h" />
+    <ClInclude Include="..\include\ParticleSystem\BaseParticleSpring.h" />
+    <ClInclude Include="..\include\ParticleSystem\ForceAttractor.h" />
+    <ClInclude Include="..\include\ParticleSystem\ParticleAttractorSpring.h" />
+    <ClInclude Include="..\include\ParticleSystem\ParticleEmpty.h" />
+    <ClInclude Include="..\include\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="..\include\ParticleSystem\SimpleParticle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\CPerson.cpp" />
+    <ClCompile Include="..\src\Crowd.cpp" />
+    <ClCompile Include="..\src\CrowdApp.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\BaseParticle.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\BaseParticleForce.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\BaseParticleSpring.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\ForceAttractor.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\ParticleAttractorSpring.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\ParticleEmpty.cpp" />
+    <ClCompile Include="..\src\ParticleSystem\ParticleSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\Arm\1.png" />
+    <None Include="..\assets\Arm\2.png" />
+    <None Include="..\assets\Arm\3.png" />
+    <None Include="..\assets\Arm\4.png" />
+    <None Include="..\assets\Arm\5.png" />
+    <None Include="..\assets\Arm\6.png" />
+    <None Include="..\assets\Arm\7.png" />
+    <None Include="..\assets\Arm\8.png" />
+    <None Include="..\assets\Head\1.png" />
+    <None Include="..\assets\Head\2.png" />
+    <None Include="..\assets\Head\3.png" />
+    <None Include="..\assets\Head\4.png" />
+    <None Include="..\assets\Head\5.png" />
+    <None Include="..\assets\Head\6.png" />
+    <None Include="..\assets\Head\7.png" />
+    <None Include="..\assets\Leg\1.png" />
+    <None Include="..\assets\Torso\1.png" />
+    <None Include="..\assets\Torso\3.png" />
+    <None Include="..\assets\Torso\4.png" />
+    <None Include="..\assets\Torso\5.png" />
+    <None Include="..\assets\Torso\6.png" />
+    <None Include="..\assets\Torso\7.png" />
+    <None Include="..\assets\Torso\8.png" />
+    <None Include="..\assets\Torso\9.png" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{27257FEF-9BF1-4F0B-9AF5-EB38E9B5E8EF}</ProjectGuid>
+    <RootNamespace>quickTime</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_NI_DIR)\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(OPEN_NI_INCLUDE);$(CINDER_DIR)\blocks\opencv\include;$(CINDER_DIR)\src\AntTweakBar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>opencv_video230d.lib; opencv_objdetect230d.lib; opencv_ml230d.lib; opencv_legacy230d.lib; opencv_imgproc230d.lib; opencv_highgui230d.lib; opencv_haartraining_engined.lib; opencv_gpu230d.lib; opencv_flann230d.lib; opencv_features2d230d.lib; opencv_core230d.lib; opencv_contrib230d.lib; opencv_calib3d230d.lib;openni.lib;cinder_d.lib;QTMLClient.lib;CVClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPEN_NI_LIB);$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\opencv\lib\vc10;$(CINDER_NI_DIR)\lib;$(QUICKTIME_DIR)\Libraries;$(BOOST_DIR)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>msvcrtd; libcmt</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_NI_DIR)\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(OPEN_NI_INCLUDE);$(CINDER_DIR)\blocks\opencv\include;$(CINDER_DIR)\src\AntTweakBar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_NI_DIR)\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(OPEN_NI_INCLUDE);$(CINDER_DIR)\blocks\opencv\include;$(CINDER_DIR)\src\AntTweakBar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>opencv_video230.lib; opencv_objdetect230.lib; opencv_ml230.lib; opencv_legacy230.lib; opencv_imgproc230.lib; opencv_highgui230.lib; opencv_haartraining_engine.lib; opencv_gpu230.lib; opencv_flann230.lib; opencv_features2d230.lib; opencv_core230.lib; opencv_contrib230.lib; opencv_calib3d230.lib;openni.lib;cinder.lib;QTMLClient.lib;CVClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPEN_NI_LIB);$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\opencv\lib\vc10;$(CINDER_NI_DIR)\lib;$(QUICKTIME_DIR)\Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_NI_DIR)\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(OPEN_NI_INCLUDE);$(CINDER_DIR)\blocks\opencv\include;$(CINDER_DIR)\src\AntTweakBar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

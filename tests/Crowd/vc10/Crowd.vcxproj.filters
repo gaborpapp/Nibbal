@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ParticleSystem">
+      <UniqueIdentifier>{e0cc9b81-9e64-434e-9b75-d58d095116f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ParticleSystem">
+      <UniqueIdentifier>{423889a7-3d84-4db2-9bb5-f7322d31305f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Arm">
+      <UniqueIdentifier>{97831152-586a-41a4-8b8e-d24be5a381b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Torso">
+      <UniqueIdentifier>{722de5c2-734d-45f9-a957-6b296b5136cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Head">
+      <UniqueIdentifier>{69e78ea9-72ce-41ec-965a-62268ff5b472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Leg">
+      <UniqueIdentifier>{3377eab5-5df9-47b7-b00b-61563b5e10f9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\ParticleSystem\BaseParticle.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\BaseParticleForce.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\BaseParticleSpring.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\ForceAttractor.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\ParticleAttractorSpring.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\ParticleEmpty.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\ParticleSystem.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ParticleSystem\SimpleParticle.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\CPerson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\ParticleSystem\BaseParticle.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem\BaseParticleForce.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem\BaseParticleSpring.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem\ForceAttractor.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem\ParticleAttractorSpring.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem\ParticleEmpty.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem\ParticleSystem.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CPerson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CrowdApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\Arm\1.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\2.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\3.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\4.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\5.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\6.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\7.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Arm\8.png">
+      <Filter>Resource Files\Arm</Filter>
+    </None>
+    <None Include="..\assets\Head\1.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Head\2.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Head\3.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Head\4.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Head\5.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Head\6.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Head\7.png">
+      <Filter>Resource Files\Head</Filter>
+    </None>
+    <None Include="..\assets\Leg\1.png">
+      <Filter>Resource Files\Leg</Filter>
+    </None>
+    <None Include="..\assets\Torso\1.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\3.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\4.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\5.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\6.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\7.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\8.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+    <None Include="..\assets\Torso\9.png">
+      <Filter>Resource Files\Torso</Filter>
+    </None>
+  </ItemGroup>
+</Project>
