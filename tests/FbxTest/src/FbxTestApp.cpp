@@ -22,7 +22,6 @@
 #include "cinder/gl/gl.h"
 #include "cinder/params/Params.h"
 #include "cinder/Camera.h"
-#include "cinder/MayaCamUI.h"
 #include "cinder/Xml.h"
 
 #include "S9FbxLoader.h"
@@ -38,10 +37,7 @@ class FbxTestApp : public AppBasic
 		void prepareSettings( Settings *settings );
 		void setup();
 
-		void resize( ResizeEvent event );
 		void keyDown( KeyEvent event );
-		void mouseDown( MouseEvent event );
-		void mouseDrag( MouseEvent event );
 
 		void update();
 		void draw();
@@ -54,9 +50,11 @@ class FbxTestApp : public AppBasic
 		S9::S9FbxLoader mFBXLoader;
 		S9::S9FbxDrawer mFBXDrawer;
 
-		MayaCamUI mMayaCam;
+		float mZoom;
+		float mRotation;
 
-		void resetRotations();
+		void resetAllBones();
+		void resetCurrentBone();
 
 		shared_ptr< S9::FbxDrawable > mDrawable;
 		int mBoneIndex;
@@ -115,16 +113,11 @@ void FbxTestApp::setup()
 	}
 
 	mBoneIndex = 0;
+	mZoom = 15;
+	mRotation = 0;
 
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
-
-	CameraPersp cam;
-	cam.setEyePoint( Vec3f( 0, 15, -5 ) );
-	cam.setCenterOfInterestPoint( Vec3f( 1, 1, -5 ) );
-	cam.setPerspective( 60.0, getWindowAspectRatio(), 1.0, 1000.0 );
-	cam.setWorldUp( Vec3f( 1, 1, -1 ) );
-	mMayaCam.setCurrentCam( cam );
 }
 
 void FbxTestApp::setupParams()
@@ -140,13 +133,16 @@ void FbxTestApp::setupParams()
 
 	mParams.addParam( "Rotation", &mBones[ mBoneIndex ].rot, "opened=true" );
 	mParams.addParam( "Id", &mBones[ mBoneIndex ].id, "", true );
-	mParams.addButton( "Reset", bind( &FbxTestApp::resetRotations, this ) );
+	mParams.addButton( "Reset current", bind( &FbxTestApp::resetCurrentBone, this ) );
+	mParams.addButton( "Reset all", bind( &FbxTestApp::resetAllBones, this ) );
+	mParams.addParam( "Model zoom", &mZoom, "min=1 max=100" );
+	mParams.addParam( "Model rotation", &mRotation, "min=-3.15 max=3.15 step=.05" );
 
 	mParams.addSeparator();
 	mParams.addParam( "Fps", &mFps, "", true );
 }
 
-void FbxTestApp::resetRotations()
+void FbxTestApp::resetAllBones()
 {
 	//mFBXDrawer.resetRotations( mDrawable->meshes[0] );
 	for ( vector< Bone >::iterator it = mBones.begin(); it != mBones.end(); ++it )
@@ -155,6 +151,13 @@ void FbxTestApp::resetRotations()
 		Matrix44d m = it->rot.toMatrix44();
 		mFBXDrawer.rotateBone( mDrawable->meshes[0], it->id, m );
 	}
+}
+
+void FbxTestApp::resetCurrentBone()
+{
+	mBones[ mBoneIndex ].rot.set( 1, 0, 0, 0 );
+	Matrix44d m = mBones[ mBoneIndex ].rot.toMatrix44();
+	mFBXDrawer.rotateBone( mDrawable->meshes[0], mBones[ mBoneIndex ].id, m );
 }
 
 void FbxTestApp::update()
@@ -180,19 +183,20 @@ void FbxTestApp::draw()
 {
 	gl::pushMatrices();
 
-	/*
 	CameraPersp cam;
-	cam.lookAt( Vec3f( 0, 15, -5 ), Vec3f( 0, 0, -5 ) );
+	cam.lookAt( Vec3f( 0, mZoom, -5 ), Vec3f( 0, 0, -5 ) );
 	cam.setPerspective( 60, getWindowAspectRatio(), 0.01, 500 );
 	gl::setMatrices( cam );
-	*/
-	gl::setMatrices( mMayaCam.getCamera() );
 
 	gl::clear( Color::black() );
 
+	gl::pushModelView();
 	gl::enable( GL_TEXTURE_2D );
+	gl::rotate( Quatf( 0, 0, mRotation ) );
 	mFBXDrawer.draw( mDrawable );
 	gl::disable( GL_TEXTURE_2D );
+	gl::popModelView();
+
 
 	gl::popMatrices();
 
@@ -237,23 +241,6 @@ void FbxTestApp::keyDown( KeyEvent event )
 		default:
 			break;
 	}
-}
-
-void FbxTestApp::resize( ResizeEvent event )
-{
-	CameraPersp cam = mMayaCam.getCamera();
-	cam.setAspectRatio( getWindowAspectRatio() );
-	mMayaCam.setCurrentCam( cam );
-}
-
-void FbxTestApp::mouseDown( MouseEvent event )
-{
-	mMayaCam.mouseDown( event.getPos() );
-}
-
-void FbxTestApp::mouseDrag( MouseEvent event )
-{
-	mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
 }
 
 CINDER_APP_BASIC( FbxTestApp, RendererGl( RendererGl::AA_NONE ) )
