@@ -11,54 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\CPerson.h" />
-    <ClInclude Include="..\include\Crowd.h" />
-    <ClInclude Include="..\include\ParticleSystem\BaseParticle.h" />
-    <ClInclude Include="..\include\ParticleSystem\BaseParticleForce.h" />
-    <ClInclude Include="..\include\ParticleSystem\BaseParticleSpring.h" />
-    <ClInclude Include="..\include\ParticleSystem\ForceAttractor.h" />
-    <ClInclude Include="..\include\ParticleSystem\ParticleAttractorSpring.h" />
-    <ClInclude Include="..\include\ParticleSystem\ParticleEmpty.h" />
-    <ClInclude Include="..\include\ParticleSystem\ParticleSystem.h" />
-    <ClInclude Include="..\include\ParticleSystem\SimpleParticle.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\CPerson.cpp" />
-    <ClCompile Include="..\src\Crowd.cpp" />
-    <ClCompile Include="..\src\CrowdApp.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\BaseParticle.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\BaseParticleForce.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\BaseParticleSpring.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\ForceAttractor.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\ParticleAttractorSpring.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\ParticleEmpty.cpp" />
-    <ClCompile Include="..\src\ParticleSystem\ParticleSystem.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\assets\Arm\1.png" />
-    <None Include="..\assets\Arm\2.png" />
-    <None Include="..\assets\Arm\3.png" />
-    <None Include="..\assets\Arm\4.png" />
-    <None Include="..\assets\Arm\5.png" />
-    <None Include="..\assets\Arm\6.png" />
-    <None Include="..\assets\Arm\7.png" />
-    <None Include="..\assets\Arm\8.png" />
-    <None Include="..\assets\Head\1.png" />
-    <None Include="..\assets\Head\2.png" />
-    <None Include="..\assets\Head\3.png" />
-    <None Include="..\assets\Head\4.png" />
-    <None Include="..\assets\Head\5.png" />
-    <None Include="..\assets\Head\6.png" />
-    <None Include="..\assets\Head\7.png" />
-    <None Include="..\assets\Leg\1.png" />
-    <None Include="..\assets\Torso\1.png" />
-    <None Include="..\assets\Torso\3.png" />
-    <None Include="..\assets\Torso\4.png" />
-    <None Include="..\assets\Torso\5.png" />
-    <None Include="..\assets\Torso\6.png" />
-    <None Include="..\assets\Torso\7.png" />
-    <None Include="..\assets\Torso\8.png" />
-    <None Include="..\assets\Torso\9.png" />
+    <ClCompile Include="..\src\BulletTestApp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{27257FEF-9BF1-4F0B-9AF5-EB38E9B5E8EF}</ProjectGuid>
@@ -97,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(BULLET_DIR)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -106,17 +59,19 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>cinder_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder_d.lib;BulletDynamics_debug.lib;BulletCollision_debug.lib;BulletSoftBody_debug.lib;bulletsoftbody_debug.lib;ConvexDecomposition_debug.lib;HACD_debug.lib;LinearMath_debug.lib;OpenGLSupport_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(BULLET_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <IgnoreSpecificDefaultLibraries>msvcrtd; libcmt</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>msvcrtd;libcmt</IgnoreSpecificDefaultLibraries>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\include;$(CINDER_NI_DIR)\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(OPEN_NI_INCLUDE);$(CINDER_DIR)\blocks\opencv\include;$(CINDER_DIR)\src\AntTweakBar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -124,17 +79,19 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(BULLET_DIR)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>cinder.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder.lib;BulletDynamics.lib;BulletCollision.lib;BulletSoftBody.lib;bulletsoftbody.lib;ConvexDecomposition.lib;HACD.lib;LinearMath.lib;OpenGLSupport.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(BULLET_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
