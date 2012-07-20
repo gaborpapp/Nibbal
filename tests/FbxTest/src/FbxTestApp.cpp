@@ -51,6 +51,7 @@ class FbxTestApp : public AppBasic
 		S9::S9FbxDrawer mFBXDrawer;
 
 		float mZoom;
+		float mAltitude;
 		float mRotation;
 
 		void resetAllBones();
@@ -113,8 +114,9 @@ void FbxTestApp::setup()
 	}
 
 	mBoneIndex = 0;
-	mZoom = 15;
+	mZoom = 5;
 	mRotation = 0;
+	mAltitude = -2;
 
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
@@ -137,6 +139,7 @@ void FbxTestApp::setupParams()
 	mParams.addButton( "Reset all", bind( &FbxTestApp::resetAllBones, this ) );
 	mParams.addParam( "Model zoom", &mZoom, "min=1 max=100" );
 	mParams.addParam( "Model rotation", &mRotation, "min=-3.15 max=3.15 step=.05" );
+	mParams.addParam( "Altitude", &mAltitude, "min=-10 max=10 step=.05" );
 
 	mParams.addSeparator();
 	mParams.addParam( "Fps", &mFps, "", true );
@@ -184,7 +187,7 @@ void FbxTestApp::draw()
 	gl::pushMatrices();
 
 	CameraPersp cam;
-	cam.lookAt( Vec3f( 0, mZoom, -5 ), Vec3f( 0, 0, -5 ) );
+	cam.lookAt( Vec3f( 0, mZoom, mAltitude ), Vec3f( 0, 0, mAltitude ) );
 	cam.setPerspective( 60, getWindowAspectRatio(), 0.01, 500 );
 	gl::setMatrices( cam );
 
