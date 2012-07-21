@@ -122,6 +122,7 @@ void BulletTestApp::setup()
 		groundRigidBodyCI( 0, mGroundMotionStateRef.get(),
 							mGroundShapeRef.get(),
 							btVector3( 0, 0, 0 ) );
+	groundRigidBodyCI.m_restitution = .6;
 	mGroundRigidBodyRef = shared_ptr< btRigidBody >( new btRigidBody( groundRigidBodyCI ) );
 	mDynamicsWorldRef->addRigidBody( mGroundRigidBodyRef.get() );
 
@@ -133,6 +134,7 @@ void BulletTestApp::setup()
 	mFallShapeRef->calculateLocalInertia( mass, fallInertia );
 	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI( mass,
 			mFallMotionStateRef.get(), mFallShapeRef.get(), fallInertia );
+	fallRigidBodyCI.m_restitution = 1.0;
 	mFallRigidBodyRef = shared_ptr< btRigidBody >( new btRigidBody( fallRigidBodyCI ) );
 	mDynamicsWorldRef->addRigidBody( mFallRigidBodyRef.get() );
 }
