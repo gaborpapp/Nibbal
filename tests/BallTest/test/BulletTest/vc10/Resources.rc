@@ -1,0 +1,5 @@
+#include "Resources.h"
+
+RES_TEX_GROUND
+RES_TEX_BACKBOARD
+RES_TEX_BASKETBALL
