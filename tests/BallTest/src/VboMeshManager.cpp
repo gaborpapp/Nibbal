@@ -17,7 +17,7 @@ namespace bullet
 		// Remove unused references
 		for ( VboMeshManager::VboMeshList::iterator meshIt = sVboMeshList.begin(); meshIt != sVboMeshList.end(); ) {
 			if ( meshIt->second.expired() ) {
-				meshIt = sVboMeshList.erase( meshIt );
+				sVboMeshList.erase( meshIt++ );
 			} else {
 				++meshIt;
 			}

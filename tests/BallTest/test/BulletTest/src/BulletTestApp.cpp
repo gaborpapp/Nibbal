@@ -1,5 +1,3 @@
-#pragma once
-
 // Includes
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/Light.h"
@@ -213,8 +211,7 @@ void BulletTestApp::prepareSettings( Settings * settings )
 {
 	settings->setFrameRate( 1000.0f );
 	settings->setFullScreen( false );
-	settings->setResizable( false );
-	settings->setWindowSize( 1280, 720 );
+	settings->setWindowSize( 800, 600 );
 }
 
 void BulletTestApp::resize( ResizeEvent event )
