@@ -4,7 +4,8 @@ env = Environment(ENV = {'PATH' : os.environ['PATH']})
 
 env['APP_TARGET'] = 'BulletTestApp'
 env['APP_SOURCES'] = ['BulletTestApp.cpp']
-env['RESOURCES'] = ['tex_backboard.jpg', 'tex_basketball.jpg', 'tex_ground.jpg']
+env['RESOURCES'] = ['tex_backboard.jpg', 'tex_basketball.jpg', 'tex_ground.jpg',
+		'tex_ring.jpg']
 env['DEBUG'] = 0
 
 # Cinder-Bullet

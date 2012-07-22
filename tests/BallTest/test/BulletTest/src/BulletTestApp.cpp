@@ -239,8 +239,8 @@ void BulletTestApp::keyDown( KeyEvent event )
 
 void BulletTestApp::loadModels()
 {
-	ObjLoader loader = ObjLoader( loadResource( RES_OBJ_TORUS )->createStream());
-	loader.load( &mTorus );
+	//ObjLoader loader = ObjLoader( loadResource( RES_OBJ_TORUS )->createStream());
+	//loader.load( &mTorus );
 }
 
 // Handles mouse button press
