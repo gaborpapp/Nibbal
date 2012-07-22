@@ -68,6 +68,9 @@ namespace bullet
 		bool								isSoftBody();
 		bool								isSoftBody() const;
 
+		void								setUserData( int userData );
+		int 								getUserData();
+
 	protected:
 
 		static ci::Matrix44f				getTransformMatrix( const btRigidBody* body );
@@ -86,9 +89,10 @@ namespace bullet
 		ci::Vec3f							mScale;
 		VboMeshRef							mVboMesh;
 
+		int									mUserData;
+
 		friend class						DynamicsWorld;
 		friend class						VboMeshManager;
-
 	};
 
 }

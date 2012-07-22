@@ -17,7 +17,7 @@ namespace bullet
 		// Remove unused references
 		for ( VboMeshManager::VboMeshList::iterator meshIt = sVboMeshList.begin(); meshIt != sVboMeshList.end(); ) {
 			if ( meshIt->second.expired() ) {
-				meshIt = sVboMeshList.erase( meshIt );
+				sVboMeshList.erase( meshIt++ );
 			} else {
 				++meshIt;
 			}
@@ -618,8 +618,8 @@ namespace bullet
 		vector<Vec3f> positions;
 		vector<Vec2f> texCoords;
 
-		float radiusIn  = 3.f;
-		float radiusOut = 20.f;
+		float radiusIn  = 0.5f;
+		float radiusOut = 10.f;
 
 		uint32_t i, j;
 		float ct, st, cp, sp;

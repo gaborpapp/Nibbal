@@ -48,6 +48,7 @@ namespace bullet
 		mRigidBody = 0;
 		mScale = Vec3f::one();
 		mSoftBody = 0;
+		mUserData = 0;
 	}
 
 	CollisionObject::~CollisionObject() 
@@ -150,6 +151,16 @@ namespace bullet
 	bool CollisionObject::isSoftBody() const
 	{
 		return mSoftBody != 0;
+	}
+
+	void CollisionObject::setUserData( int userData )
+	{
+		mUserData = userData;
+	}
+
+	int CollisionObject::getUserData()
+	{
+		return mUserData;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////

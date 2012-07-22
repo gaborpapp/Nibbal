@@ -172,14 +172,14 @@ namespace bullet
 	{
 		// Create torus
 		double subdivisions = segments;
-		btVector3 forward( btScalar( 0.0          ), btScalar( 1.0 ), btScalar( 0.0 ));
+		btVector3 forward( btScalar( 0.0       ), btScalar( 0.0 ), btScalar( 1.0 ));
 		btVector3 side   ( btScalar( radiusOut ), btScalar( 0.0 ), btScalar( 0.0 ));
 
 		double gap = sqrt( 2.0 * radiusIn * radiusIn
 			- 2.0 * radiusIn * radiusIn * cos(( 2.0 * SIMD_PI ) / subdivisions ));
 		btCylinderShapeZ *shape = new btCylinderShapeZ( btVector3( btScalar( radiusIn )
-			, btScalar( radiusIn )
-			, btScalar(( SIMD_PI / subdivisions ) + 0.5 * gap )));
+			, btScalar(( SIMD_PI / subdivisions ) + 0.5 * gap )
+			, btScalar( radiusIn )));
 
 		btTransform t;
 		btCompoundShape *torus_shape = new btCompoundShape();
