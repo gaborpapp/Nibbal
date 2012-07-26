@@ -71,9 +71,8 @@ void NibbalApp::setup()
 
 	CameraPersp cam;
 	cam.setPerspective( 60, getWindowAspectRatio(), 0.1f, 1000.0f );
-	cam.setWorldUp( Vec3f( 0, 1, 0 ) );
-	cam.setEyePoint( Vec3f( 0, 0, 3 ) );
-	cam.setCenterOfInterestPoint( Vec3f( 0, 0, 0 ) );
+	cam.setEyePoint( Vec3f( 0, 1, -3 ) );
+	cam.setCenterOfInterestPoint( Vec3f( 0, 1, 0 ) );
 	mMayaCam.setCurrentCam( cam );
 
 	gl::enableDepthRead();
@@ -109,6 +108,7 @@ void NibbalApp::setupParams()
 
 void NibbalApp::update()
 {
+	mKinectPlayer.update();
 }
 
 void NibbalApp::draw()

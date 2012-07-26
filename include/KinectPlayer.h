@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "cinder/Cinder.h"
+#include "cinder/Quaternion.h"
 
 #include "PParams.h"
 
@@ -23,6 +26,7 @@ class KinectPlayer
 		mndl::ni::UserTracker mNIUserTracker;
 
 		mndl::assimp::AssimpLoader mPlayerAiMesh;
+		void setupBone( const std::string &name, const ci::Quatf &qrot );
 };
 
 } // namespace Nibbal
