@@ -405,12 +405,11 @@ void BulletTestApp::checkPoint()
 		if( object->getPosition().y >= mRing->getPosition().y - 1
 		 && object->getPosition().y <= mRing->getPosition().y + 1 )
 		{
-			// check horisontal position
-
+			// check horizontal position
 			if( object->getPosition().x >= mRing->getPosition().x - 8
 			 && object->getPosition().x <= mRing->getPosition().x + 8
 			 && object->getPosition().z <= mRing->getPosition().z + 8
-			 && object->getPosition().z <= mRing->getPosition().z + 8 )
+			 && object->getPosition().z >= mRing->getPosition().z - 8 )
 			{
 				mPoint++;
 				object->setUserData( 1 );
