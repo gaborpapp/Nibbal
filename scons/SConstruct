@@ -1,7 +1,8 @@
 env = Environment()
 
 env['APP_TARGET'] = 'NibbalApp'
-env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp']
+env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp',
+		'Scene.cpp']
 env['ASSETS'] = ['models']
 env['DEBUG'] = 1
 

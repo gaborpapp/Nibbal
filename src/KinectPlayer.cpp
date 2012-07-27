@@ -7,7 +7,7 @@ using namespace ci;
 using namespace std;
 using namespace mndl;
 
-#define USE_KINECT 1
+#define USE_KINECT 0
 
 namespace Nibbal {
 

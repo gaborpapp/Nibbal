@@ -23,6 +23,7 @@
 
 #include "PParams.h"
 
+#include "Scene.h"
 #include "KinectPlayer.h"
 
 using namespace ci;
@@ -52,6 +53,7 @@ class NibbalApp : public AppBasic
 		void setupParams();
 
 		KinectPlayer mKinectPlayer;
+		Scene mScene;
 
 		MayaCamUI mMayaCam;
 };
@@ -67,6 +69,7 @@ void NibbalApp::setup()
 
 	setupParams();
 
+	mScene.setup();
 	mKinectPlayer.setup();
 
 	CameraPersp cam;
@@ -109,6 +112,7 @@ void NibbalApp::setupParams()
 void NibbalApp::update()
 {
 	mKinectPlayer.update();
+	mScene.update();
 }
 
 void NibbalApp::draw()
@@ -117,7 +121,8 @@ void NibbalApp::draw()
 
     gl::setMatrices( mMayaCam.getCamera() );
 
-	gl::color( Color::white() );
+	mScene.draw();
+
 	mKinectPlayer.draw();
 
 	params::PInterfaceGl::draw();

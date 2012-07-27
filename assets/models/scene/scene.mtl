@@ -1,0 +1,88 @@
+# Blender MTL File: 'kosarpalank_1111.blend'
+# Material Count: 8
+newmtl Material_floor.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd floor.jpg
+
+
+newmtl adstripe_mat_adstripe_dummy.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd adstripe_dummy.png
+
+
+newmtl basketball_hoop_body_basketball_hoop_diffuse.jpg
+Ns 60.784314
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.900000 0.900000 0.900000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd basketball_hoop_diffuse.jpg
+
+
+newmtl basketball_hoop_ring
+Ns 43.137255
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 0.065008 0.000000
+Ks 0.900000 0.900000 0.900000
+Ni 1.000000
+d 1.000000
+illum 2
+
+
+newmtl basketball_hoop_shield_basketball_hoop_diffuse.jpg
+Ns 60.784314
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.900000 0.900000 0.900000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd basketball_hoop_diffuse.jpg
+
+
+newmtl basketball_hoop_stand_basketball_hoop_diffuse.jpg
+Ns 60.784314
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.900000 0.900000 0.900000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd basketball_hoop_diffuse.jpg
+
+
+newmtl fekete
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+
+newmtl scoreboard_mat_scoreboard_dummy.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd scoreboard_dummy.png
+
+
