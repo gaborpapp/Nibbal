@@ -6,6 +6,7 @@
 
 #include "AssimpLoader.h"
 #include "Display.h"
+#include "AdDisplay.h"
 
 namespace Nibbal {
 
@@ -25,8 +26,9 @@ class Scene
 		mndl::assimp::AssimpLoader mSceneAiMesh;
 
 		Nibbal::Display mDisplay;
+		AdDisplay mAdDisplay;
 
-		//ci::params::PInterfaceGl mParams;
+		ci::params::PInterfaceGl mParams;
 };
 
 } // namespace Nibbal

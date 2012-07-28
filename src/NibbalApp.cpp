@@ -25,6 +25,7 @@
 
 #include "Scene.h"
 #include "KinectPlayer.h"
+#include "AdDisplay.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -149,7 +150,11 @@ void NibbalApp::keyDown( KeyEvent event )
 			break;
 
 		case KeyEvent::KEY_s:
-			mParams.show( !mParams.isVisible() );
+		{
+			bool visible = mParams.isVisible();
+			// TODO: global show
+			mParams.show( !visible );
+			mKinectPlayer.showParams( !visible );
 			if ( isFullScreen() )
 			{
 				if ( mParams.isVisible() )
@@ -158,6 +163,7 @@ void NibbalApp::keyDown( KeyEvent event )
 					hideCursor();
 			}
 			break;
+		}
 
 		case KeyEvent::KEY_ESCAPE:
 			quit();

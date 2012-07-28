@@ -19,6 +19,7 @@ void Scene::setup()
 	*/
 
 	mDisplay.setup();
+	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ) );
 
 	// load scene
 	mSceneAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/scene/scene.obj" ) );
@@ -33,9 +34,15 @@ void Scene::setup()
 		floorTexture.setWrap( GL_REPEAT, GL_REPEAT );
 		floorTexture.unbind();
 
+		// set scoreboard
 		gl::Texture &scoreBoardTexture = mSceneAiMesh.getTexture( 0 );
 		assert( scoreBoardTexture );
 		scoreBoardTexture = mDisplay.getTexture();
+
+		// set ads
+		gl::Texture &adsTexture = mSceneAiMesh.getTexture( 1 );
+		assert( adsTexture );
+		adsTexture = mAdDisplay.getTexture();
 	}
 
 	startGame();
@@ -55,6 +62,7 @@ void Scene::startGame()
 void Scene::update()
 {
 	mDisplay.update();
+	mAdDisplay.update();
 }
 
 void Scene::draw()
@@ -66,6 +74,7 @@ void Scene::draw()
 void Scene::showParams( bool show )
 {
 	mParams.show( show );
+	mAdDisplay.update();
 }
 */
 
