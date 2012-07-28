@@ -3,6 +3,9 @@ env = Environment()
 env['APP_TARGET'] = 'NibbalApp'
 env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp',
 		'Scene.cpp']
+env['APP_SOURCES'] += ['Display.cpp', 'DisplayTimer.cpp', 'LedDigit.cpp',
+	'LedBase.cpp', 'LedSeparator.cpp', 'DisplayCounter.cpp',
+	'LedCounter.cpp', 'LedTimer.cpp']
 env['ASSETS'] = ['models']
 env['DEBUG'] = 1
 
