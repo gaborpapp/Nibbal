@@ -52,6 +52,9 @@ void KinectPlayer::setup( const fs::path &path )
 	setupNode( "l_knee", q2 );
 	setupNode( "r_hip", q2 );
 	setupNode( "r_knee", q2 );
+
+	// load basketball
+	mBallAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/ball/basketball.obj" ) );
 }
 
 void KinectPlayer::setupNode( const string &name, const Quatf &qrot )
@@ -125,6 +128,11 @@ void KinectPlayer::update()
 void KinectPlayer::draw()
 {
 	mPlayerAiMesh.draw();
+
+	gl::pushModelView();
+	gl::translate( Vec3f( 0, 1, 1 ) );
+	mBallAiMesh.draw();
+	gl::popModelView();
 }
 
 } // namespace Nibbal

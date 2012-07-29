@@ -1,0 +1,15 @@
+# Blender MTL File: 'basketball.blend'
+# Material Count: 1
+newmtl ball_ball_d.jpg
+Ns 19.607843
+Ka 0.000000 0.000000 0.000000
+Kd 0.470560 0.470560 0.470560
+Ks 0.882000 0.882000 0.882000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd ball_d.jpg
+map_Ks ball_s.jpg
+map_Ka ball_n.jpg
+
+

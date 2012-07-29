@@ -32,6 +32,8 @@ class KinectPlayer
 		void setupNode( const std::string &name, const ci::Quatf &qrot );
 		void transformNode( const std::string &nodeName, unsigned userId, XnSkeletonJoint skelJoint );
 
+		mndl::assimp::AssimpLoader mBallAiMesh;
+
 		ci::params::PInterfaceGl mParams;
 		float mSmoothing;
 		float mMinOriConf;
