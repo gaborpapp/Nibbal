@@ -70,10 +70,10 @@ void NibbalApp::setup()
 {
 	gl::disableVerticalSync();
 
-	setupParams();
-
 	mScene.setup();
 	mKinectPlayer.setup();
+
+	setupParams();
 
 	CameraPersp cam;
 	cam.setPerspective( 60, getWindowAspectRatio(), 0.1f, 1000.0f );
