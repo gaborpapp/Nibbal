@@ -127,9 +127,4 @@ void KinectPlayer::draw()
 	mPlayerAiMesh.draw();
 }
 
-void KinectPlayer::showParams( bool show )
-{
-	mParams.show( show );
-}
-
 } // namespace Nibbal

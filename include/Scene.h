@@ -18,8 +18,6 @@ class Scene
 		void update();
 		void draw();
 
-		//void showParams( bool show );
-
 	private:
 		void startGame();
 

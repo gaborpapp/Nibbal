@@ -21,8 +21,6 @@ class KinectPlayer
 		void update();
 		void draw();
 
-		void showParams( bool show );
-
 	private:
 
 		mndl::ni::OpenNI mNI;

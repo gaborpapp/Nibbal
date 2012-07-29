@@ -17,7 +17,6 @@ class AdDisplay
 {
 	public:
 		void setup( const ci::fs::path &adFolder, const ci::Vec2i size );
-		void showParams( bool show );
 
 		void update();
 
@@ -33,6 +32,9 @@ class AdDisplay
 
 		ci::gl::Fbo mFbo;
 		ci::gl::GlslProg mShader;
+
+		int mSwitchType;
+		float mSmoothSwitchBorder;
 
 		size_t mCurrentAdIndex;
 

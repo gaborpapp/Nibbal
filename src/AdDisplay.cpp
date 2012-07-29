@@ -45,6 +45,12 @@ void AdDisplay::setup( const fs::path &adFolder, Vec2i size )
 
 	mParams.addPersistentParam( "Keep duration", &mKeepDuration, 5, "min=1" );
 	mParams.addPersistentParam( "Change duration", &mChangeDuration, 1, "min=0, step=.5" );
+	vector< string > switchNames;
+	switchNames.push_back( "fade" );
+	switchNames.push_back( "hard from left" );
+	switchNames.push_back( "soft from left" );
+	mParams.addPersistentParam( "Switch type", switchNames, &mSwitchType, 2 );
+	mParams.addPersistentParam( "Smooth border", &mSmoothSwitchBorder, 0.20, "min=0 max=1 step=0.01" );
 
 	mTimelineRef = Timeline::create();
 	app::timeline().add( mTimelineRef );
@@ -52,7 +58,7 @@ void AdDisplay::setup( const fs::path &adFolder, Vec2i size )
 }
 
 // NOTE: could not solve it with looping + finishFn
-// finishFn didn't happen at the last tween
+// finishFn didn't happen at the last tween when loop was set
 void AdDisplay::setupTimeline()
 {
 	mCrossfade = 0;
@@ -99,6 +105,8 @@ void AdDisplay::update()
 
 	mShader.bind();
 	mShader.uniform( "t", mCrossfade );
+	mShader.uniform( "type", mSwitchType );
+	mShader.uniform( "border", mSmoothSwitchBorder );
 
 	gl::drawSolidRect( mFbo.getBounds() );
 
@@ -114,11 +122,6 @@ void AdDisplay::update()
 
 	gl::popMatrices();
 	gl::setViewport( viewport );
-}
-
-void AdDisplay::showParams( bool show )
-{
-	mParams.show( show );
 }
 
 } // namespace Nibbal

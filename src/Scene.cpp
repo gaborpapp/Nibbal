@@ -70,12 +70,4 @@ void Scene::draw()
 	mSceneAiMesh.draw();
 }
 
-/*
-void Scene::showParams( bool show )
-{
-	mParams.show( show );
-	mAdDisplay.update();
-}
-*/
-
 } // namespace Nibbal

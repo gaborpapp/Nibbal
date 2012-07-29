@@ -50,13 +50,15 @@ class NibbalApp : public AppBasic
 
 	private:
 		params::PInterfaceGl mParams;
-
 		void setupParams();
+		void showAllParams( bool visible );
 
 		KinectPlayer mKinectPlayer;
 		Scene mScene;
 
 		MayaCamUI mMayaCam;
+
+		float mFps;
 };
 
 void NibbalApp::prepareSettings( Settings *settings )
@@ -107,13 +109,17 @@ void NibbalApp::setupParams()
 	mParams = params::PInterfaceGl( "Parameters", Vec2i( 200, 300 ) );
 	mParams.addPersistentSizeAndPosition();
 
-    TwDefine( "TW_HELP visible=false" );
+	mFps = 0;
+	mParams.addParam( "Fps", &mFps, "", true );
+	showAllParams( false );
 }
 
 void NibbalApp::update()
 {
 	mKinectPlayer.update();
 	mScene.update();
+
+	mFps = getAverageFps();
 }
 
 void NibbalApp::draw()
@@ -127,6 +133,21 @@ void NibbalApp::draw()
 	mKinectPlayer.draw();
 
 	params::PInterfaceGl::draw();
+}
+
+// show/hide all bars except help, which is always hidden
+void NibbalApp::showAllParams( bool visible )
+{
+	int barCount = TwGetBarCount();
+
+	int32_t visibleInt = visible ? 1 : 0;
+	for ( int i = 0; i < barCount; ++i )
+	{
+		TwBar *bar = TwGetBarByIndex( i );
+		TwSetParam( bar, NULL, "visible", TW_PARAM_INT32, 1, &visibleInt );
+	}
+
+	TwDefine( "TW_HELP visible=false" );
 }
 
 void NibbalApp::keyDown( KeyEvent event )
@@ -151,10 +172,7 @@ void NibbalApp::keyDown( KeyEvent event )
 
 		case KeyEvent::KEY_s:
 		{
-			bool visible = mParams.isVisible();
-			// TODO: global show
-			mParams.show( !visible );
-			mKinectPlayer.showParams( !visible );
+			showAllParams( !mParams.isVisible() );
 			if ( isFullScreen() )
 			{
 				if ( mParams.isVisible() )
@@ -194,5 +212,6 @@ void NibbalApp::resize( ResizeEvent event )
 
 } // namespace Nibbal
 
-CINDER_APP_BASIC( Nibbal::NibbalApp, RendererGl( RendererGl::AA_NONE ) )
+//CINDER_APP_BASIC( Nibbal::NibbalApp, RendererGl( RendererGl::AA_NONE ) )
+CINDER_APP_BASIC( Nibbal::NibbalApp, RendererGl( RendererGl::AA_MSAA_16 ) )
 
