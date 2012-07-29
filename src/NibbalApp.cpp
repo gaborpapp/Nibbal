@@ -59,6 +59,9 @@ class NibbalApp : public AppBasic
 		MayaCamUI mMayaCam;
 
 		float mFps;
+		float mCameraFov;
+		Vec3f mCameraEyePoint;
+		Vec3f mCameraCenterOfInterestPoint;
 };
 
 void NibbalApp::prepareSettings( Settings *settings )
@@ -76,9 +79,9 @@ void NibbalApp::setup()
 	setupParams();
 
 	CameraPersp cam;
-	cam.setPerspective( 60, getWindowAspectRatio(), 0.1f, 1000.0f );
-	cam.setEyePoint( Vec3f( 0, 1, -3 ) );
-	cam.setCenterOfInterestPoint( Vec3f( 0, 1, 0 ) );
+	cam.setPerspective( mCameraFov, getWindowAspectRatio(), 0.1f, 1000.0f );
+	cam.setEyePoint( mCameraEyePoint );
+	cam.setCenterOfInterestPoint( mCameraCenterOfInterestPoint );
 	mMayaCam.setCurrentCam( cam );
 
 	gl::enableDepthRead();
@@ -111,6 +114,12 @@ void NibbalApp::setupParams()
 
 	mFps = 0;
 	mParams.addParam( "Fps", &mFps, "", true );
+	mParams.addSeparator();
+	mParams.addText( "Camera" );
+	mParams.addPersistentParam( "Fov", &mCameraFov, 39.9f, "min=20 max=90 step=.1" );
+	mParams.addPersistentParam( "Eye", &mCameraEyePoint, Vec3f( 0, 2, -3 ), "", true );
+	mParams.addPersistentParam( "Center of Interest", &mCameraCenterOfInterestPoint, Vec3f( 0, 2, 0 ), "", true );
+
 	showAllParams( false );
 }
 
@@ -120,6 +129,15 @@ void NibbalApp::update()
 	mScene.update();
 
 	mFps = getAverageFps();
+
+	CameraPersp cam = mMayaCam.getCamera();
+	if ( cam.getFov() != mCameraFov )
+	{
+		cam.setPerspective( mCameraFov, getWindowAspectRatio(), 0.1f, 1000.0f );
+		mMayaCam.setCurrentCam( cam );
+	}
+	mCameraEyePoint = cam.getEyePoint();
+	mCameraCenterOfInterestPoint = cam.getCenterOfInterestPoint();
 }
 
 void NibbalApp::draw()
