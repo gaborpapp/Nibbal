@@ -28,19 +28,19 @@ void Scene::setup( Physics *physics )
 	if ( mSceneAiMesh.getNumMeshes() >= 2 )
 	{
 		// set repeat wrapping for floor, this property is not stored in .obj
-		gl::Texture &floorTexture = mSceneAiMesh.getTexture( 2 );
+		gl::Texture &floorTexture = mSceneAiMesh.getAssimpNodeTexture( "court_Plane" );
 		assert( floorTexture );
 		floorTexture.bind();
 		floorTexture.setWrap( GL_REPEAT, GL_REPEAT );
 		floorTexture.unbind();
 
 		// set scoreboard
-		gl::Texture &scoreBoardTexture = mSceneAiMesh.getTexture( 0 );
+		gl::Texture &scoreBoardTexture = mSceneAiMesh.getAssimpNodeTexture( "scoreboard_Plane.001" );
 		assert( scoreBoardTexture );
 		scoreBoardTexture = mDisplay.getTexture();
 
 		// set ads
-		gl::Texture &adsTexture = mSceneAiMesh.getTexture( 1 );
+		gl::Texture &adsTexture = mSceneAiMesh.getAssimpNodeTexture( "adstripe_ads" );
 		assert( adsTexture );
 		adsTexture = mAdDisplay.getTexture();
 	}
@@ -54,11 +54,9 @@ void Scene::setupPhysics( Physics *physics )
 {
 	// Create the ground
 	{
-		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "court_Plane" );
-		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "court_Plane" );
 
-		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
+		AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
 		Vec3f center = boundingBox.getCenter();
 		Vec3f size   = boundingBox.getSize();
 		size += Vec3f( 0.0f, 20.0f, 0.0f );
@@ -66,56 +64,44 @@ void Scene::setupPhysics( Physics *physics )
 		physics->addBox( size, center );
 	}
 
-	// Create the backboard structure
+	// Create the hoop body structure
 	{
-		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "structure_basketball_hoop_body.001" );
-		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "structure_basketball_hoop_body.001" );
+		physics->addMesh( mesh );
 
+		mesh = mSceneAiMesh.getAssimpNodeMesh( "structure_talp_basketball_hoop_body.002" );
 		physics->addMesh( mesh );
 	}
 
 	// Create the lines
-// 	{
-// 		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "felfestes_lines" );
-// 		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-// 		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
-// 
-// 		physics->addMesh( mesh );
-// 	}
+	/*
+	{
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "felfestes_lines" );
+		physics->addMesh( mesh );
+	}
+	*/
 
 	// Create the backboard
 	{
-		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "backboard_basketball_hoop_body" );
-		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
-
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "backboard_basketball_hoop_body" );
 		physics->addMesh( mesh );
 	}
 
 	// Create the ring
 	{
-		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "ring_basketball_hoop_ring" );
-		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
-
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "ring_basketball_hoop_ring" );
 		physics->addMesh( mesh );
 	}
 
 	// Create the scoreboard
 	{
-		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "scoreboard_Plane.001" );
-		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
-
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "scoreboard_Plane.001" );
 		physics->addMesh( mesh );
 	}
 
 	// Create the stripe
 	{
-		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "adstripe_ads" );
-		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
-		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "adstripe_ads" );
 
 		// make bigger for the back wall
 		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();

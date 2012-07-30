@@ -75,11 +75,19 @@ void NibbalApp::setup()
 {
 	gl::disableVerticalSync();
 
-	setupParams();
+	try
+	{
+		setupParams();
 
-	mPhysics.setup();
-	mScene.setup( &mPhysics );
-	mKinectPlayer.setup();
+		mPhysics.setup();
+		mScene.setup( &mPhysics );
+		mKinectPlayer.setup();
+	}
+	catch ( const std::exception &exc )
+	{
+		console() << exc.what() << endl;
+		quit();
+	}
 
 	CameraPersp cam;
 	cam.setPerspective( mCameraFov, getWindowAspectRatio(), 0.1f, 1000.0f );
@@ -89,6 +97,8 @@ void NibbalApp::setup()
 
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
+
+	showAllParams( false );
 }
 
 void NibbalApp::shutdown()
@@ -122,8 +132,6 @@ void NibbalApp::setupParams()
 	mParams.addPersistentParam( "Fov", &mCameraFov, 39.9f, "min=20 max=90 step=.1" );
 	mParams.addPersistentParam( "Eye", &mCameraEyePoint, Vec3f( 0, 2, -3 ), "", true );
 	mParams.addPersistentParam( "Center of Interest", &mCameraCenterOfInterestPoint, Vec3f( 0, 2, 0 ), "", true );
-
-	showAllParams( false );
 }
 
 void NibbalApp::update()
