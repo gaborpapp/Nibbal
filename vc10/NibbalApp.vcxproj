@@ -20,15 +20,15 @@
     <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\Utilities.cpp" />
     <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\VboMeshManager.cpp" />
     <ClCompile Include="..\src\AdDisplay.cpp" />
-    <ClCompile Include="..\src\Display.cpp" />
-    <ClCompile Include="..\src\DisplayCounter.cpp" />
-    <ClCompile Include="..\src\DisplayTimer.cpp" />
+    <ClCompile Include="..\src\Display\Display.cpp" />
+    <ClCompile Include="..\src\Display\DisplayCounter.cpp" />
+    <ClCompile Include="..\src\Display\DisplayTimer.cpp" />
+    <ClCompile Include="..\src\Display\LedBase.cpp" />
+    <ClCompile Include="..\src\Display\LedCounter.cpp" />
+    <ClCompile Include="..\src\Display\LedDigit.cpp" />
+    <ClCompile Include="..\src\Display\LedSeparator.cpp" />
+    <ClCompile Include="..\src\Display\LedTimer.cpp" />
     <ClCompile Include="..\src\KinectPlayer.cpp" />
-    <ClCompile Include="..\src\LedBase.cpp" />
-    <ClCompile Include="..\src\LedCounter.cpp" />
-    <ClCompile Include="..\src\LedDigit.cpp" />
-    <ClCompile Include="..\src\LedSeparator.cpp" />
-    <ClCompile Include="..\src\LedTimer.cpp" />
     <ClCompile Include="..\src\NibbalApp.cpp" />
     <ClCompile Include="..\src\Physics.cpp" />
     <ClCompile Include="..\src\PParams.cpp" />
@@ -48,16 +48,16 @@
     <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\Utilities.h" />
     <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\VboMeshManager.h" />
     <ClInclude Include="..\include\AdDisplay.h" />
-    <ClInclude Include="..\include\Display.h" />
-    <ClInclude Include="..\include\DisplayCounter.h" />
-    <ClInclude Include="..\include\DisplayTimer.h" />
+    <ClInclude Include="..\include\Display\Display.h" />
+    <ClInclude Include="..\include\Display\DisplayCounter.h" />
+    <ClInclude Include="..\include\Display\DisplayTimer.h" />
+    <ClInclude Include="..\include\Display\LedBase.h" />
+    <ClInclude Include="..\include\Display\LedCounter.h" />
+    <ClInclude Include="..\include\Display\LedDigit.h" />
+    <ClInclude Include="..\include\Display\LedSeparator.h" />
+    <ClInclude Include="..\include\Display\LedTimer.h" />
+    <ClInclude Include="..\include\Display\Listener.h" />
     <ClInclude Include="..\include\KinectPlayer.h" />
-    <ClInclude Include="..\include\LedBase.h" />
-    <ClInclude Include="..\include\LedCounter.h" />
-    <ClInclude Include="..\include\LedDigit.h" />
-    <ClInclude Include="..\include\LedSeparator.h" />
-    <ClInclude Include="..\include\LedTimer.h" />
-    <ClInclude Include="..\include\Listener.h" />
     <ClInclude Include="..\include\Physics.h" />
     <ClInclude Include="..\include\PParams.h" />
     <ClInclude Include="..\include\Resources.h" />
@@ -106,7 +106,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src\bullet;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\include\display;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src\bullet;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -130,7 +130,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src\bullet;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\include\display;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src\bullet;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
