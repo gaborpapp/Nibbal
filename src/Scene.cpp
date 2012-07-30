@@ -11,7 +11,7 @@ using namespace mndl;
 
 namespace Nibbal {
 
-void Scene::setup()
+void Scene::setup( Physics *physics )
 {
 	/*
 	mParams = params::PInterfaceGl( "Scene", Vec2i( 300, 300 ) );
@@ -45,7 +45,86 @@ void Scene::setup()
 		adsTexture = mAdDisplay.getTexture();
 	}
 
+	setupPhysics( physics );
+
 	startGame();
+}
+
+void Scene::setupPhysics( Physics *physics )
+{
+	// Create the ground
+	{
+		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "court_Plane" );
+		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+
+		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
+		Vec3f center = boundingBox.getCenter();
+		Vec3f size   = boundingBox.getSize();
+		size += Vec3f( 0.0f, 20.0f, 0.0f );
+		center += Vec3f( 0.0f, -10.0f, 0.0f );
+		physics->addBox( size, center );
+	}
+
+	// Create the backboard structure
+	{
+		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "structure_basketball_hoop_body.001" );
+		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+
+		physics->addMesh( mesh );
+	}
+
+	// Create the lines
+// 	{
+// 		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "felfestes_lines" );
+// 		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+// 		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+// 
+// 		physics->addMesh( mesh );
+// 	}
+
+	// Create the backboard
+	{
+		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "backboard_basketball_hoop_body" );
+		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+
+		physics->addMesh( mesh );
+	}
+
+	// Create the ring
+	{
+		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "ring_basketball_hoop_ring" );
+		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+
+		physics->addMesh( mesh );
+	}
+
+	// Create the scoreboard
+	{
+		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "scoreboard_Plane.001" );
+		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+
+		physics->addMesh( mesh );
+	}
+
+	// Create the stripe
+	{
+		mndl::assimp::AssimpNodeRef assimpNode = mSceneAiMesh.getAssimpNode( "adstripe_ads" );
+		mndl::assimp::AssimpMeshHelperRef assimpMeshHelper = assimpNode->mMeshes[0];
+		ci::TriMesh mesh = assimpMeshHelper->mCachedTriMesh;
+
+		// make bigger for the back wall
+		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
+		Vec3f center = boundingBox.getCenter();
+		Vec3f size   = boundingBox.getSize();
+		size += Vec3f( 20.0f, 50.0f, 20.0f );
+		center += Vec3f( 0.0f, 25.0f, 10.0f );
+		physics->addBox( size, center );
+	}
 }
 
 void Scene::startGame()

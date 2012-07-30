@@ -11,6 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\AssimpLoader.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\Node.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\CollisionObject.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\DynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\RigidBody.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\SoftBody.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\Utilities.cpp" />
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\VboMeshManager.cpp" />
     <ClCompile Include="..\src\AdDisplay.cpp" />
     <ClCompile Include="..\src\Display.cpp" />
     <ClCompile Include="..\src\DisplayCounter.cpp" />
@@ -22,10 +30,23 @@
     <ClCompile Include="..\src\LedSeparator.cpp" />
     <ClCompile Include="..\src\LedTimer.cpp" />
     <ClCompile Include="..\src\NibbalApp.cpp" />
+    <ClCompile Include="..\src\Physics.cpp" />
     <ClCompile Include="..\src\PParams.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\AssimpLoader.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\AssimpMeshHelper.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\MatrixUtils.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\Node.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\CinderBullet.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\CollisionObject.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\DynamicsWorld.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\MeshBody.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\RigidBody.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\SoftBody.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\Utilities.h" />
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\VboMeshManager.h" />
     <ClInclude Include="..\include\AdDisplay.h" />
     <ClInclude Include="..\include\Display.h" />
     <ClInclude Include="..\include\DisplayCounter.h" />
@@ -37,6 +58,7 @@
     <ClInclude Include="..\include\LedSeparator.h" />
     <ClInclude Include="..\include\LedTimer.h" />
     <ClInclude Include="..\include\Listener.h" />
+    <ClInclude Include="..\include\Physics.h" />
     <ClInclude Include="..\include\PParams.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\include\Scene.h" />
@@ -84,7 +106,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src\bullet;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -95,8 +117,8 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>cinder_d.lib;Cinder-Assimpd.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\vc10\;$(CINDER_DIR)\blocks\Cinder-Assimp\vc10\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder_d.lib;assimp.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;BulletSoftBody_debug.lib;ConvexDecomposition_debug.lib;HACD_debug.lib;LinearMath_debug.lib;OpenGLSupport_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -108,7 +130,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;$(CINDER_DIR)\include;$(BOOST_DIR);$(CINDER_DIR)\src\AntTweakBar;$(CINDER_DIR)\blocks\Cinder-Assimp\src;$(CINDER_DIR)\blocks\Cinder-Bullet\src\bullet;$(CINDER_DIR)\blocks\Cinder-NI\src;$(OPEN_NI_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -117,8 +139,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>cinder.lib;Cinder-Assimp.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\vc10\;$(CINDER_DIR)\blocks\Cinder-Assimp\vc10\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder.lib;assimp.lib;BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;ConvexDecomposition.lib;HACD.lib;LinearMath.lib;OpenGLSupport.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

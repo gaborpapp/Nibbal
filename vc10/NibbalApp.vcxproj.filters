@@ -13,36 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="blocks">
+      <UniqueIdentifier>{5e6f26c1-9f0a-4c3b-ae64-ecf1d19da98a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\bullet">
+      <UniqueIdentifier>{1365ff1f-b7ea-49cd-aa54-a425471be3df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\assimp">
+      <UniqueIdentifier>{eb0d9759-c6f3-4206-80cc-26cc97715df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Display">
+      <UniqueIdentifier>{82434f74-02ac-4f4d-bd1d-bd1e3ea50620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Display">
+      <UniqueIdentifier>{bdfd4953-67f3-46fb-b940-84110d4e188d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\AdDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Display.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\DisplayCounter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\DisplayTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\KinectPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LedBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LedCounter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LedDigit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LedSeparator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LedTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\NibbalApp.cpp">
@@ -54,39 +45,63 @@
     <ClCompile Include="..\src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\CollisionObject.cpp">
+      <Filter>blocks\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\DynamicsWorld.cpp">
+      <Filter>blocks\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\RigidBody.cpp">
+      <Filter>blocks\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\SoftBody.cpp">
+      <Filter>blocks\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\Utilities.cpp">
+      <Filter>blocks\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\VboMeshManager.cpp">
+      <Filter>blocks\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\AssimpLoader.cpp">
+      <Filter>blocks\assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\Node.cpp">
+      <Filter>blocks\assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Display.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\DisplayCounter.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\DisplayTimer.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LedBase.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LedCounter.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LedDigit.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LedTimer.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LedSeparator.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AdDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Display.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\DisplayCounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\DisplayTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\KinectPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\LedBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\LedCounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\LedDigit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\LedSeparator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\LedTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Listener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\PParams.h">
@@ -97,6 +112,72 @@
     </ClInclude>
     <ClInclude Include="..\include\Scene.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\CinderBullet.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\CollisionObject.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\DynamicsWorld.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\MeshBody.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\RigidBody.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\SoftBody.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\Utilities.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Bullet\src\VboMeshManager.h">
+      <Filter>blocks\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\AssimpLoader.h">
+      <Filter>blocks\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\AssimpMeshHelper.h">
+      <Filter>blocks\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\MatrixUtils.h">
+      <Filter>blocks\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-Assimp\src\Node.h">
+      <Filter>blocks\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Physics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Display.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\DisplayCounter.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\DisplayTimer.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\LedBase.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\LedCounter.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\LedDigit.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\LedSeparator.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\LedTimer.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Listener.h">
+      <Filter>Header Files\Display</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

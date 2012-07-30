@@ -32,6 +32,12 @@ void KinectPlayer::setup( const fs::path &path )
 	mParams.addPersistentParam( "Smoothing", &mSmoothing, .7, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 
+	mPosition  = Vec3f( 0.0f, 2.0f, 1.0f );
+	mDirection = Vec3f( 0.0f, 3.0f, 3.0f );
+
+	mParams.addParam( "Position" , &mPosition  );
+	mParams.addParam( "Direction", &mDirection );
+
 	// load player
 	mPlayerAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/player/player.dae" ) );
 	mPlayerAiMesh.enableSkinning();
@@ -125,14 +131,24 @@ void KinectPlayer::update()
 	mPlayerAiMesh.update();
 }
 
-void KinectPlayer::draw()
+void KinectPlayer::draw( Physics *physics )
 {
+	gl::pushModelView();
 	mPlayerAiMesh.draw();
+	gl::popModelView();
 
 	gl::pushModelView();
-	gl::translate( Vec3f( 0, 1, 1 ) );
+	Matrix44f matrix = physics->getBallMatrix();
+	gl::multModelView( matrix );
 	mBallAiMesh.draw();
 	gl::popModelView();
+}
+
+void KinectPlayer::dropBall( Physics *physics )
+{
+//	mndl::assimp::AssimpNodeRef assimpNode = mBallAiMesh.getAssimpNode( "labda_ball" );
+
+	physics->dropBall( mPosition, mDirection );
 }
 
 } // namespace Nibbal

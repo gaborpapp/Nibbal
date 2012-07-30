@@ -25,6 +25,7 @@
 
 #include "Scene.h"
 #include "KinectPlayer.h"
+#include "Physics.h"
 #include "AdDisplay.h"
 
 using namespace ci;
@@ -55,6 +56,7 @@ class NibbalApp : public AppBasic
 
 		KinectPlayer mKinectPlayer;
 		Scene mScene;
+		Physics mPhysics;
 
 		MayaCamUI mMayaCam;
 
@@ -73,10 +75,11 @@ void NibbalApp::setup()
 {
 	gl::disableVerticalSync();
 
-	mScene.setup();
-	mKinectPlayer.setup();
-
 	setupParams();
+
+	mPhysics.setup();
+	mScene.setup( &mPhysics );
+	mKinectPlayer.setup();
 
 	CameraPersp cam;
 	cam.setPerspective( mCameraFov, getWindowAspectRatio(), 0.1f, 1000.0f );
@@ -125,10 +128,11 @@ void NibbalApp::setupParams()
 
 void NibbalApp::update()
 {
+	mFps = getAverageFps();
+
 	mKinectPlayer.update();
 	mScene.update();
-
-	mFps = getAverageFps();
+	mPhysics.update( mFps );
 
 	CameraPersp cam = mMayaCam.getCamera();
 	if ( cam.getFov() != mCameraFov )
@@ -144,11 +148,13 @@ void NibbalApp::draw()
 {
 	gl::clear( Color::black() );
 
-    gl::setMatrices( mMayaCam.getCamera() );
+	gl::setMatrices( mMayaCam.getCamera() );
 
 	mScene.draw();
 
-	mKinectPlayer.draw();
+	mKinectPlayer.draw( &mPhysics );
+
+	mPhysics.draw();
 
 	params::PInterfaceGl::draw();
 }
@@ -203,6 +209,10 @@ void NibbalApp::keyDown( KeyEvent event )
 
 		case KeyEvent::KEY_ESCAPE:
 			quit();
+			break;
+
+		case KeyEvent::KEY_SPACE:
+			mKinectPlayer.dropBall( &mPhysics );
 			break;
 
 		default:

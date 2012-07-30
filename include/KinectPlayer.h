@@ -10,6 +10,7 @@
 
 #include "CiNI.h"
 #include "AssimpLoader.h"
+#include "Physics.h"
 
 namespace Nibbal {
 
@@ -19,7 +20,9 @@ class KinectPlayer
 		void setup( const ci::fs::path &path = "" );
 
 		void update();
-		void draw();
+		void draw( Physics *physics );
+
+		void dropBall( Physics *phisics );
 
 	private:
 
@@ -37,6 +40,8 @@ class KinectPlayer
 		ci::params::PInterfaceGl mParams;
 		float mSmoothing;
 		float mMinOriConf;
+		ci::Vec3f mDirection;
+		ci::Vec3f mPosition;
 };
 
 } // namespace Nibbal
