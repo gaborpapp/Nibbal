@@ -3,9 +3,11 @@ env = Environment()
 env['APP_TARGET'] = 'NibbalApp'
 env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp',
 		'Scene.cpp', 'AdDisplay.cpp', 'Physics.cpp']
-env['APP_SOURCES'] += ['Display.cpp', 'DisplayTimer.cpp', 'LedDigit.cpp',
-	'LedBase.cpp', 'LedSeparator.cpp', 'DisplayCounter.cpp',
-	'LedCounter.cpp', 'LedTimer.cpp']
+env['APP_SOURCES'] += ['Display/' + s for s in ['Display.cpp', 'DisplayTimer.cpp',
+	'LedDigit.cpp', 'LedBase.cpp', 'LedSeparator.cpp', 'DisplayCounter.cpp',
+	'LedCounter.cpp', 'LedTimer.cpp']]
+env.Append(CPPPATH = ['#../include/Display'])
+
 env['ASSETS'] = ['models', 'ads']
 env['RESOURCES'] = ['shaders']
 env['DEBUG'] = 1
