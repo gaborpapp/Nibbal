@@ -314,6 +314,7 @@ void KinectPlayer::throwBall()
 
 	mBallColor = ColorA::white();
 	mIsThrowing = true;
+	mTimelineRef->clear();
 	mTimelineRef->apply( &mBallColor, ColorA::white(), mBallLifetime - 2. );
 	mTimelineRef->appendTo( &mBallColor, ColorA( 1, 1, 1, 0 ), 2. );
 	mTimelineRef->add( std::bind( &KinectPlayer::expireBallThrowing, this ),
