@@ -80,16 +80,14 @@ void Display::setup()
 
 void Display::update()
 {
-	Area viewport = gl::getViewport();
-	gl::pushMatrices();
 	if( mDisplayTimer.update())
 		_updateFbo();
-	gl::popMatrices();
-	gl::setViewport( viewport );
 }
 
 void Display::_updateFbo()
 {
+	Area viewport = gl::getViewport();
+	gl::pushMatrices();
 	Vec2f pos = Vec2f( 0.0f, 0.0f );
 
 	mFbo.bindFramebuffer();
@@ -107,6 +105,8 @@ void Display::_updateFbo()
 	glLineWidth( 1.0f );
 	gl::disableAlphaBlending();
 	mFbo.unbindFramebuffer();
+	gl::popMatrices();
+	gl::setViewport( viewport );
 }
 
 gl::Texture & Display::getTexture()
