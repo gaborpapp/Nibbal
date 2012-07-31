@@ -24,7 +24,6 @@
 #include "PParams.h"
 
 #include "Scene.h"
-#include "KinectPlayer.h"
 #include "Physics.h"
 #include "AdDisplay.h"
 
@@ -54,7 +53,6 @@ class NibbalApp : public AppBasic
 		void setupParams();
 		void showAllParams( bool visible );
 
-		KinectPlayer mKinectPlayer;
 		Scene mScene;
 		Physics mPhysics;
 
@@ -81,7 +79,6 @@ void NibbalApp::setup()
 
 		mPhysics.setup();
 		mScene.setup( &mPhysics );
-		mKinectPlayer.setup();
 	}
 	catch ( const std::exception &exc )
 	{
@@ -138,7 +135,6 @@ void NibbalApp::update()
 {
 	mFps = getAverageFps();
 
-	mKinectPlayer.update();
 	mScene.update();
 	mPhysics.update( mFps );
 
@@ -159,8 +155,6 @@ void NibbalApp::draw()
 	gl::setMatrices( mMayaCam.getCamera() );
 
 	mScene.draw();
-
-	mKinectPlayer.draw( &mPhysics );
 
 	mPhysics.draw();
 
@@ -216,11 +210,12 @@ void NibbalApp::keyDown( KeyEvent event )
 		}
 
 		case KeyEvent::KEY_ESCAPE:
-			quit();
+//			quit();
+			exit( 0 );
 			break;
 
 		case KeyEvent::KEY_SPACE:
-			mKinectPlayer.dropBall( &mPhysics );
+			mScene.throwBall();
 			break;
 
 		default:
@@ -244,7 +239,6 @@ void NibbalApp::resize( ResizeEvent event )
 	cam.setAspectRatio( getWindowAspectRatio() );
 	mMayaCam.setCurrentCam( cam );
 }
-
 
 } // namespace Nibbal
 

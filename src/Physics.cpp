@@ -7,7 +7,9 @@ using namespace std;
 
 namespace Nibbal {
 
-#define RADIUS .12f
+#define BALL_RADIUS 0.12f
+#define RING_POS    Vec3f( 0.0f, 2.99f, 4.64f )
+#define RING_RADIUS 0.278f
 
 void Physics::setup()
 {
@@ -28,9 +30,9 @@ void Physics::draw()
 // 	}
 }
 
-void Physics::dropBall( Vec3f pos, Vec3f vel )
+void Physics::throwBall( Vec3f pos, Vec3f vel )
 {
-	float size = RADIUS;
+	float size = BALL_RADIUS;
 
 	if( mBall )
 	{
@@ -43,6 +45,16 @@ void Physics::dropBall( Vec3f pos, Vec3f vel )
 	body->setAngularFactor( 0.82f );
 	body->setRestitution( .75f );
 	body->setLinearVelocity( btVector3( vel.x, vel.y, vel.z ));
+}
+
+Vec3f Physics::getRingPos()
+{
+	return RING_POS;
+}
+
+float Physics::getRingRadius()
+{
+	return RING_RADIUS;
 }
 
 Vec3f Physics::getBallPos()
@@ -58,7 +70,7 @@ Matrix44f Physics::getBallMatrix()
 	if( mBall )
 	{
 		Matrix44f ball = mBall->getTransformMatrix();
-		Matrix44f inversScale = Matrix44f::createScale( Vec4f( RADIUS, RADIUS, RADIUS, 1.0f )).inverted();
+		Matrix44f inversScale = Matrix44f::createScale( Vec4f( BALL_RADIUS, BALL_RADIUS, BALL_RADIUS, 1.0f )).inverted();
 
 		return ball * inversScale;
 	}

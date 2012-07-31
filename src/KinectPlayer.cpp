@@ -11,8 +11,18 @@ using namespace mndl;
 
 namespace Nibbal {
 
-void KinectPlayer::setup( const fs::path &path )
+void BallPoint::Init()
 {
+	mState = S_NOT_VALID;
+	mPos   = Vec3f();
+	mGoal  = false;
+}
+
+void KinectPlayer::setup( Physics *physic, const fs::path &path )
+{
+	mListener= std::shared_ptr<Listener>( new Listener());
+
+	mPhysics = physic;
 #if USE_KINECT
 	// setup kinect
 	if ( path.empty() )
@@ -32,8 +42,8 @@ void KinectPlayer::setup( const fs::path &path )
 	mParams.addPersistentParam( "Smoothing", &mSmoothing, .7, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 
-	mPosition  = Vec3f( 0.0f, 2.0f, 1.0f );
-	mDirection = Vec3f( 0.0f, 3.0f, 3.0f );
+	mPosition  = Vec3f( 0.00f, 2.00f, 1.00f );
+	mDirection = Vec3f( 0.17f, 5.99f, 3.73f );
 
 	mParams.addParam( "Position" , &mPosition  );
 	mParams.addParam( "Direction", &mDirection );
@@ -61,6 +71,8 @@ void KinectPlayer::setup( const fs::path &path )
 
 	// load basketball
 	mBallAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/ball/basketball.obj" ) );
+
+	mBallPoint.Init();
 }
 
 void KinectPlayer::setupNode( const string &name, const Quatf &qrot )
@@ -129,26 +141,68 @@ void KinectPlayer::update()
 #endif
 
 	mPlayerAiMesh.update();
+	_checkBallPoint();
 }
 
-void KinectPlayer::draw( Physics *physics )
+void KinectPlayer::draw()
 {
 	gl::pushModelView();
 	mPlayerAiMesh.draw();
 	gl::popModelView();
 
 	gl::pushModelView();
-	Matrix44f matrix = physics->getBallMatrix();
+	Matrix44f matrix = mPhysics->getBallMatrix();
 	gl::multModelView( matrix );
 	mBallAiMesh.draw();
 	gl::popModelView();
 }
 
-void KinectPlayer::dropBall( Physics *physics )
+void KinectPlayer::throwBall()
 {
 //	mndl::assimp::AssimpNodeRef assimpNode = mBallAiMesh.getAssimpNode( "labda_ball" );
 
-	physics->dropBall( mPosition, mDirection );
+	mBallPoint.Init();
+	mPhysics->throwBall( mPosition, mDirection );
+}
+
+void KinectPlayer::_checkBallPoint()
+{
+	if( mBallPoint.mGoal )
+		return;
+
+	Vec3f ballPosAct  = mPhysics->getBallPos();
+	Vec3f ballPosPrev = mBallPoint.mPos;
+	Vec3f ringPos     = mPhysics->getRingPos();
+	float ringRadius  = mPhysics->getRingRadius();
+
+	mBallPoint.mPos = ballPosAct;
+
+	if( ballPosPrev.y <= ballPosAct.y )
+	{
+		mBallPoint.mState = BallPoint::S_NOT_VALID;
+		return;
+	}
+
+	if( ballPosAct.x >= ringPos.x - ringRadius
+	 && ballPosAct.x <= ringPos.x + ringRadius
+	 && ballPosAct.z >= ringPos.z - ringRadius
+	 && ballPosAct.z <= ringPos.z + ringRadius )
+	{
+		if( ballPosAct.y > ringPos.y )  // above
+		{
+			mBallPoint.mState = BallPoint::S_ABOVE;
+		}
+		else
+		{
+			if( mBallPoint.mState == BallPoint::S_ABOVE )
+			{
+				mBallPoint.mGoal = true;
+				mListener->callCallback();
+			}
+	
+			mBallPoint.mState = BallPoint::S_BELOW;
+		}
+	}
 }
 
 } // namespace Nibbal
