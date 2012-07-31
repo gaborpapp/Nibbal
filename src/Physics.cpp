@@ -98,9 +98,9 @@ void Physics::addBox( Vec3f size, Vec3f translate )
 
 void Physics::update( float fps )
 {
-//	mWorld->update( 240 );
 	float time = ci::app::getElapsedSeconds();
 	mWorld->update( time - mTime, fps );
+	//mWorld->update( 1, 240 );
 	mTime = time;
 }
 

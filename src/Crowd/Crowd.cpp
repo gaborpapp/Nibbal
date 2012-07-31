@@ -98,7 +98,8 @@ void Crowd::_updateFbo()
 
 	gl::translate( mFbo.getSize().x / 2.0f, 0.0f, 0.0f );
 
-	gl::clear( Color::black());
+	gl::clear( Color::black() );
+	gl::color( Color::white() );
 
 	psys.draw();
 

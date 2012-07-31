@@ -20,7 +20,7 @@ void BallPoint::Init()
 
 void KinectPlayer::setup( Physics *physic, const fs::path &path )
 {
-	mListenerMap = std::shared_ptr<ListenerMap>( new ListenerMap());
+	mListenerMap = std::shared_ptr<ListenerMap>( new ListenerMap() );
 
 	mPhysics = physic;
 #if USE_KINECT
@@ -198,7 +198,7 @@ void KinectPlayer::detectThrowing()
 		float rArmLength = rShoulder.distance( rElbow ) + rElbow.distance( rHand );
 
 		// current hand shoulder distance
-		float currentArmLength = rShoulder.distance( rHand );
+		float rArmLength = rShoulder.distance( rHand );
 
 		// height of right hand between the two limits related to the right shoulder normalized
 		float handHeightPercent = math< float >::lmap( rHand.y - rShoulder.y,
@@ -210,7 +210,6 @@ void KinectPlayer::detectThrowing()
 		float handsDistanceNorm = lmap< float >( lHand.distance( rHand ),
 				mHandsDistanceMin, mHandsDistanceMax, 0, 1 );
 		handsDistanceNorm = math< float >::clamp( handsDistanceNorm, 0, 1 );
-
 
 		// arm straigthness
 		Vec3f rUpper = rShoulder - rElbow;
@@ -264,9 +263,6 @@ void KinectPlayer::draw()
 		else
 		if ( mIsThrowing )
 		{
-			// NOTE: this should fade out the ball as its lifetime expires
-			// but does not work, since gl::Material works with Color instead of
-			// ColorA, cinder issue #206 is filed
 			mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( mBallColor.value() );
 			Matrix44f matrix = mPhysics->getBallMatrix();
 			gl::multModelView( matrix );
