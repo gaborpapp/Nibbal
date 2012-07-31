@@ -2,20 +2,22 @@
 
 #include <boost/signals2/signal.hpp>
 
+#include "cinder/Cinder.h"
+
 namespace Nibbal
 {
 
 class ListenerMap
 {
 	typedef boost::signals2::signal<void ()> ListenerSignal;
-	typedef std::map<int, ListenerSignal*>   MapType;
+	typedef std::map<int, std::shared_ptr< ListenerSignal > >   MapType;
 
 public:
 	// Add functions with single integer argument to signal
 	template<typename T>
 	void addCallback( int type, void (T::* callbackFunction)(), T * callbackObject )
 	{
-		ListenerSignal *signal = 0;
+		std::shared_ptr< ListenerSignal > signal;
 		MapType::iterator it = mSignals.lower_bound( type );
 
 		if( it != mSignals.end() && !( mSignals.key_comp()( type, it->first )))
@@ -24,7 +26,7 @@ public:
 		}
 		else
 		{
-			signal = new ListenerSignal;
+			signal = std::shared_ptr< ListenerSignal >( new ListenerSignal );
 			mSignals.insert( make_pair( type, signal ));
 		}
 
