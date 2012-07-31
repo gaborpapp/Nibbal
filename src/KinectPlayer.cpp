@@ -308,9 +308,6 @@ void KinectPlayer::expireBallThrowing()
 
 void KinectPlayer::throwBall()
 {
-	if( mIsThrowing )
-		return;
-
 	mBallPoint.Init();
 	mPhysics->throwBall( mBallInitialPos, mDirection );
 
