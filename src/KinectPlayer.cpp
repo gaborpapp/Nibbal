@@ -37,6 +37,9 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	mNI.start();
 #endif
 
+	mHasBall = false;
+	mIsThrowing = false;
+
 	mParams = params::PInterfaceGl( "Kinect Player", Vec2i( 300, 300 ) );
 	mParams.addPersistentSizeAndPosition();
 
@@ -49,6 +52,10 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, M_PI, "min=0 max=3.14 step=.01" );
 	mArmAngleNorm = 0;
 	mParams.addParam( "Arm angle normalized", &mArmAngleNorm, "", true );
+
+	mParams.addPersistentParam( "Hands distance min", &mHandsDistanceMin, 450, "min=0 max=5000 step=10" );
+	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
+	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
 
 	mParams.addSeparator();
 	mPosition  = Vec3f( 0.0f, 2.0f, 1.0f );
@@ -78,6 +85,11 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	setupNode( "l_knee", q2 );
 	setupNode( "r_hip", q2 );
 	setupNode( "r_knee", q2 );
+
+	mLeftWristNode = mPlayerAiMesh.getAssimpNode( "l_wrist" );
+	mRightWristNode = mPlayerAiMesh.getAssimpNode( "r_wrist" );
+	mLeftElbowNode = mPlayerAiMesh.getAssimpNode( "l_ulna" );
+	mRightElbowNode = mPlayerAiMesh.getAssimpNode( "r_ulna" );
 
 	// load basketball
 	mBallAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/ball/basketball.obj" ) );
@@ -159,33 +171,43 @@ void KinectPlayer::detectThrowing()
 	unsigned user = mNIUserTracker.getClosestUserId();
 	if ( user > 0 )
 	{
-        Vec3f rShoulder = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_SHOULDER );
-        Vec3f rElbow = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_ELBOW );
-        Vec3f rHand = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_HAND );
-        Vec3f lHand = mNIUserTracker.getJoint3d( user, XN_SKEL_LEFT_HAND );
+		Vec3f rShoulder = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_SHOULDER );
+		Vec3f rElbow = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_ELBOW );
+		Vec3f rHand = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_HAND );
+		Vec3f lHand = mNIUserTracker.getJoint3d( user, XN_SKEL_LEFT_HAND );
 
-#if 0
+		// ball position in scene
+		Vec3f meshLWrist = mLeftWristNode->getDerivedPosition();
+		Vec3f meshRWrist = mRightWristNode->getDerivedPosition();
+		Vec3f meshLElbow = mLeftElbowNode->getDerivedPosition();
+		Vec3f meshRElbow = mRightElbowNode->getDerivedPosition();
+		Vec3f meshLLowerArm = meshLWrist - meshLElbow;
+		Vec3f meshRLowerArm = meshRWrist - meshRElbow;
+		float palmCoeff = .25f;
+		Vec3f meshLHand = meshLWrist + meshLLowerArm * palmCoeff;
+		Vec3f meshRHand = meshRWrist + meshRLowerArm * palmCoeff;
+		mBallInitialPos = ( meshLHand + meshRHand ) / 2.f;
+
+		/*
 		// length of right arm
-        float rArmLength = rShoulder.distance( rElbow ) + rElbow.distance( rHand );
-
-        mBallPosition = ( lHand + rHand ) / 2.f;
+		float rArmLength = rShoulder.distance( rElbow ) + rElbow.distance( rHand );
 
 		// current hand shoulder distance
-        float currentArmLength = rShoulder.distance( rHand );
+		float currentArmLength = rShoulder.distance( rHand );
 
 		// height of right hand between the two limits related to the right shoulder normalized
-        float handHeightPercent = math< float >::lmap( rHand.y - rShoulder.y,
-				mHandHeightMin, mHandHeightMax, 0, 1 );
+		float handHeightPercent = math< float >::lmap( rHand.y - rShoulder.y,
+		mHandHeightMin, mHandHeightMax, 0, 1 );
 		handHeightPercent = math< float >::clamp( handHeightPercent, 0, 1 );
+		*/
 
-        // distance of hands
-		float handsDistancePercent = math< float>::lmap( lHand.distance( rHand ),
+		// distance of hands
+		float handsDistanceNorm = lmap< float >( lHand.distance( rHand ),
 				mHandsDistanceMin, mHandsDistanceMax, 0, 1 );
-		float handsDistancePercent = math< float >::clamp( handsDistancePercent, 0, 1 );
+		handsDistanceNorm = math< float >::clamp( handsDistanceNorm, 0, 1 );
 
-#endif
 
-        // arm straigthness
+		// arm straigthness
 		Vec3f rUpper = rShoulder - rElbow;
 		rUpper.normalize();
 		Vec3f rLower = rHand - rElbow;
@@ -197,28 +219,56 @@ void KinectPlayer::detectThrowing()
 		mArmAngleNorm = lmap< float >( armAngle, mArmAngleMin, mArmAngleMax, 0, 1 );
 		mArmAngleNorm = math< float >::clamp( mArmAngleNorm, 0, 1 );
 
-/*
-        // ball speed
-        ballSpeedPercent = ofMap(ballPosition.distance(pBallPosition), ballSpeedMin, ballSpeedMax, 0, 1, true);
+		/*
+		// ball speed
+		ballSpeedPercent = ofMap(ballPosition.distance(pBallPosition), ballSpeedMin, ballSpeedMax, 0, 1, true);
 
-        // all parameters taken into account
-        shootPercent = hasBall * handHeightPercent * handsDistancePercent * armLengthPercent * ballSpeedPercent;
+		// all parameters taken into account
+		shootPercent = hasBall * handHeightPercent * handsDistancePercent * armLengthPercent * ballSpeedPercent;
 
 */
+		// if the hands are too far away, the ball is dropped
+		if ( handsDistanceNorm > mHandsDistanceLimitNorm )
+			mHasBall = false;
+		else
+			mHasBall = true;
+		/*
+		// ha kozel van a ket kez es a kez lent van es eppen nincs dobas, felveszi a labdat^M
+		else if (handHeightPercent < movementThreshold && !shooting)^M
+		hasBall = true;^M
+		*/
 	}
 }
 
 
 void KinectPlayer::draw()
 {
-	gl::pushModelView();
-	mPlayerAiMesh.draw();
-	gl::popModelView();
+	// draw ball
+	if ( mHasBall || mIsThrowing )
+	{
+		// disabling depth write otherwise the player's mesh
+		// can itersect with the ball, more or less works if
+		// the camera is at the player's back
+		gl::disableDepthWrite();
+		gl::pushModelView();
+		if ( mHasBall )
+		{
+			gl::translate( mBallInitialPos );
+		}
+		else
+		if ( mIsThrowing )
+		{
+			Matrix44f matrix = mPhysics->getBallMatrix();
+			gl::multModelView( matrix );
+		}
+
+		mBallAiMesh.draw();
+		gl::popModelView();
+		gl::enableDepthWrite();
+	}
 
 	gl::pushModelView();
-	Matrix44f matrix = mPhysics->getBallMatrix();
-	gl::multModelView( matrix );
-	mBallAiMesh.draw();
+	mPlayerAiMesh.draw();
 	gl::popModelView();
 
 	if ( mDepthTexture && mDrawDepth )

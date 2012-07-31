@@ -73,6 +73,20 @@ class KinectPlayer
 		float mArmAngleMax;
 		float mArmAngleNorm;
 
+		float mHandsDistanceMin;
+		float mHandsDistanceMax;
+		float mHandsDistanceLimitNorm;
+
+		bool mHasBall; // player has the ball
+		bool mIsThrowing; // ball is currently thrown
+
+		mndl::assimp::AssimpNodeRef mLeftWristNode;
+		mndl::assimp::AssimpNodeRef mRightWristNode;
+		mndl::assimp::AssimpNodeRef mLeftElbowNode;
+		mndl::assimp::AssimpNodeRef mRightElbowNode;
+
+		ci::Vec3f mBallInitialPos; // ball starting position when the user is holding it
+
 		ci::Vec3f mDirection;
 		ci::Vec3f mPosition;
 
