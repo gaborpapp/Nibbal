@@ -12,7 +12,7 @@
 #include "CiNI.h"
 #include "AssimpLoader.h"
 #include "Physics.h"
-#include "Listener.h"
+#include "ListenerMap.h"
 
 namespace Nibbal {
 
@@ -22,18 +22,25 @@ struct BallPoint
 	{
 		S_NOT_VALID,
 		S_ABOVE,
-		S_BELOW,
+		S_GOAL,
+		S_MISS,
 	};
 
 	void Init();
 
 	State     mState;
 	ci::Vec3f mPos;
-	bool      mGoal;
 };
 
 class KinectPlayer
 {
+	public:
+		enum EventType
+		{
+			ET_GOAL,
+			ET_MISS,
+		};
+
 	public:
 		void setup( Physics *physics, const ci::fs::path &path = "" );
 
@@ -43,9 +50,9 @@ class KinectPlayer
 		void throwBall();
 
 		template<typename T>
-		void addCallback( void (T::* callbackFunction)(), T * callbackObject )
+		void addCallback( EventType type, void (T::* callbackFunction)(), T * callbackObject )
 		{
-			mListener->addCallback<T>( callbackFunction, callbackObject );
+			mListenerMap->addCallback<T>( (int)type, callbackFunction, callbackObject );
 		}
 
 	private:
@@ -100,7 +107,7 @@ class KinectPlayer
 		Physics   *mPhysics;
 		BallPoint  mBallPoint;
 
-		std::shared_ptr<Listener>  mListener;
+		std::shared_ptr<ListenerMap>  mListenerMap;
 };
 
 } // namespace Nibbal

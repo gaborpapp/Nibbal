@@ -53,7 +53,8 @@ void Scene::setup( Physics *physics )
 	}
 
 	mKinectPlayer.setup( physics );
-	mKinectPlayer.addCallback<Scene>( &Scene::eventGoal    , this );
+	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_GOAL, &Scene::eventGoal, this );
+	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_MISS, &Scene::eventMiss, this );
 	mDisplay     .addCallback<Scene>( &Scene::eventTimeOver, this );
 
 	setupPhysics( physics );
@@ -159,8 +160,14 @@ void Scene::throwBall()
 
 void Scene::eventGoal()
 {
+	app::console() << "GOAL" << endl;
 	mCrowd.wave( Rand::randFloat( 1.8f, 2.5f ));
 	mDisplay.setHome( mDisplay.getHome() + 1 );
+}
+
+void Scene::eventMiss()
+{
+	app::console() << "MISS" << endl;
 }
 
 void Scene::eventTimeOver()

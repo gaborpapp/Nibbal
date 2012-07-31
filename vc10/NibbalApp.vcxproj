@@ -75,6 +75,7 @@
     <ClInclude Include="..\include\Display\LedTimer.h" />
     <ClInclude Include="..\include\Display\Listener.h" />
     <ClInclude Include="..\include\KinectPlayer.h" />
+    <ClInclude Include="..\include\ListenerMap.h" />
     <ClInclude Include="..\include\Physics.h" />
     <ClInclude Include="..\include\PParams.h" />
     <ClInclude Include="..\include\Resources.h" />

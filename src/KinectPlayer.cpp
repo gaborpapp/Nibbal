@@ -16,12 +16,11 @@ void BallPoint::Init()
 {
 	mState = S_NOT_VALID;
 	mPos   = Vec3f();
-	mGoal  = false;
 }
 
 void KinectPlayer::setup( Physics *physic, const fs::path &path )
 {
-	mListener= std::shared_ptr<Listener>( new Listener());
+	mListenerMap = std::shared_ptr<ListenerMap>( new ListenerMap());
 
 	mPhysics = physic;
 #if USE_KINECT
@@ -309,6 +308,9 @@ void KinectPlayer::expireBallThrowing()
 
 void KinectPlayer::throwBall()
 {
+	if( mIsThrowing )
+		return;
+
 	mBallPoint.Init();
 	mPhysics->throwBall( mBallInitialPos, mDirection );
 
@@ -327,7 +329,8 @@ void KinectPlayer::throwBall()
 
 void KinectPlayer::_checkBallPoint()
 {
-	if( mBallPoint.mGoal )
+	if( mBallPoint.mState == BallPoint::S_GOAL
+	 || mBallPoint.mState == BallPoint::S_MISS )
 		return;
 
 	Vec3f ballPosAct  = mPhysics->getBallPos();
@@ -356,11 +359,22 @@ void KinectPlayer::_checkBallPoint()
 		{
 			if( mBallPoint.mState == BallPoint::S_ABOVE )
 			{
-				mBallPoint.mGoal = true;
-				mListener->callCallback();
+				mBallPoint.mState = BallPoint::S_GOAL;
+				mListenerMap->callCallback( ET_GOAL );
 			}
-
-			mBallPoint.mState = BallPoint::S_BELOW;
+			else if( ballPosPrev.y > ballPosAct.y )
+			{
+				mBallPoint.mState = BallPoint::S_MISS;
+				mListenerMap->callCallback( ET_MISS );
+			}
+		}
+	}
+	else
+	{
+		if( ballPosAct.y < ringPos.y )     // below
+		{
+			mListenerMap->callCallback( ET_MISS );
+			mBallPoint.mState = BallPoint::S_MISS;
 		}
 	}
 }

@@ -26,6 +26,7 @@ class Scene
 
 	private:
 		void eventGoal();
+		void eventMiss();
 		void eventTimeOver();
 
 	private:

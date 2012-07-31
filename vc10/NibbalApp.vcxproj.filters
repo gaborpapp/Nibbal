@@ -245,6 +245,9 @@
     <ClInclude Include="..\include\Crowd\ParticleSystem\BaseParticleSpring.h">
       <Filter>Header Files\Crowd\ParticleSystem</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\ListenerMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc">
