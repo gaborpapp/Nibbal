@@ -5,6 +5,7 @@
 #include "cinder/Cinder.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/Quaternion.h"
+#include "cinder/Timeline.h"
 
 #include "PParams.h"
 
@@ -63,6 +64,7 @@ class KinectPlayer
 		void detectThrowing();
 
 		mndl::assimp::AssimpLoader mBallAiMesh;
+		mndl::assimp::AssimpNodeRef mBallNodeRef;
 
 		ci::params::PInterfaceGl mParams;
 		float mSmoothing;
@@ -77,6 +79,10 @@ class KinectPlayer
 		float mHandsDistanceMax;
 		float mHandsDistanceLimitNorm;
 
+		void expireBallThrowing();
+		float mBallLifetime;
+		ci::Anim< ci::ColorA > mBallColor;
+
 		bool mHasBall; // player has the ball
 		bool mIsThrowing; // ball is currently thrown
 
@@ -86,6 +92,7 @@ class KinectPlayer
 		mndl::assimp::AssimpNodeRef mRightElbowNode;
 
 		ci::Vec3f mBallInitialPos; // ball starting position when the user is holding it
+		ci::TimelineRef mTimelineRef;
 
 		ci::Vec3f mDirection;
 		ci::Vec3f mPosition;

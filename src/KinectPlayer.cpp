@@ -48,6 +48,8 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 	mParams.addSeparator();
 
+	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime,10., "min=2 max=20 step=.1" );
+	mParams.addSeparator();
 	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, 0, "min=0 max=3.14 step=.01" );
 	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, M_PI, "min=0 max=3.14 step=.01" );
 	mArmAngleNorm = 0;
@@ -58,7 +60,7 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
 
 	mParams.addSeparator();
-	mPosition  = Vec3f( 0.0f, 2.0f, 1.0f );
+	mBallInitialPos = mPosition = Vec3f( 0.0f, 2.0f, 1.0f );
 	mDirection = Vec3f( 0.17f, 5.99f, 3.73f );
 
 	mParams.addParam( "Position" , &mPosition  );
@@ -93,8 +95,12 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 
 	// load basketball
 	mBallAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/ball/basketball.obj" ) );
+	mBallNodeRef = mBallAiMesh.getAssimpNode( "labda_ball" );
 
 	mBallPoint.Init();
+
+	mTimelineRef = Timeline::create();
+	app::timeline().add( mTimelineRef );
 }
 
 void KinectPlayer::setupNode( const string &name, const Quatf &qrot )
@@ -253,16 +259,23 @@ void KinectPlayer::draw()
 		gl::pushModelView();
 		if ( mHasBall )
 		{
+			mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( Color::white() );
 			gl::translate( mBallInitialPos );
 		}
 		else
 		if ( mIsThrowing )
 		{
+			// NOTE: this should fade out the ball as its lifetime expires
+			// but does not work, since gl::Material works with Color instead of
+			// ColorA, cinder issue #206 is filed
+			mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( mBallColor.value() );
 			Matrix44f matrix = mPhysics->getBallMatrix();
 			gl::multModelView( matrix );
 		}
 
+		gl::enableAlphaBlending();
 		mBallAiMesh.draw();
+		gl::disableAlphaBlending();
 		gl::popModelView();
 		gl::enableDepthWrite();
 	}
@@ -284,12 +297,22 @@ void KinectPlayer::draw()
 
 }
 
+void KinectPlayer::expireBallThrowing()
+{
+	mIsThrowing = false;
+}
+
 void KinectPlayer::throwBall()
 {
-//	mndl::assimp::AssimpNodeRef assimpNode = mBallAiMesh.getAssimpNode( "labda_ball" );
-
 	mBallPoint.Init();
-	mPhysics->throwBall( mPosition, mDirection );
+	mPhysics->throwBall( mBallInitialPos, mDirection );
+
+	mBallColor = ColorA::white();
+	mIsThrowing = true;
+	mTimelineRef->apply( &mBallColor, ColorA::white(), mBallLifetime - 2. );
+	mTimelineRef->appendTo( &mBallColor, ColorA( 1, 1, 1, 0 ), 2. );
+	mTimelineRef->add( std::bind( &KinectPlayer::expireBallThrowing, this ),
+			app::timeline().getCurrentTime() + mBallLifetime );
 }
 
 void KinectPlayer::_checkBallPoint()
