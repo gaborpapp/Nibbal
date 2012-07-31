@@ -6,9 +6,14 @@ env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp',
 env['APP_SOURCES'] += ['Display/' + s for s in ['Display.cpp', 'DisplayTimer.cpp',
 	'LedDigit.cpp', 'LedBase.cpp', 'LedSeparator.cpp', 'DisplayCounter.cpp',
 	'LedCounter.cpp', 'LedTimer.cpp']]
-env.Append(CPPPATH = ['#../include/Display'])
+env['APP_SOURCES'] += ['Crowd/' + s for s in ['CPerson.cpp', 'Crowd.cpp',
+	'ParticleSystem/BaseParticle.cpp', 'ParticleSystem/BaseParticleForce.cpp',
+	'ParticleSystem/BaseParticleSpring.cpp', 'ParticleSystem/ParticleSystem.cpp']]
 
-env['ASSETS'] = ['models', 'ads']
+env.Append(CPPPATH = ['#../include/Display', '#../include/Crowd',
+					  '#../include/Crowd/ParticleSystem'])
+
+env['ASSETS'] = ['models', 'ads', 'crowd']
 env['RESOURCES'] = ['shaders']
 env['DEBUG'] = 1
 
