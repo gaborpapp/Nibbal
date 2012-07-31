@@ -302,6 +302,11 @@ void KinectPlayer::expireBallThrowing()
 	mIsThrowing = false;
 }
 
+#ifdef CINDER_MSW
+// the first pragma turns off whatever optimizations were on (Microsoft compiler has a crash without it)
+#pragma optimize( "", off )
+#endif
+
 void KinectPlayer::throwBall()
 {
 	mBallPoint.Init();
@@ -314,6 +319,11 @@ void KinectPlayer::throwBall()
 	mTimelineRef->add( std::bind( &KinectPlayer::expireBallThrowing, this ),
 			app::timeline().getCurrentTime() + mBallLifetime );
 }
+
+#ifdef CINDER_MSW
+#pragma optimize( "", on )
+// The second pragma restores optimizations to whatever state they had before (Microsoft compiler has a crash without it)
+#endif
 
 void KinectPlayer::_checkBallPoint()
 {
