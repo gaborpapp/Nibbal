@@ -1,3 +1,4 @@
+#include "cinder/app/App.h"
 #include <assert.h>
 
 #include "Physics.h"
@@ -15,6 +16,7 @@ void Physics::setup()
 {
 	mWorld = bullet::createWorld();
 	mBall = 0;
+	mTime = ci::app::getElapsedSeconds();
 
 	mWorld->getWorld()->setGravity( btVector3( 0.0f, -9.8f, 0.0f ));
 }
@@ -96,7 +98,10 @@ void Physics::addBox( Vec3f size, Vec3f translate )
 
 void Physics::update( float fps )
 {
-	mWorld->update( 240 );
+//	mWorld->update( 240 );
+	float time = ci::app::getElapsedSeconds();
+	mWorld->update( time - mTime, fps );
+	mTime = time;
 }
 
 Vec3f Physics::getPerfectDirection( Vec3f src, Vec3f dst )

@@ -26,6 +26,7 @@ class Physics
 	private:
 		bullet::DynamicsWorldRef   mWorld;
 		bullet::CollisionObjectRef mBall;
+		float                      mTime;
 };
 
 } // namespace Nibbal
