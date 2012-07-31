@@ -23,11 +23,24 @@ void main()
 	if ( type == 1 )
 	{
 		// hard switch left to right
+		gl_FragColor = mix( c0, c1, step( t, uv.x ) );
+	}
+	else
+	if ( type == 2 )
+	{
+		// hard switch right to left
 		gl_FragColor = mix( c0, c1, step( 1. - t, uv.x ) );
 	}
 	else
+	if ( type == 3 )
 	{
 		// smooth switch left to right
+		float edgeCenter = - border + ( 1. + 2. * border ) * t;
+		gl_FragColor = mix( c0, c1, smoothstep( edgeCenter - border, edgeCenter + border, uv.x ) );
+	}
+	else
+	{
+		// smooth switch right to left
 		float edgeCenter = 1. + border - ( 1. + 2. * border ) * t;
 		gl_FragColor = mix( c0, c1, smoothstep( edgeCenter - border, edgeCenter + border, uv.x ) );
 	}
