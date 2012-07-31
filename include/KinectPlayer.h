@@ -22,24 +22,31 @@ class KinectPlayer
 		void update();
 		void draw( Physics *physics );
 
-		void dropBall( Physics *phisics );
+		void throwBall( Physics *physics );
 
 	private:
 
 		mndl::ni::OpenNI mNI;
 		mndl::ni::UserTracker mNIUserTracker;
 
-		//ci::gl::Texture mDepthTexture;
+		ci::gl::Texture mDepthTexture;
 
 		mndl::assimp::AssimpLoader mPlayerAiMesh;
 		void setupNode( const std::string &name, const ci::Quatf &qrot );
 		void transformNode( const std::string &nodeName, unsigned userId, XnSkeletonJoint skelJoint );
+		void detectThrowing();
 
 		mndl::assimp::AssimpLoader mBallAiMesh;
 
 		ci::params::PInterfaceGl mParams;
 		float mSmoothing;
 		float mMinOriConf;
+		bool mDrawDepth;
+
+		float mArmAngleMin;
+		float mArmAngleMax;
+		float mArmAngleNorm;
+
 		ci::Vec3f mDirection;
 		ci::Vec3f mPosition;
 };

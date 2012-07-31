@@ -1,5 +1,6 @@
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
+#include "cinder/CinderMath.h"
 
 #include "KinectPlayer.h"
 
@@ -26,17 +27,26 @@ void KinectPlayer::setup( const fs::path &path )
 	mNI.start();
 #endif
 
-	mParams = params::PInterfaceGl( "Kinect", Vec2i( 300, 300 ) );
+	mParams = params::PInterfaceGl( "Kinect Player", Vec2i( 300, 300 ) );
 	mParams.addPersistentSizeAndPosition();
 
+	mParams.addPersistentParam( "Draw depth", &mDrawDepth, false );
 	mParams.addPersistentParam( "Smoothing", &mSmoothing, .7, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
+	mParams.addSeparator();
 
+	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, 0, "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, M_PI, "min=0 max=3.14 step=.01" );
+	mArmAngleNorm = 0;
+	mParams.addParam( "Arm angle normalized", &mArmAngleNorm, "", true );
+
+	mParams.addSeparator();
 	mPosition  = Vec3f( 0.0f, 2.0f, 1.0f );
 	mDirection = Vec3f( 0.0f, 3.0f, 3.0f );
 
 	mParams.addParam( "Position" , &mPosition  );
 	mParams.addParam( "Direction", &mDirection );
+
 
 	// load player
 	mPlayerAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/player/player.dae" ) );
@@ -101,10 +111,8 @@ void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSke
 void KinectPlayer::update()
 {
 #if USE_KINECT
-	/*
 	if ( mNI.checkNewDepthFrame() )
 		mDepthTexture = mNI.getDepthImage();
-	*/
 
 	mNIUserTracker.setSmoothing( mSmoothing );
 
@@ -126,10 +134,67 @@ void KinectPlayer::update()
 	*/
 		transformNode( "neck", userId, XN_SKEL_NECK );
 	}
+
+	detectThrowing();
 #endif
 
 	mPlayerAiMesh.update();
 }
+
+void KinectPlayer::detectThrowing()
+{
+	unsigned user = mNIUserTracker.getClosestUserId();
+	if ( user > 0 )
+	{
+        Vec3f rShoulder = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_SHOULDER );
+        Vec3f rElbow = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_ELBOW );
+        Vec3f rHand = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_HAND );
+        Vec3f lHand = mNIUserTracker.getJoint3d( user, XN_SKEL_LEFT_HAND );
+
+#if 0
+		// length of right arm
+        float rArmLength = rShoulder.distance( rElbow ) + rElbow.distance( rHand );
+
+        mBallPosition = ( lHand + rHand ) / 2.f;
+
+		// current hand shoulder distance
+        float currentArmLength = rShoulder.distance( rHand );
+
+		// height of right hand between the two limits related to the right shoulder normalized
+        float handHeightPercent = math< float >::lmap( rHand.y - rShoulder.y,
+				mHandHeightMin, mHandHeightMax, 0, 1 );
+		handHeightPercent = math< float >::clamp( handHeightPercent, 0, 1 );
+
+        // distance of hands
+		float handsDistancePercent = math< float>::lmap( lHand.distance( rHand ),
+				mHandsDistanceMin, mHandsDistanceMax, 0, 1 );
+		float handsDistancePercent = math< float >::clamp( handsDistancePercent, 0, 1 );
+
+#endif
+
+        // arm straigthness
+		Vec3f rUpper = rShoulder - rElbow;
+		rUpper.normalize();
+		Vec3f rLower = rHand - rElbow;
+		rLower.normalize();
+		float armAngle = math< float >::acos( rUpper.dot( rLower ) );
+		if ( armAngle > M_PI )
+			armAngle = 2 * M_PI - armAngle;
+
+		mArmAngleNorm = lmap< float >( armAngle, mArmAngleMin, mArmAngleMax, 0, 1 );
+		mArmAngleNorm = math< float >::clamp( mArmAngleNorm, 0, 1 );
+
+/*
+        // ball speed
+        ballSpeedPercent = ofMap(ballPosition.distance(pBallPosition), ballSpeedMin, ballSpeedMax, 0, 1, true);
+
+        // all parameters taken into account
+        shootPercent = hasBall * handHeightPercent * handsDistancePercent * armLengthPercent * ballSpeedPercent;
+
+*/
+	}
+}
+
 
 void KinectPlayer::draw( Physics *physics )
 {
@@ -142,9 +207,21 @@ void KinectPlayer::draw( Physics *physics )
 	gl::multModelView( matrix );
 	mBallAiMesh.draw();
 	gl::popModelView();
+
+	if ( mDepthTexture && mDrawDepth )
+	{
+		gl::pushMatrices();
+		gl::setMatricesWindow( app::getWindowSize() );
+		gl::setViewport( app::getWindowBounds() );
+
+		gl::color( Color::white() );
+		gl::draw( mDepthTexture, Rectf( app::getWindowBounds() ) / 3.f );
+		gl::popMatrices();
+	}
+
 }
 
-void KinectPlayer::dropBall( Physics *physics )
+void KinectPlayer::throwBall( Physics *physics )
 {
 //	mndl::assimp::AssimpNodeRef assimpNode = mBallAiMesh.getAssimpNode( "labda_ball" );
 

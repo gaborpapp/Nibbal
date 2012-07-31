@@ -220,7 +220,7 @@ void NibbalApp::keyDown( KeyEvent event )
 			break;
 
 		case KeyEvent::KEY_SPACE:
-			mKinectPlayer.dropBall( &mPhysics );
+			mKinectPlayer.throwBall( &mPhysics );
 			break;
 
 		default:
