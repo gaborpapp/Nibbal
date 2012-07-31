@@ -45,6 +45,10 @@ void Scene::setup( Physics *physics )
 		adsTexture = mAdDisplay.getTexture();
 	}
 
+	mKinectPlayer.setup( physics );
+	mKinectPlayer.addCallback<Scene>( &Scene::eventGoal    , this );
+	mDisplay     .addCallback<Scene>( &Scene::eventTimeOver, this );
+
 	setupPhysics( physics );
 
 	startGame();
@@ -74,12 +78,10 @@ void Scene::setupPhysics( Physics *physics )
 	}
 
 	// Create the lines
-	/*
 	{
 		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "felfestes_lines" );
 		physics->addMesh( mesh );
 	}
-	*/
 
 	// Create the backboard
 	{
@@ -91,6 +93,10 @@ void Scene::setupPhysics( Physics *physics )
 	{
 		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "ring_basketball_hoop_ring" );
 		physics->addMesh( mesh );
+
+		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
+		Vec3f center = boundingBox.getCenter();
+		Vec3f size   = boundingBox.getSize();
 	}
 
 	// Create the scoreboard
@@ -128,11 +134,28 @@ void Scene::update()
 {
 	mDisplay.update();
 	mAdDisplay.update();
+	mKinectPlayer.update();
 }
 
 void Scene::draw()
 {
 	mSceneAiMesh.draw();
+	mKinectPlayer.draw();
+}
+
+void Scene::throwBall()
+{
+	mKinectPlayer.throwBall();
+}
+
+void Scene::eventGoal()
+{
+	mDisplay.setHome( mDisplay.getHome() + 1 );
+}
+
+void Scene::eventTimeOver()
+{
+	app::console() << "time over" << endl;
 }
 
 } // namespace Nibbal

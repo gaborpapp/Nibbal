@@ -8,6 +8,7 @@
 #include "Display.h"
 #include "AdDisplay.h"
 #include "CinderBullet.h"
+#include "KinectPlayer.h"
 #include "Physics.h"
 
 namespace Nibbal {
@@ -20,6 +21,12 @@ class Scene
 		void update();
 		void draw();
 
+		void throwBall();
+
+	private:
+		void eventGoal();
+		void eventTimeOver();
+
 	private:
 		void setupPhysics( Physics *physics );
 		void startGame();
@@ -28,6 +35,7 @@ class Scene
 
 		Nibbal::Display          mDisplay;
 		AdDisplay                mAdDisplay;
+		KinectPlayer             mKinectPlayer;
 
 		ci::params::PInterfaceGl mParams;
 };

@@ -3,7 +3,7 @@
 #include <string>
 
 #include "cinder/Cinder.h"
-//#include "cinder/gl/Texture.h"
+#include "cinder/gl/Texture.h"
 #include "cinder/Quaternion.h"
 
 #include "PParams.h"
@@ -11,18 +11,44 @@
 #include "CiNI.h"
 #include "AssimpLoader.h"
 #include "Physics.h"
+#include "Listener.h"
 
 namespace Nibbal {
+
+struct BallPoint
+{
+	enum State
+	{
+		S_NOT_VALID,
+		S_ABOVE,
+		S_BELOW,
+	};
+
+	void Init();
+
+	State     mState;
+	ci::Vec3f mPos;
+	bool      mGoal;
+};
 
 class KinectPlayer
 {
 	public:
-		void setup( const ci::fs::path &path = "" );
+		void setup( Physics *physics, const ci::fs::path &path = "" );
 
 		void update();
-		void draw( Physics *physics );
+		void draw();
 
-		void throwBall( Physics *physics );
+		void throwBall();
+
+		template<typename T>
+		void addCallback( void (T::* callbackFunction)(), T * callbackObject )
+		{
+			mListener->addCallback<T>( callbackFunction, callbackObject );
+		}
+
+	private:
+		void _checkBallPoint();
 
 	private:
 
@@ -49,6 +75,11 @@ class KinectPlayer
 
 		ci::Vec3f mDirection;
 		ci::Vec3f mPosition;
+
+		Physics   *mPhysics;
+		BallPoint  mBallPoint;
+
+		std::shared_ptr<Listener>  mListener;
 };
 
 } // namespace Nibbal

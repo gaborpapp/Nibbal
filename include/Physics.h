@@ -16,7 +16,9 @@ class Physics
 		void addBox( ci::Vec3f size, ci::Vec3f translate );
 		void update( float fps );
 
-		void dropBall( ci::Vec3f pos, ci::Vec3f vel );
+		void throwBall( ci::Vec3f pos, ci::Vec3f vel );
+		ci::Vec3f     getRingPos();
+		float         getRingRadius();
 		ci::Vec3f     getBallPos();
 		ci::Matrix44f getBallMatrix();
 
