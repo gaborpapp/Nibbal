@@ -7,9 +7,9 @@ using namespace std;
 
 namespace Nibbal {
 
-#define BALL_RADIUS 0.12f
-#define RING_POS    Vec3f( 0.0f, 2.99f, 4.64f )
-#define RING_RADIUS 0.278f
+static const float BALL_RADIUS = 0.12f;
+static const Vec3f RING_POS    = Vec3f( 0.0f, 2.99f, 4.64f );
+static const float RING_RADIUS = 0.278f;
 
 void Physics::setup()
 {
@@ -96,7 +96,16 @@ void Physics::addBox( Vec3f size, Vec3f translate )
 
 void Physics::update( float fps )
 {
-	mWorld->update( 120 );
+	mWorld->update( 240 );
+}
+
+Vec3f Physics::getPerfectDirection( Vec3f src, Vec3f dst )
+{
+	float x = dst.x - src.x;
+	float y = ( dst.y - src.y ) * 6;
+	float z = ( dst.z - src.z );
+
+	return Vec3f( x, y, z );
 }
 
 } // namespace Nibbal

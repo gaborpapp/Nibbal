@@ -61,7 +61,7 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 
 	mParams.addSeparator();
 	mBallInitialPos = mPosition = Vec3f( 0.0f, 2.0f, 1.0f );
-	mDirection = Vec3f( 0.17f, 5.99f, 3.73f );
+	mDirection = Vec3f( 0.15f, 5.99f, 3.73f );
 
 	mParams.addParam( "Position" , &mPosition  );
 	mParams.addParam( "Direction", &mDirection );
@@ -323,7 +323,7 @@ void KinectPlayer::_checkBallPoint()
 	Vec3f ballPosAct  = mPhysics->getBallPos();
 	Vec3f ballPosPrev = mBallPoint.mPos;
 	Vec3f ringPos     = mPhysics->getRingPos();
-	float ringRadius  = mPhysics->getRingRadius();
+	float ringRadius  = mPhysics->getRingRadius() * 1.2f;
 
 	mBallPoint.mPos = ballPosAct;
 

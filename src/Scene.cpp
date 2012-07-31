@@ -2,6 +2,7 @@
 
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Rand.h"
 
 #include "Scene.h"
 
@@ -19,7 +20,8 @@ void Scene::setup( Physics *physics )
 	*/
 
 	mDisplay.setup();
-	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ) );
+	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ));
+	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 560 ));
 
 	// load scene
 	mSceneAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/scene/scene.obj" ) );
@@ -43,6 +45,11 @@ void Scene::setup( Physics *physics )
 		gl::Texture &adsTexture = mSceneAiMesh.getAssimpNodeTexture( "adstripe_ads" );
 		assert( adsTexture );
 		adsTexture = mAdDisplay.getTexture();
+
+		// set crowd
+		gl::Texture &crowdTexture = mSceneAiMesh.getAssimpNodeTexture( "crowd_crowd_plane" );
+		assert( crowdTexture );
+		crowdTexture = mCrowd.getTexture();
 	}
 
 	mKinectPlayer.setup( physics );
@@ -135,6 +142,7 @@ void Scene::update()
 	mDisplay.update();
 	mAdDisplay.update();
 	mKinectPlayer.update();
+	mCrowd.update();
 }
 
 void Scene::draw()
@@ -145,11 +153,13 @@ void Scene::draw()
 
 void Scene::throwBall()
 {
+//	mCrowd.energize( Rand::randFloat( 1.0f, 3.0f ));
 	mKinectPlayer.throwBall();
 }
 
 void Scene::eventGoal()
 {
+	mCrowd.wave( Rand::randFloat( 1.8f, 2.5f ));
 	mDisplay.setHome( mDisplay.getHome() + 1 );
 }
 

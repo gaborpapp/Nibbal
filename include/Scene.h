@@ -9,6 +9,7 @@
 #include "AdDisplay.h"
 #include "CinderBullet.h"
 #include "KinectPlayer.h"
+#include "Crowd.h"
 #include "Physics.h"
 
 namespace Nibbal {
@@ -36,6 +37,7 @@ class Scene
 		Nibbal::Display          mDisplay;
 		AdDisplay                mAdDisplay;
 		KinectPlayer             mKinectPlayer;
+		Crowd                    mCrowd;
 
 		ci::params::PInterfaceGl mParams;
 };

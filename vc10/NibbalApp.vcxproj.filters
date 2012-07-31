@@ -28,6 +28,21 @@
     <Filter Include="Header Files\Display">
       <UniqueIdentifier>{bdfd4953-67f3-46fb-b940-84110d4e188d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="blocks\ni">
+      <UniqueIdentifier>{7895585f-845c-41fc-8717-0128c83ad446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Crowd">
+      <UniqueIdentifier>{ee4d10a5-fd2f-4648-a5d8-8d8e67e5fc93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Crowd">
+      <UniqueIdentifier>{15e75341-68ef-43ae-bc24-eeb6befe7866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Crowd\ParticleSystem">
+      <UniqueIdentifier>{18a2d051-f9a4-4e69-8f5b-90774a4a02ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Crowd\ParticleSystem">
+      <UniqueIdentifier>{db512fdb-1c19-4a6a-a544-03547056c5ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\AdDisplay.cpp">
@@ -95,6 +110,30 @@
     </ClCompile>
     <ClCompile Include="..\src\Display\LedTimer.cpp">
       <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNI.cpp">
+      <Filter>blocks\ni</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNIUserTracker.cpp">
+      <Filter>blocks\ni</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd\CPerson.cpp">
+      <Filter>Source Files\Crowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd\Crowd.cpp">
+      <Filter>Source Files\Crowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd\ParticleSystem\BaseParticle.cpp">
+      <Filter>Source Files\Crowd\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd\ParticleSystem\BaseParticleSpring.cpp">
+      <Filter>Source Files\Crowd\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd\ParticleSystem\BaseParticleForce.cpp">
+      <Filter>Source Files\Crowd\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crowd\ParticleSystem\ParticleSystem.cpp">
+      <Filter>Source Files\Crowd\ParticleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +217,33 @@
     </ClInclude>
     <ClInclude Include="..\include\Display\Listener.h">
       <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNI.h">
+      <Filter>blocks\ni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNIBufferManager.h">
+      <Filter>blocks\ni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNIUserTracker.h">
+      <Filter>blocks\ni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd\CPerson.h">
+      <Filter>Header Files\Crowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd\Crowd.h">
+      <Filter>Header Files\Crowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd\ParticleSystem\BaseParticle.h">
+      <Filter>Header Files\Crowd\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd\ParticleSystem\ParticleSystem.h">
+      <Filter>Header Files\Crowd\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd\ParticleSystem\BaseParticleForce.h">
+      <Filter>Header Files\Crowd\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Crowd\ParticleSystem\BaseParticleSpring.h">
+      <Filter>Header Files\Crowd\ParticleSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
