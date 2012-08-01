@@ -10,7 +10,7 @@ using namespace mndl;
 
 #define USE_KINECT           0
 #define USE_KINECT_RECORDING 0
-#define KINECT_TIME_LIMIT    300   // set to 0 to disable KINECT_TIME_LIMIT
+#define KINECT_TIME_LIMIT    300 // set to 0 to disable KINECT_TIME_LIMIT
 
 namespace Nibbal {
 
@@ -71,6 +71,7 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
 
+	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
 	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .005, "min=0.005 max=0.03 step=.005" );
 	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .06, "min=0.005 max=0.1 step=.005" );
 	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .64, "min=0 max=1 step=.01" );
@@ -102,6 +103,25 @@ void KinectPlayer::setup( Physics *physic )
 	mPlayerAiMesh.enableSkinning();
 
 	// setup bind pose
+	/* new model
+	Quatf q0( Vec3f( 0, 1, 0 ), 0.0 );
+	setupNode( "root", q0 );
+	setupNode( "neck", q0 );
+	setupNode( "l_hip", q0 );
+	setupNode( "l_knee", q0 );
+	setupNode( "r_hip", q0 );
+	setupNode( "r_knee", q0 );
+
+	Quatf q( Vec3f( 0, 0, 1 ), -M_PI / 4 );
+	setupNode( "r_humerus", q );
+	setupNode( "r_ulna", q );
+
+	q = Quatf( Vec3f( 0, 0, 1 ), M_PI / 4 );
+	setupNode( "l_ulna", q );
+	setupNode( "l_humerus", q );
+	*/
+
+	// old model
 	Quatf q( Vec3f( 0, 1, 0 ), M_PI / 4 );
 	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
 	setupNode( "root", q2 );
@@ -288,6 +308,7 @@ void KinectPlayer::detectThrowing()
 
 		mArmAngleNorm = armAngleNorm;
 		mHandsBelowShoulder = handsBelowShoulder;
+		mBallVelocity = ballVelocity;
 		mBallSpeed = ballVelocity.length();
 		mBallSpeedNorm = ballSpeedNorm;
 		mThrowCoeff = throwCoeff;
@@ -321,7 +342,11 @@ void KinectPlayer::draw()
 		gl::enableAlphaBlending();
 		mBallAiMesh.draw();
 		gl::disableAlphaBlending();
+
 		gl::popModelView();
+
+		gl::color( Color( 1, 0, 0 ) );
+		gl::drawVector( mBallInitialPos, mBallInitialPos + mBallVelocity * mBallVelocityScale * .1 );
 	}
 
 	gl::pushModelView();
@@ -344,6 +369,7 @@ void KinectPlayer::draw()
 		gl::popMatrices();
 	}
 
+#if USE_KINECT
 	if ( mDisableKinect )
 	{
 		gl::pushMatrices();
@@ -354,6 +380,7 @@ void KinectPlayer::draw()
 				Color( 1, 0, 0 ) );
 		gl::popMatrices();
 	}
+#endif
 }
 
 void KinectPlayer::expireBallThrowing()
@@ -371,7 +398,7 @@ void KinectPlayer::throwBall()
 	mBallPoint.Init();
 
 #if USE_KINECT
-	mPhysics->throwBall( mBallInitialPos, mDirection );
+	mPhysics->throwBall( mBallInitialPos, mBallVelocity * mBallVelocityScale );
 #else
 	mPhysics->throwBall( mPosition, mDirection );
 #endif

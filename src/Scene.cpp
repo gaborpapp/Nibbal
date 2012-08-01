@@ -45,11 +45,17 @@ void Scene::setup( Physics *physics )
 		gl::Texture &adsTexture = mSceneAiMesh.getAssimpNodeTexture( "adstripe_ads" );
 		assert( adsTexture );
 		adsTexture = mAdDisplay.getTexture();
+		adsTexture.bind();
+		adsTexture.setWrap( GL_REPEAT, GL_REPEAT );
+		adsTexture.unbind();
 
 		// set crowd
 		gl::Texture &crowdTexture = mSceneAiMesh.getAssimpNodeTexture( "crowd_crowd_plane" );
 		assert( crowdTexture );
 		crowdTexture = mCrowd.getTexture();
+		crowdTexture.bind();
+		crowdTexture.setWrap( GL_REPEAT, GL_REPEAT );
+		crowdTexture.unbind();
 	}
 
 	mKinectPlayer.setup( physics );

@@ -48,7 +48,7 @@ void Physics::throwBall( Vec3f pos, Vec3f vel )
 	Vec3f velIdeal = mGridThrow->calcDirection( pos );
 	if( velIdeal == Vec3f())
 		velIdeal = vel;
-//	Vec3f velIdeal = vel;
+	//velIdeal = vel;
 
 	mBall = bullet::createRigidSphere( mWorld, size, 32, 1.0f, pos );
 	btRigidBody* body = bullet::toBulletRigidBody( mBall );

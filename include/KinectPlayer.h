@@ -85,6 +85,7 @@ class KinectPlayer
 		float mHandsDistanceMin;
 		float mHandsDistanceMax;
 		float mHandsDistanceLimitNorm;
+		float mBallVelocityScale;
 		float mBallSpeedMin;
 		float mBallSpeedMax;
 		float mThrowThreshold;
@@ -110,6 +111,7 @@ class KinectPlayer
 
 		ci::Vec3f mBallInitialPos; // ball starting position when the user is holding it
 		ci::Vec3f mBallInitialPrevPos; // ball position in previous frame
+		ci::Vec3f mBallVelocity;
 		ci::TimelineRef mTimelineRef;
 
 		ci::Vec3f mDirection;
