@@ -89,16 +89,16 @@ void Display::_updateFbo()
 	Area viewport = gl::getViewport();
 	gl::pushMatrices();
 	Vec2f pos = Vec2f( 0.0f, 0.0f );
+	gl::enableAlphaBlending();
 
 	mFbo.bindFramebuffer();
 	gl::setMatricesWindow( Vec2i( (int)getWidth(), (int)getHeight()), false );
-	gl::clear( Color::black());
 
-	gl::enableAlphaBlending();
 	glLineWidth( 2.0f );
 
-	_drawTimer( pos );
 	_drawHome( pos );
+	_drawHome( pos );
+	_drawTimer( pos );
 	_drawGuest( pos );
 	_drawPeriod( pos );
 

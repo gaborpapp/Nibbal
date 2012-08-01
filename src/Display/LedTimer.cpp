@@ -48,18 +48,23 @@ bool LedTimer::update()
 	if( isRunning())
 	{
 		unsigned short timer = (int)ci::app::getElapsedSeconds();
-		mSecondsAct += math<unsigned short>::min( timer - mTimer, mSecondsMax - mSecondsAct );
-		mTimer = timer;
+		unsigned short seconds = math<unsigned short>::min( timer - mTimer, mSecondsMax - mSecondsAct );
 
-		_setTime();
-
-		if( mSecondsAct == mSecondsMax )
+		if( seconds )
 		{
-			stop();
-			mListener->callCallback();
-		}
+			mSecondsAct += seconds;
+			mTimer = timer;
 
-		return true;
+			_setTime();
+
+			if( mSecondsAct == mSecondsMax )
+			{
+				stop();
+				mListener->callCallback();
+			}
+
+			return true;
+		}
 	}
 
 	return false;
