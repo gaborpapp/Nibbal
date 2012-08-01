@@ -24,6 +24,7 @@ void Physics::setup()
 
 void Physics::draw()
 {
+	mGridThrow->draw();
 // 	for( bullet::Iter object = mWorld->begin(); object != mWorld->end(); ++object )
 // 	{
 // 		gl::pushModelView();
@@ -177,6 +178,24 @@ Vec3f Grid::calcDirection( ci::Vec3f pos )
 	}
 
 	return _getInterpolation( corner, pos );
+}
+
+void Grid::draw()
+{
+	for( int x = 0; x < mNumCorner.x; ++x )
+	{
+		for( int y = 0; y < mNumCorner.y; ++y )
+		{
+			for( int z = 0; z < mNumCorner.z; ++z )
+			{
+				Vec3f corner = Vec3f( mPos000.x + x * mSize
+				                    , mPos000.y + y * mSize
+				                    , mPos000.z + z * mSize );
+
+				gl::drawSphere( corner, .01f );
+			}
+		}
+	}
 }
 
 void Grid::_allocArray()

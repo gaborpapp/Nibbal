@@ -39,6 +39,8 @@ public:
 	ci::Vec3f getDirection( ci::Vec3i corner );
 	ci::Vec3f calcDirection( ci::Vec3f pos );
 
+	void draw();
+
 private:
 	void _setup( ci::Vec3f pos000, ci::Vec3i numCorner, float size );
 	void _allocArray();
