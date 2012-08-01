@@ -109,15 +109,6 @@ void Physics::update( float fps )
 	mTime = time;
 }
 
-Vec3f Physics::getPerfectDirection( Vec3f src, Vec3f dst )
-{
-	float x = dst.x - src.x;
-	float y = ( dst.y - src.y ) * 6;
-	float z = ( dst.z - src.z );
-
-	return Vec3f( x, y, z );
-}
-
 Cube::Cube( Vec3f pos000, float size )
 : mCenter( pos000 + Vec3f( size / 2, size / 2, size / 2 ))
 , mSize( size )
@@ -219,8 +210,6 @@ void IdealThrow::setup()
 	shared_ptr< Cube > cube = shared_ptr< Cube >( new Cube( Vec3f( 0.0f, 2.0f, 0.0f ), 0.5f ));
 
 	mCubes.push_back( cube );
-
-//	mDirections.insert( make_pair( shared_ptr< Vec3f >( new Vec3f( 0.0f, 2.0f, 1.0f ), shared_ptr< Vec3f >( new Vec3f(  0.0f, 6.0f, 3.6f )));
 
 	cube->addDirection( Cube::C_000, Vec3f(  0.0f, 6.5f, 4.7f  ));
 	cube->addDirection( Cube::C_001, Vec3f(  0.0f, 6.5f, 4.4f  ));

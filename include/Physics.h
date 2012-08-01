@@ -60,7 +60,6 @@ class Physics
 		void addMesh( ci::TriMesh mesh );
 		void addBox( ci::Vec3f size, ci::Vec3f translate );
 		void update( float fps );
-		ci::Vec3f getPerfectDirection( ci::Vec3f src, ci::Vec3f dst );
 
 		void throwBall( ci::Vec3f pos, ci::Vec3f vel );
 		ci::Vec3f     getRingPos();
