@@ -92,11 +92,13 @@ void Display::_updateFbo()
 	gl::enableAlphaBlending();
 
 	mFbo.bindFramebuffer();
-	gl::setMatricesWindow( Vec2i( (int)getWidth(), (int)getHeight()), false );
+	gl::setViewport( mFbo.getBounds() );
+	gl::setMatricesWindow( mFbo.getSize() , false );
 
 	glLineWidth( 2.0f );
-
-	_drawHome( pos );
+	// there is texture bind state leak from somewhere
+	// if kinect is enabled
+	gl::disable( GL_TEXTURE_2D );
 	_drawHome( pos );
 	_drawTimer( pos );
 	_drawGuest( pos );
