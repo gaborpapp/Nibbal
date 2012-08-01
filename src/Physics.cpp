@@ -119,32 +119,43 @@ Grid::Grid()
 , mSize( 0 )
 , mDirections( 0 )
 {
-	_setup( Vec3f( -0.5f, 1.5f, 0.0f ), Vec3i( 3, 3, 2 ), 0.5f);
+	_setup( Vec3f( -0.5f, 1.5f, 0.0f ), Vec3i( 3, 3, 3 ), 0.5f);
 
-	setDirection( Vec3i( 0, 1, 0 ), Vec3f(  0.45f, 6.5f, 4.7f ));
-	setDirection( Vec3i( 0, 1, 1 ), Vec3f(  0.45f, 6.5f, 4.2f ));
+	setDirection( Vec3i( 0, 0, 0 ), Vec3f( 0.45f, 6.9f, 4.8f   ));
+	setDirection( Vec3i( 1, 0, 0 ), Vec3f(  0.0f, 6.9f, 4.8f   ));
+	setDirection( Vec3i( 2, 0, 0 ), Vec3f( -0.4f, 6.9f, 4.8f   ));
 
-	setDirection( Vec3i( 0, 2, 0 ), Vec3f(  0.45f, 6.1f, 4.7f ));
-	setDirection( Vec3i( 0, 2, 1 ), Vec3f(  0.45f, 6.1f, 4.2f ));
+	setDirection( Vec3i( 0, 1, 0 ), Vec3f(  0.45f, 6.5f, 4.7f  ));
+	setDirection( Vec3i( 1, 1, 0 ), Vec3f(  0.0f , 6.5f, 4.7f  ));
+	setDirection( Vec3i( 2, 1, 0 ), Vec3f( -0.4f , 6.5f, 4.7f  ));
 
-	setDirection( Vec3i( 1, 1, 0 ), Vec3f(  0.0f, 6.5f, 4.7f  ));
-	setDirection( Vec3i( 1, 1, 1 ), Vec3f(  0.0f, 6.5f, 4.4f  ));
-	setDirection( Vec3i( 2, 1, 1 ), Vec3f( -0.4f, 6.5f, 4.4f  ));
-	setDirection( Vec3i( 2, 1, 0 ), Vec3f( -0.4f, 6.5f, 4.7f  ));
+	setDirection( Vec3i( 0, 2, 0 ), Vec3f(  0.45f, 6.1f, 4.7f  ));
+	setDirection( Vec3i( 1, 2, 0 ), Vec3f(  0.0f , 6.2f, 4.63f ));
+	setDirection( Vec3i( 2, 2, 0 ), Vec3f( -0.4f , 6.1f, 4.63f ));
 
-	setDirection( Vec3i( 1, 2, 0 ), Vec3f(  0.0f, 6.2f, 4.63f ));
-	setDirection( Vec3i( 1, 2, 1 ), Vec3f(  0.0f, 6.1f, 4.35f ));
-	setDirection( Vec3i( 2, 2, 1 ), Vec3f( -0.4f, 6.1f, 4.35f ));
-	setDirection( Vec3i( 2, 2, 0 ), Vec3f( -0.4f, 6.1f, 4.63f ));
-
-	setDirection( Vec3i( 0, 0, 0 ), Vec3f( 0.45f, 6.9f, 4.8f ));
-	setDirection( Vec3i( 0, 0, 1 ), Vec3f( 0.45f, 6.75f, 4.5f ));
-
-	setDirection( Vec3i( 1, 0, 0 ), Vec3f(  0.0f, 6.9f , 4.8f ));
-	setDirection( Vec3i( 1, 0, 1 ), Vec3f(  0.0f, 6.75f, 4.5f ));
-
-	setDirection( Vec3i( 2, 0, 0 ), Vec3f( -0.4f, 6.9f, 4.8f  ));
+	setDirection( Vec3i( 0, 0, 1 ), Vec3f( 0.45f, 6.75f, 4.5f  ));
+	setDirection( Vec3i( 1, 0, 1 ), Vec3f(  0.0f, 6.75f, 4.5f  ));
 	setDirection( Vec3i( 2, 0, 1 ), Vec3f( -0.4f, 6.75f, 4.5f  ));
+
+	setDirection( Vec3i( 0, 1, 1 ), Vec3f(  0.45f, 6.5f, 4.2f  ));
+	setDirection( Vec3i( 1, 1, 1 ), Vec3f(  0.0f , 6.5f, 4.4f  ));
+	setDirection( Vec3i( 2, 1, 1 ), Vec3f( -0.4f , 6.5f, 4.4f  ));
+
+	setDirection( Vec3i( 0, 2, 1 ), Vec3f(  0.45f, 6.1f, 4.2f  ));
+	setDirection( Vec3i( 1, 2, 1 ), Vec3f(  0.0f , 6.1f, 4.35f ));
+	setDirection( Vec3i( 2, 2, 1 ), Vec3f( -0.4f , 6.1f, 4.35f ));
+
+	setDirection( Vec3i( 0, 0, 2 ), Vec3f(  0.55f, 6.55f, 4.3f ));
+	setDirection( Vec3i( 1, 0, 2 ), Vec3f(  0.0f , 6.55f, 4.3f ));
+	setDirection( Vec3i( 2, 0, 2 ), Vec3f( -0.55f, 6.55f, 4.3f ));
+
+	setDirection( Vec3i( 0, 1, 2 ), Vec3f(  0.55f, 6.2f, 4.1f  ));
+	setDirection( Vec3i( 1, 1, 2 ), Vec3f(  0.0f , 6.2f, 4.1f  ));
+	setDirection( Vec3i( 2, 1, 2 ), Vec3f( -0.55f, 6.2f, 4.1f  ));
+
+	setDirection( Vec3i( 0, 2, 2 ), Vec3f(  0.55f, 6.0f, 3.8f  ));
+	setDirection( Vec3i( 1, 2, 2 ), Vec3f(  0.0f , 6.0f, 3.8f  ));
+	setDirection( Vec3i( 2, 2, 2 ), Vec3f( -0.55f, 6.0f, 3.8f  ));
 }
 
 Grid::~Grid()
