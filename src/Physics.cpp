@@ -17,7 +17,7 @@ void Physics::setup()
 	mWorld = bullet::createWorld();
 	mBall = 0;
 	mTime = (float)ci::app::getElapsedSeconds();
-	mIdealThrow.setup();
+	mGridThrow = shared_ptr< Grid >( new Grid );
 
 	mWorld->getWorld()->setGravity( btVector3( 0.0f, -9.8f, 0.0f ));
 }
@@ -43,7 +43,9 @@ void Physics::throwBall( Vec3f pos, Vec3f vel )
 		mBall = 0;
 	}
 
-	Vec3f velIdeal = mIdealThrow.calcDirection( pos );
+	Vec3f velIdeal = mGridThrow->calcDirection( pos );
+	if( velIdeal == Vec3f())
+		velIdeal = vel;
 //	Vec3f velIdeal = vel;
 
 	mBall = bullet::createRigidSphere( mWorld, size, 32, 1.0f, pos );
@@ -109,63 +111,181 @@ void Physics::update( float fps )
 	mTime = time;
 }
 
-Cube::Cube( Vec3f pos000, float size )
-: mCenter( pos000 + Vec3f( size / 2, size / 2, size / 2 ))
-, mSize( size )
+Grid::Grid()
+: mPos000( Vec3f())
+, mNumCorner( Vec3i())
+, mSize( 0 )
+, mDirections( 0 )
 {
+	_setup( Vec3f( -0.5f, 1.5f, 0.0f ), Vec3i( 3, 3, 2 ), 0.5f);
+
+	setDirection( Vec3i( 0, 1, 0 ), Vec3f(  0.45f, 6.5f, 4.7f ));
+	setDirection( Vec3i( 0, 1, 1 ), Vec3f(  0.45f, 6.5f, 4.2f ));
+
+	setDirection( Vec3i( 0, 2, 0 ), Vec3f(  0.45f, 6.1f, 4.7f ));
+	setDirection( Vec3i( 0, 2, 1 ), Vec3f(  0.45f, 6.1f, 4.2f ));
+
+	setDirection( Vec3i( 1, 1, 0 ), Vec3f(  0.0f, 6.5f, 4.7f  ));
+	setDirection( Vec3i( 1, 1, 1 ), Vec3f(  0.0f, 6.5f, 4.4f  ));
+	setDirection( Vec3i( 2, 1, 1 ), Vec3f( -0.4f, 6.5f, 4.4f  ));
+	setDirection( Vec3i( 2, 1, 0 ), Vec3f( -0.4f, 6.5f, 4.7f  ));
+
+	setDirection( Vec3i( 1, 2, 0 ), Vec3f(  0.0f, 6.2f, 4.63f ));
+	setDirection( Vec3i( 1, 2, 1 ), Vec3f(  0.0f, 6.1f, 4.35f ));
+	setDirection( Vec3i( 2, 2, 1 ), Vec3f( -0.4f, 6.1f, 4.35f ));
+	setDirection( Vec3i( 2, 2, 0 ), Vec3f( -0.4f, 6.1f, 4.63f ));
+
+	setDirection( Vec3i( 0, 0, 0 ), Vec3f( 0.45f, 6.9f, 4.8f ));
+	setDirection( Vec3i( 0, 0, 1 ), Vec3f( 0.45f, 6.75f, 4.5f ));
+
+	setDirection( Vec3i( 1, 0, 0 ), Vec3f(  0.0f, 6.9f , 4.8f ));
+	setDirection( Vec3i( 1, 0, 1 ), Vec3f(  0.0f, 6.75f, 4.5f ));
+
+	setDirection( Vec3i( 2, 0, 0 ), Vec3f( -0.4f, 6.9f, 4.8f  ));
+	setDirection( Vec3i( 2, 0, 1 ), Vec3f( -0.4f, 6.75f, 4.5f  ));
 }
 
-void Cube::addDirection( CornerType cornerType, ci::Vec3f direction )
+Grid::~Grid()
 {
-	mDirections.insert( make_pair( cornerType, shared_ptr< Vec3f >( new Vec3f( direction ))));
+	_freeArray();
 }
 
-Vec3f Cube::getCorner( CornerType cornerType )
+void Grid::setDirection( Vec3i corner, Vec3f direction )
 {
-	float offset = mSize / 2;
+	if( ! _isValidCorner( corner ))
+		return;
 
-	switch( cornerType )
+	mDirections[corner.x][corner.y][corner.z] = direction;
+}
+
+Vec3f Grid::getDirection( Vec3i corner )
+{
+	if( ! _isValidCorner( corner ))
+		return Vec3f( 0.0f, 0.0f, 0.0f );
+
+	return mDirections[corner.x][corner.y][corner.z];
+}
+
+Vec3f Grid::calcDirection( ci::Vec3f pos )
+{
+	Vec3i corner = _getCorner( pos );
+
+	if( ! _isValidCorner( corner ))
 	{
-	case C_000 : return mCenter + Vec3f( -offset, -offset, -offset ); break; // left  lower back
-	case C_001 : return mCenter + Vec3f( -offset, -offset,  offset ); break; // left  lower front
-	case C_100 : return mCenter + Vec3f(  offset, -offset, -offset ); break; // right lower back
-	case C_101 : return mCenter + Vec3f(  offset, -offset,  offset ); break; // right lower front
-	case C_010 : return mCenter + Vec3f( -offset,  offset, -offset ); break; // left  upper back
-	case C_011 : return mCenter + Vec3f( -offset,  offset,  offset ); break; // left  upper front
-	case C_110 : return mCenter + Vec3f(  offset,  offset, -offset ); break; // right upper back
-	case C_111 : return mCenter + Vec3f(  offset,  offset,  offset ); break; // right upper front
+		app::console() << "no section found" << endl;
+		return Vec3f( 0.0f, 0.0f, 0.0f );
 	}
 
-	return mCenter;
+	return _getInterpolation( corner, pos );
 }
 
-bool Cube::isContain( Vec3f pos )
+void Grid::_allocArray()
 {
-	Vec3f pos000 = getCorner( C_000 );
-	Vec3f pos011 = getCorner( C_011 );
-	Vec3f pos101 = getCorner( C_101 );
+	if( mDirections )
+		return;
 
-	if( pos.x >= pos000.x
-	 && pos.x <= pos101.x
-	 && pos.y >= pos000.y
-	 && pos.y <= pos011.y
-	 && pos.z >= pos000.z
-	 && pos.z <= pos101.z )
-		return true;
+	mDirections = new Vec3f** [mNumCorner.x];
+	for( int x = 0; x < mNumCorner.x; ++x )
+	{
+		mDirections[x] = new Vec3f* [mNumCorner.y];
 
-	return false;
+		for( int y = 0; y < mNumCorner.y; ++y )
+		{
+			mDirections[x][y] = new Vec3f[mNumCorner.z];
+
+			for( int z = 0; z < mNumCorner.z; ++z )
+			{
+				mDirections[x][y][z] = Vec3f();
+			}
+		}
+	}
 }
 
-Vec3f Cube::getInterpolation( Vec3f pos )
+void Grid::_freeArray()
 {
-	Vec3f pos000 = getCorner( C_000 );
-	Vec3f pos001 = getCorner( C_001 );
-	Vec3f pos010 = getCorner( C_010 );
-	Vec3f pos011 = getCorner( C_011 );
-	Vec3f pos100 = getCorner( C_100 );
-	Vec3f pos101 = getCorner( C_101 );
-	Vec3f pos110 = getCorner( C_110 );
-	Vec3f pos111 = getCorner( C_111 );
+	if( ! mDirections )
+		return;
+
+	for( int x = 0; x < mNumCorner.x; ++x )
+	{
+		for( int y = 0; y < mNumCorner.y; ++y )
+		{
+			delete [] mDirections[x][y];
+		}
+
+		delete [] mDirections[x];
+	}
+
+	delete [] mDirections;
+}
+
+void Grid::_setup( Vec3f pos000, Vec3i numCorner, float size )
+{
+	mPos000     = pos000;
+	mNumCorner  = numCorner;
+	mSize       = size;
+
+	_allocArray();
+}
+
+bool Grid::_isValidCorner( ci::Vec3i corner )
+{
+	if( corner.x <  0
+	 || corner.x >= mNumCorner.x
+	 || corner.y <  0
+	 || corner.y >= mNumCorner.y
+	 || corner.z <  0
+	 || corner.z >= mNumCorner.z )
+		return false;
+
+	return true;
+}
+
+Vec3i Grid::_getCorner( Vec3f pos )
+{
+	Vec3f posLocal = pos - mPos000;
+	Vec3i corner = Vec3i( (int)( posLocal.x / mSize )
+	                    , (int)( posLocal.y / mSize )
+	                    , (int)( posLocal.z / mSize ));
+
+	return corner;
+}
+
+Vec3i Grid::_getCornerOffset( Vec3i corner, Offset offset )
+{
+	switch( offset )
+	{
+	case O_000 : return corner + Vec3i( 0, 0, 0 ); break; // left  lower back
+	case O_001 : return corner + Vec3i( 0, 0, 1 ); break; // left  lower front
+	case O_100 : return corner + Vec3i( 1, 0, 0 ); break; // right lower back
+	case O_101 : return corner + Vec3i( 1, 0, 1 ); break; // right lower front
+	case O_010 : return corner + Vec3i( 0, 1, 0 ); break; // left  upper back
+	case O_011 : return corner + Vec3i( 0, 1, 1 ); break; // left  upper front
+	case O_110 : return corner + Vec3i( 1, 1, 0 ); break; // right upper back
+	case O_111 : return corner + Vec3i( 1, 1, 1 ); break; // right upper front
+	}
+
+	return corner;
+}
+
+Vec3f Grid::_getPos( Vec3i corner )
+{
+	if( ! _isValidCorner( corner ))
+		return Vec3f( 0.0f, 0.0f, 0.0f );
+
+	return mPos000 + Vec3f( corner ) * mSize;
+}
+
+Vec3f Grid::_getInterpolation( Vec3i corner, Vec3f pos )
+{
+	Vec3f pos000 = _getPos( _getCornerOffset( corner, O_000 ));
+	Vec3f pos001 = _getPos( _getCornerOffset( corner, O_001 ));
+	Vec3f pos010 = _getPos( _getCornerOffset( corner, O_010 ));
+	Vec3f pos011 = _getPos( _getCornerOffset( corner, O_011 ));
+	Vec3f pos100 = _getPos( _getCornerOffset( corner, O_100 ));
+	Vec3f pos101 = _getPos( _getCornerOffset( corner, O_101 ));
+	Vec3f pos110 = _getPos( _getCornerOffset( corner, O_110 ));
+	Vec3f pos111 = _getPos( _getCornerOffset( corner, O_111 ));
 
 	float x0 = pos000.x;
 	float x1 = pos100.x;
@@ -178,10 +298,10 @@ Vec3f Cube::getInterpolation( Vec3f pos )
 	float yd = ( pos.y - y0 ) / ( y1 - y0 );
 	float zd = ( pos.z - z0 ) / ( z1 - z0 );
 
-	Vec3f c00 = _getDirection( C_000 ) * ( 1 - xd ) + _getDirection( C_100 ) * xd;
-	Vec3f c10 = _getDirection( C_010 ) * ( 1 - xd ) + _getDirection( C_110 ) * xd;
-	Vec3f c01 = _getDirection( C_001 ) * ( 1 - xd ) + _getDirection( C_101 ) * xd;
-	Vec3f c11 = _getDirection( C_011 ) * ( 1 - xd ) + _getDirection( C_111 ) * xd;
+	Vec3f c00 = getDirection( _getCornerOffset( corner, O_000 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_100 )) * xd;
+	Vec3f c10 = getDirection( _getCornerOffset( corner, O_010 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_110 )) * xd;
+	Vec3f c01 = getDirection( _getCornerOffset( corner, O_001 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_101 )) * xd;
+	Vec3f c11 = getDirection( _getCornerOffset( corner, O_011 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_111 )) * xd;
 
 	Vec3f c0  = c00 * ( 1 - yd ) + c10 * yd;
 	Vec3f c1  = c01 * ( 1 - yd ) + c11 * yd;
@@ -191,59 +311,6 @@ Vec3f Cube::getInterpolation( Vec3f pos )
 	app::console() << " pos: " << pos << " vec: " << c << endl;
 
 	return c;
-}
-
-Vec3f Cube::_getDirection( CornerType cornerType )
-{
-	map< CornerType, shared_ptr< Vec3f > >::iterator it = mDirections.lower_bound( cornerType );
-
-	if( it != mDirections.end() && !( mDirections.key_comp()( cornerType, it->first )))
-	{
-		return *(it->second);
-	}
-
-	return Vec3f( 0.0f, 0.0f, 0.0f );
-}
-
-void IdealThrow::setup()
-{
-	shared_ptr< Cube > cube = shared_ptr< Cube >( new Cube( Vec3f( 0.0f, 2.0f, 0.0f ), 0.5f ));
-
-	mCubes.push_back( cube );
-
-	cube->addDirection( Cube::C_000, Vec3f(  0.0f, 6.5f, 4.7f  ));
-	cube->addDirection( Cube::C_001, Vec3f(  0.0f, 6.5f, 4.4f  ));
-	cube->addDirection( Cube::C_101, Vec3f( -0.4f, 6.5f, 4.4f  ));
-	cube->addDirection( Cube::C_100, Vec3f( -0.4f, 6.5f, 4.7f  ));
-
-	cube->addDirection( Cube::C_010, Vec3f(  0.0f, 6.2f, 4.63f ));
-	cube->addDirection( Cube::C_011, Vec3f(  0.0f, 6.1f, 4.35f ));
-	cube->addDirection( Cube::C_111, Vec3f( -0.4f, 6.1f, 4.35f ));
-	cube->addDirection( Cube::C_110, Vec3f( -0.4f, 6.1f, 4.63f ));
-}
-
-Vec3f IdealThrow::calcDirection( Vec3f pos )
-{
-	Cube *cube = _getCube( pos );
-
-	if( cube )
-	{
-		return cube->getInterpolation( pos );
-	}
-
-	app::console() << "no cube found" << endl;
-	return Vec3f( 0.0f, 0.0f, 0.0f );
-}
-
-Cube *IdealThrow::_getCube( Vec3f dir )
-{
-	for( vector< shared_ptr< Cube > >::iterator p = mCubes.begin(); p != mCubes.end(); ++p )
-	{
-		if( (*p)->isContain( dir ))
-			return (*p).get();
-	}
-
-	return 0;
 }
 
 } // namespace Nibbal
