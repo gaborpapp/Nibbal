@@ -118,6 +118,9 @@ class KinectPlayer
 		Physics   *mPhysics;
 		BallPoint  mBallPoint;
 
+		float      mTimerLimit;
+		bool       mDisableKinect;
+
 		std::shared_ptr<ListenerMap>  mListenerMap;
 };
 

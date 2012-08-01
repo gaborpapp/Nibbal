@@ -8,8 +8,9 @@ using namespace ci;
 using namespace std;
 using namespace mndl;
 
-#define USE_KINECT 0
+#define USE_KINECT           0
 #define USE_KINECT_RECORDING 0
+#define KINECT_TIME_LIMIT    300   // set to 0 to disable KINECT_TIME_LIMIT
 
 namespace Nibbal {
 
@@ -26,6 +27,9 @@ void KinectPlayer::setup( Physics *physic )
 	mPhysics = physic;
 
 #if USE_KINECT
+	mDisableKinect = false;
+	mTimerLimit    = (float)ci::app::getElapsedSeconds();
+
 	// setup kinect
 #	if USE_KINECT_RECORDING
 		// use openni recording
@@ -146,20 +150,23 @@ void KinectPlayer::setupNode( const string &name, const Quatf &qrot )
 void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSkeletonJoint skelJoint )
 {
 #if USE_KINECT
-	float oriConf;
-	Matrix33f ori = mNIUserTracker.getJointOrientation( userId, skelJoint, &oriConf );
-
-	if ( oriConf >= mMinOriConf )
+	if( ! mDisableKinect )
 	{
-		// change rotation coordinate directions
-		ori.m10 *= -1;
-		ori.m01 *= -1;
-		ori.m21 *= -1;
-		ori.m12 *= -1;
-		Quatf q( ori );
-		assimp::AssimpNodeRef nodeRef = mPlayerAiMesh.getAssimpNode( nodeName );
-		// apply skeleton pose relatively to the bone bind pose
-		nodeRef->setOrientation( nodeRef->getInitialOrientation() * q );
+		float oriConf;
+		Matrix33f ori = mNIUserTracker.getJointOrientation( userId, skelJoint, &oriConf );
+
+		if ( oriConf >= mMinOriConf )
+		{
+			// change rotation coordinate directions
+			ori.m10 *= -1;
+			ori.m01 *= -1;
+			ori.m21 *= -1;
+			ori.m12 *= -1;
+			Quatf q( ori );
+			assimp::AssimpNodeRef nodeRef = mPlayerAiMesh.getAssimpNode( nodeName );
+			// apply skeleton pose relatively to the bone bind pose
+			nodeRef->setOrientation( nodeRef->getInitialOrientation() * q );
+		}
 	}
 #endif
 }
@@ -167,37 +174,46 @@ void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSke
 void KinectPlayer::update()
 {
 #if USE_KINECT
-	bool NIupdated = false;
-	if ( mNI.checkNewDepthFrame() )
+	if( KINECT_TIME_LIMIT )
 	{
-		mDepthTexture = mNI.getDepthImage();
-		NIupdated = true;
+		if((float)ci::app::getElapsedSeconds() - mTimerLimit > KINECT_TIME_LIMIT )
+			mDisableKinect = true;
 	}
 
-	mNIUserTracker.setSmoothing( mSmoothing );
-
-	vector< unsigned > users = mNIUserTracker.getUsers();
-	if ( !users.empty() )
+	if( ! mDisableKinect )
 	{
-		unsigned userId = users[ 0 ];
+		bool NIupdated = false;
+		if ( mNI.checkNewDepthFrame() )
+		{
+			mDepthTexture = mNI.getDepthImage();
+			NIupdated = true;
+		}
 
-		transformNode( "root", userId, XN_SKEL_TORSO );
-		transformNode( "l_humerus", userId, XN_SKEL_LEFT_SHOULDER );
-		transformNode( "r_humerus", userId, XN_SKEL_RIGHT_SHOULDER );
-		transformNode( "l_ulna", userId, XN_SKEL_LEFT_ELBOW );
-		transformNode( "r_ulna", userId, XN_SKEL_RIGHT_ELBOW );
-	/*
-		transformNode( "l_hip", userId, XN_SKEL_LEFT_HIP );
-		transformNode( "r_hip", userId, XN_SKEL_RIGHT_HIP );
-		transformNode( "l_knee", userId, XN_SKEL_LEFT_KNEE );
-		transformNode( "r_knee", userId, XN_SKEL_RIGHT_KNEE );
-	*/
-		transformNode( "neck", userId, XN_SKEL_NECK );
+		mNIUserTracker.setSmoothing( mSmoothing );
+
+		vector< unsigned > users = mNIUserTracker.getUsers();
+		if ( !users.empty() )
+		{
+			unsigned userId = users[ 0 ];
+
+			transformNode( "root", userId, XN_SKEL_TORSO );
+			transformNode( "l_humerus", userId, XN_SKEL_LEFT_SHOULDER );
+			transformNode( "r_humerus", userId, XN_SKEL_RIGHT_SHOULDER );
+			transformNode( "l_ulna", userId, XN_SKEL_LEFT_ELBOW );
+			transformNode( "r_ulna", userId, XN_SKEL_RIGHT_ELBOW );
+		/*
+			transformNode( "l_hip", userId, XN_SKEL_LEFT_HIP );
+			transformNode( "r_hip", userId, XN_SKEL_RIGHT_HIP );
+			transformNode( "l_knee", userId, XN_SKEL_LEFT_KNEE );
+			transformNode( "r_knee", userId, XN_SKEL_RIGHT_KNEE );
+		*/
+			transformNode( "neck", userId, XN_SKEL_NECK );
+		}
+
+		// only update throwing detection at the rate of the kinect
+		if ( NIupdated )
+			detectThrowing();
 	}
-
-	// only update throwing detection at the rate of the kinect
-	if ( NIupdated )
-		detectThrowing();
 #endif
 
 	mPlayerAiMesh.update();
@@ -348,7 +364,10 @@ void KinectPlayer::throwBall()
 	mBallPoint.Init();
 
 #if USE_KINECT
-	mPhysics->throwBall( mBallInitialPos, mDirection );
+	if( ! mDisableKinect )
+	{
+		mPhysics->throwBall( mBallInitialPos, mDirection );
+	}
 #else
 	mPhysics->throwBall( mPosition, mDirection );
 #endif
