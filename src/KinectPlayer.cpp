@@ -104,25 +104,28 @@ void KinectPlayer::setup( Physics *physic )
 	mPlayerAiMesh.enableSkinning();
 
 	// setup bind pose
-	/* new model
+	// new model
+	//*
 	Quatf q0( Vec3f( 0, 1, 0 ), 0.0 );
-	setupNode( "root", q0 );
-	setupNode( "neck", q0 );
-	setupNode( "l_hip", q0 );
-	setupNode( "l_knee", q0 );
-	setupNode( "r_hip", q0 );
-	setupNode( "r_knee", q0 );
+	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
+	setupNode( "root", q2 );
+	setupNode( "neck", q2 );
+	setupNode( "l_hip", q2 );
+	setupNode( "l_knee", q2 );
+	setupNode( "r_hip", q2 );
+	setupNode( "r_knee", q2 );
 
-	Quatf q( Vec3f( 0, 0, 1 ), -M_PI / 4 );
-	setupNode( "r_humerus", q );
-	setupNode( "r_ulna", q );
+	Quatf q( Vec3f( 0, 1, 0 ), M_PI / 4 );
+	setupNode( "r_humerus", q * q2 );
+	setupNode( "r_ulna", q * q2);
 
-	q = Quatf( Vec3f( 0, 0, 1 ), M_PI / 4 );
-	setupNode( "l_ulna", q );
-	setupNode( "l_humerus", q );
-	*/
+	q = Quatf( Vec3f( 0, 1, 0 ), -M_PI / 4 );
+	setupNode( "l_ulna", q * q2 );
+	setupNode( "l_humerus", q * q2 );
+	//*/
 
 	// old model
+	/*
 	Quatf q( Vec3f( 0, 1, 0 ), M_PI / 4 );
 	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
 	setupNode( "root", q2 );
@@ -138,6 +141,7 @@ void KinectPlayer::setup( Physics *physic )
 	setupNode( "l_knee", q2 );
 	setupNode( "r_hip", q2 );
 	setupNode( "r_knee", q2 );
+	*/
 
 	mLeftWristNode = mPlayerAiMesh.getAssimpNode( "l_wrist" );
 	mRightWristNode = mPlayerAiMesh.getAssimpNode( "r_wrist" );
