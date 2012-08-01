@@ -270,7 +270,8 @@ void KinectPlayer::detectThrowing()
 		if ( handsDistanceNorm > mHandsDistanceLimitNorm )
 			mHasBall = false;
 		else
-		if ( handHeightNorm < mHandHeightLimitNorm && !mIsThrowing )
+		if ( !mIsThrowing )
+		//if ( handHeightNorm < mHandHeightLimitNorm && !mIsThrowing )
 			mHasBall = true;
 
 		// all parameters taken into account
