@@ -27,9 +27,6 @@ void KinectPlayer::setup( Physics *physic )
 	mPhysics = physic;
 
 #if USE_KINECT
-	mDisableKinect = false;
-	mTimerLimit    = (float)ci::app::getElapsedSeconds();
-
 	// setup kinect
 #	if USE_KINECT_RECORDING
 		// use openni recording
@@ -47,6 +44,9 @@ void KinectPlayer::setup( Physics *physic )
 
 	mNI.setMirrored();
 	mNI.start();
+
+	mDisableKinect = false;
+	mTimerLimit = app::getElapsedSeconds();
 #endif
 
 	mHasBall = false;
@@ -150,23 +150,20 @@ void KinectPlayer::setupNode( const string &name, const Quatf &qrot )
 void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSkeletonJoint skelJoint )
 {
 #if USE_KINECT
-	if( ! mDisableKinect )
-	{
-		float oriConf;
-		Matrix33f ori = mNIUserTracker.getJointOrientation( userId, skelJoint, &oriConf );
+	float oriConf;
+	Matrix33f ori = mNIUserTracker.getJointOrientation( userId, skelJoint, &oriConf );
 
-		if ( oriConf >= mMinOriConf )
-		{
-			// change rotation coordinate directions
-			ori.m10 *= -1;
-			ori.m01 *= -1;
-			ori.m21 *= -1;
-			ori.m12 *= -1;
-			Quatf q( ori );
-			assimp::AssimpNodeRef nodeRef = mPlayerAiMesh.getAssimpNode( nodeName );
-			// apply skeleton pose relatively to the bone bind pose
-			nodeRef->setOrientation( nodeRef->getInitialOrientation() * q );
-		}
+	if ( oriConf >= mMinOriConf )
+	{
+		// change rotation coordinate directions
+		ori.m10 *= -1;
+		ori.m01 *= -1;
+		ori.m21 *= -1;
+		ori.m12 *= -1;
+		Quatf q( ori );
+		assimp::AssimpNodeRef nodeRef = mPlayerAiMesh.getAssimpNode( nodeName );
+		// apply skeleton pose relatively to the bone bind pose
+		nodeRef->setOrientation( nodeRef->getInitialOrientation() * q );
 	}
 #endif
 }
@@ -174,46 +171,46 @@ void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSke
 void KinectPlayer::update()
 {
 #if USE_KINECT
-	if( KINECT_TIME_LIMIT )
+	if ( KINECT_TIME_LIMIT )
 	{
-		if((float)ci::app::getElapsedSeconds() - mTimerLimit > KINECT_TIME_LIMIT )
+		if ( ( app::getElapsedSeconds() - mTimerLimit ) > KINECT_TIME_LIMIT )
 			mDisableKinect = true;
 	}
 
-	if( ! mDisableKinect )
+	if ( mDisableKinect )
+		return;
+
+	bool NIupdated = false;
+	if ( mNI.checkNewDepthFrame() )
 	{
-		bool NIupdated = false;
-		if ( mNI.checkNewDepthFrame() )
-		{
-			mDepthTexture = mNI.getDepthImage();
-			NIupdated = true;
-		}
-
-		mNIUserTracker.setSmoothing( mSmoothing );
-
-		vector< unsigned > users = mNIUserTracker.getUsers();
-		if ( !users.empty() )
-		{
-			unsigned userId = users[ 0 ];
-
-			transformNode( "root", userId, XN_SKEL_TORSO );
-			transformNode( "l_humerus", userId, XN_SKEL_LEFT_SHOULDER );
-			transformNode( "r_humerus", userId, XN_SKEL_RIGHT_SHOULDER );
-			transformNode( "l_ulna", userId, XN_SKEL_LEFT_ELBOW );
-			transformNode( "r_ulna", userId, XN_SKEL_RIGHT_ELBOW );
-		/*
-			transformNode( "l_hip", userId, XN_SKEL_LEFT_HIP );
-			transformNode( "r_hip", userId, XN_SKEL_RIGHT_HIP );
-			transformNode( "l_knee", userId, XN_SKEL_LEFT_KNEE );
-			transformNode( "r_knee", userId, XN_SKEL_RIGHT_KNEE );
-		*/
-			transformNode( "neck", userId, XN_SKEL_NECK );
-		}
-
-		// only update throwing detection at the rate of the kinect
-		if ( NIupdated )
-			detectThrowing();
+		mDepthTexture = mNI.getDepthImage();
+		NIupdated = true;
 	}
+
+	mNIUserTracker.setSmoothing( mSmoothing );
+
+	vector< unsigned > users = mNIUserTracker.getUsers();
+	if ( !users.empty() )
+	{
+		unsigned userId = users[ 0 ];
+
+		transformNode( "root", userId, XN_SKEL_TORSO );
+		transformNode( "l_humerus", userId, XN_SKEL_LEFT_SHOULDER );
+		transformNode( "r_humerus", userId, XN_SKEL_RIGHT_SHOULDER );
+		transformNode( "l_ulna", userId, XN_SKEL_LEFT_ELBOW );
+		transformNode( "r_ulna", userId, XN_SKEL_RIGHT_ELBOW );
+	/*
+		transformNode( "l_hip", userId, XN_SKEL_LEFT_HIP );
+		transformNode( "r_hip", userId, XN_SKEL_RIGHT_HIP );
+		transformNode( "l_knee", userId, XN_SKEL_LEFT_KNEE );
+		transformNode( "r_knee", userId, XN_SKEL_RIGHT_KNEE );
+	*/
+		transformNode( "neck", userId, XN_SKEL_NECK );
+	}
+
+	// only update throwing detection at the rate of the kinect
+	if ( NIupdated )
+		detectThrowing();
 #endif
 
 	mPlayerAiMesh.update();
@@ -347,6 +344,16 @@ void KinectPlayer::draw()
 		gl::popMatrices();
 	}
 
+	if ( mDisableKinect )
+	{
+		gl::pushMatrices();
+		gl::setMatricesWindow( app::getWindowSize() );
+		gl::setViewport( app::getWindowBounds() );
+		gl::drawStringCentered( "Time limit has been exceeded",
+				Vec2f( app::getWindowSize() ) * Vec2f( .5, .05 ),
+				Color( 1, 0, 0 ) );
+		gl::popMatrices();
+	}
 }
 
 void KinectPlayer::expireBallThrowing()
@@ -364,10 +371,7 @@ void KinectPlayer::throwBall()
 	mBallPoint.Init();
 
 #if USE_KINECT
-	if( ! mDisableKinect )
-	{
-		mPhysics->throwBall( mBallInitialPos, mDirection );
-	}
+	mPhysics->throwBall( mBallInitialPos, mDirection );
 #else
 	mPhysics->throwBall( mPosition, mDirection );
 #endif
