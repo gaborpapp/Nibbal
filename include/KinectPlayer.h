@@ -85,17 +85,13 @@ class KinectPlayer
 		float mHandsDistanceMin;
 		float mHandsDistanceMax;
 		float mHandsDistanceLimitNorm;
-		float mHandHeightMin;
-		float mHandHeightMax;
-		float mHandHeightLimitNorm;
 		float mBallSpeedMin;
 		float mBallSpeedMax;
 		float mThrowThreshold;
 
 		// throw detection debug display variables
 		float mArmAngleNorm;
-		float mHandHeight;
-		float mHandHeightNorm;
+		float mHandsBelowShoulder;
 		float mBallSpeed;
 		float mBallSpeedNorm;
 		float mThrowCoeff;

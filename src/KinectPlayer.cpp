@@ -53,7 +53,7 @@ void KinectPlayer::setup( Physics *physic )
 
 	mParams.addPersistentParam( "Draw depth", &mDrawDepth, false );
 	mParams.addPersistentParam( "Draw ideal grid", &mDrawGrid, false );
-	mParams.addPersistentParam( "Smoothing", &mSmoothing, .05, "min=0 max=1 step=.05" );
+	mParams.addPersistentParam( "Smoothing", &mSmoothing, .70, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 	mParams.addSeparator();
 
@@ -61,27 +61,23 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addSeparator();
 	mParams.addText( "Kinect throw detection" );
 	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, .1, "min=0 max=3.14 step=.01" );
-	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 3.14, "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 3., "min=0 max=3.14 step=.01" );
 
 	mParams.addPersistentParam( "Hands distance min", &mHandsDistanceMin, 450, "min=0 max=5000 step=10" );
 	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
-	mParams.addPersistentParam( "Hand height min", &mHandHeightMin, -300 );
-	mParams.addPersistentParam( "Hand height max", &mHandHeightMax, 200 );
-	mParams.addPersistentParam( "Hand height limit", &mHandHeightLimitNorm, 0., "min=0 max=1 step=0.1" );
+
 	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .005, "min=0.005 max=0.03 step=.005" );
-	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .05, "min=0.005 max=0.1 step=.005" );
-	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .5, "min=0 max=1 step=.01" );
+	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .06, "min=0.005 max=0.1 step=.005" );
+	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .64, "min=0 max=1 step=.01" );
 
 	mParams.addSeparator();
 
 	mParams.addText( "Throw detection debug" );
 	mArmAngleNorm = 0;
 	mParams.addParam( "Arm angle normalized", &mArmAngleNorm, "", true );
-	mHandHeight = 0;
-	mParams.addParam( "Hand height", &mHandHeight, "", true );
-	mHandHeightNorm = 0;
-	mParams.addParam( "Hand height normalized", &mHandHeightNorm, "", true );
+	mHandsBelowShoulder = 0;
+	mParams.addParam( "Hands below shoulder", &mHandsBelowShoulder, "", true );
 	mBallSpeedNorm = 0;
 	mParams.addParam( "Ball speed", &mBallSpeed, "", true );
 	mParams.addParam( "Ball speed normalized", &mBallSpeedNorm, "", true );
@@ -232,20 +228,8 @@ void KinectPlayer::detectThrowing()
 		Vec3f meshBallPos = ( meshLHand + meshRHand ) / 2.f;
 		mBallInitialPos = lerp< Vec3f >( mBallInitialPos, meshBallPos, .3f );
 
-		/*
-		// length of right arm
-		float rArmLength = rShoulder.distance( rElbow ) + rElbow.distance( rHand );
-
-		// current hand shoulder distance
-		float rArmLength = rShoulder.distance( rHand );
-		*/
-
-		// height of right hand between the two limits related to the right shoulder normalized
-		// FIXME: this is dependent on user height!
-		float handHeight = rHand.y - rShoulder.y;
-		float handHeightNorm = lmap< float >( handHeight,
-											  mHandHeightMin, mHandHeightMax, 0, 1 );
-		handHeightNorm = math< float >::clamp( handHeightNorm, 0, 1 );
+		// hand below shoulder
+		float handsBelowShoulder = ( rHand.y < rShoulder.y ) && ( lHand.y < rShoulder.y );
 
 		// distance of hands
 		float handsDistanceNorm = lmap< float >( lHand.distance( rHand ),
@@ -278,30 +262,22 @@ void KinectPlayer::detectThrowing()
 		// if the hands are too far away, the ball is dropped
 		if ( handsDistanceNorm > mHandsDistanceLimitNorm )
 			mHasBall = false;
-		else
-		if ( !mIsThrowing )
-		//if ( handHeightNorm < mHandHeightLimitNorm && !mIsThrowing )
+		else // hands are close, not throwing, hands below shoulder, grab the ball
+		if ( handsBelowShoulder && !mIsThrowing )
 			mHasBall = true;
 
 		// all parameters taken into account
-		float throwCoeff = mHasBall * handHeightNorm * mArmAngleNorm * ballSpeedNorm;
+		float throwCoeff = mHasBall * ( 1 - handsBelowShoulder ) * mArmAngleNorm * ballSpeedNorm;
 		if ( throwCoeff >= mThrowThreshold )
 		{
 			throwBall();
 		}
 
 		mArmAngleNorm = armAngleNorm;
-		mHandHeight = handHeight;
-		mHandHeightNorm = handHeightNorm;
+		mHandsBelowShoulder = handsBelowShoulder;
 		mBallSpeed = ballVelocity.length();
 		mBallSpeedNorm = ballSpeedNorm;
 		mThrowCoeff = throwCoeff;
-
-		/*
-		// ha kozel van a ket kez es a kez lent van es eppen nincs dobas, felveszi a labdat^M
-		else if (handHeightPercent < movementThreshold && !shooting)^M
-		hasBall = true;^M
-		*/
 	}
 	else
 	{
@@ -315,10 +291,6 @@ void KinectPlayer::draw()
 	// draw ball
 	if ( mHasBall || mIsThrowing )
 	{
-		// disabling depth write otherwise the player's mesh
-		// can itersect with the ball, more or less works if
-		// the camera is at the player's back
-		//gl::disableDepthWrite();
 		gl::pushModelView();
 		if ( mHasBall )
 		{
@@ -337,7 +309,6 @@ void KinectPlayer::draw()
 		mBallAiMesh.draw();
 		gl::disableAlphaBlending();
 		gl::popModelView();
-		//gl::enableDepthWrite();
 	}
 
 	gl::pushModelView();

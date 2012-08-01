@@ -141,9 +141,9 @@ void NibbalApp::setupParams()
 	mParams.addSeparator();
 	mParams.addText( "Camera" );
 	mParams.addPersistentParam( "Lock camera", &mCameraLock, true );
-	mParams.addPersistentParam( "Fov", &mCameraFov, 39.9f, "min=20 max=90 step=.1" );
-	mParams.addPersistentParam( "Eye", &mCameraEyePoint, Vec3f( 0, 2, -3 ), "", true );
-	mParams.addPersistentParam( "Center of Interest", &mCameraCenterOfInterestPoint, Vec3f( 0, 2, 0 ), "", true );
+	mParams.addPersistentParam( "Fov", &mCameraFov, 45.f, "min=20 max=90 step=.1" );
+	mParams.addPersistentParam( "Eye", &mCameraEyePoint, Vec3f( 0, 2.3, -3.4 ), "", true );
+	mParams.addPersistentParam( "Center of Interest", &mCameraCenterOfInterestPoint, Vec3f( 0, 2.3, 0 ), "", true );
 }
 
 void NibbalApp::update()

@@ -120,6 +120,7 @@ void AdDisplay::update()
 	if ( mCrossfade >= 1.f )
 		setupTimeline();
 
+	gl::disable( GL_TEXTURE_2D );
 	mFbo.unbindFramebuffer();
 
 	gl::popMatrices();

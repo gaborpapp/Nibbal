@@ -343,7 +343,7 @@ Vec3f Grid::_getInterpolation( Vec3i corner, Vec3f pos )
 
 	Vec3f c   = c0  * ( 1 - zd ) + c1  * zd;
 
-	app::console() << " pos: " << pos << " vec: " << c << endl;
+	//app::console() << " pos: " << pos << " vec: " << c << endl;
 
 	return c;
 }
