@@ -9,6 +9,7 @@ using namespace std;
 using namespace mndl;
 
 #define USE_KINECT 0
+#define USE_KINECT_RECORDING 0
 
 namespace Nibbal {
 
@@ -18,17 +19,25 @@ void BallPoint::Init()
 	mPos   = Vec3f();
 }
 
-void KinectPlayer::setup( Physics *physic, const fs::path &path )
+void KinectPlayer::setup( Physics *physic )
 {
 	mListenerMap = std::shared_ptr<ListenerMap>( new ListenerMap() );
 
 	mPhysics = physic;
+
 #if USE_KINECT
 	// setup kinect
-	if ( path.empty() )
+#	if USE_KINECT_RECORDING
+		// use openni recording
+		fs::path recordingPath = app::getAppPath();
+#		if defined( CINDER_MAC )
+			recordingPath /= "..";
+#		endif
+		recordingPath /= "nibbal-1208010957.oni";
+		mNI = ni::OpenNI( recordingPath );
+#	else
 		mNI = ni::OpenNI( ni::OpenNI::Device() );
-	else
-		mNI = ni::OpenNI( path );
+#	endif
 
 	mNIUserTracker = mNI.getUserTracker();
 
@@ -49,14 +58,34 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 
 	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime,10., "min=2 max=20 step=.1" );
 	mParams.addSeparator();
-	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, 0, "min=0 max=3.14 step=.01" );
-	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, M_PI, "min=0 max=3.14 step=.01" );
-	mArmAngleNorm = 0;
-	mParams.addParam( "Arm angle normalized", &mArmAngleNorm, "", true );
+	mParams.addText( "Kinect throw detection" );
+	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, .5, "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 2.9, "min=0 max=3.14 step=.01" );
 
 	mParams.addPersistentParam( "Hands distance min", &mHandsDistanceMin, 450, "min=0 max=5000 step=10" );
 	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
+	mParams.addPersistentParam( "Hand height min", &mHandHeightMin, -300 );
+	mParams.addPersistentParam( "Hand height max", &mHandHeightMax, 200 );
+	mParams.addPersistentParam( "Hand height limit", &mHandHeightLimitNorm, 0., "min=0 max=1 step=0.1" );
+	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .01, "min=0.005 max=0.03 step=.005" );
+	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .025, "min=0.005 max=0.03 step=.005" );
+	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .5, "min=0 max=1 step=.01" );
+
+	mParams.addSeparator();
+
+	mParams.addText( "Throw detection debug" );
+	mArmAngleNorm = 0;
+	mParams.addParam( "Arm angle normalized", &mArmAngleNorm, "", true );
+	mHandHeight = 0;
+	mParams.addParam( "Hand height", &mHandHeight, "", true );
+	mHandHeightNorm = 0;
+	mParams.addParam( "Hand height normalized", &mHandHeightNorm, "", true );
+	mBallSpeedNorm = 0;
+	mParams.addParam( "Ball speed", &mBallSpeed, "", true );
+	mParams.addParam( "Ball speed normalized", &mBallSpeedNorm, "", true );
+	mThrowCoeff = 0;
+	mParams.addParam( "Throw coeff", &mThrowCoeff, "", true );
 
 	mParams.addSeparator();
 	mBallInitialPos = mPosition = Vec3f( 0.0f, 2.0f, 0.5f );
@@ -65,6 +94,7 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	mParams.addParam( "Position" , &mPosition  );
 	mParams.addParam( "Direction", &mDirection );
 
+	mParams.setOptions( "", "refresh=.1" );
 
 	// load player
 	mPlayerAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/player/player.dae" ) );
@@ -188,7 +218,7 @@ void KinectPlayer::detectThrowing()
 		Vec3f meshRElbow = mRightElbowNode->getDerivedPosition();
 		Vec3f meshLLowerArm = meshLWrist - meshLElbow;
 		Vec3f meshRLowerArm = meshRWrist - meshRElbow;
-		float palmCoeff = .25f;
+		const float palmCoeff = .25f;
 		Vec3f meshLHand = meshLWrist + meshLLowerArm * palmCoeff;
 		Vec3f meshRHand = meshRWrist + meshRLowerArm * palmCoeff;
 		mBallInitialPos = ( meshLHand + meshRHand ) / 2.f;
@@ -199,12 +229,14 @@ void KinectPlayer::detectThrowing()
 
 		// current hand shoulder distance
 		float rArmLength = rShoulder.distance( rHand );
+		*/
 
 		// height of right hand between the two limits related to the right shoulder normalized
-		float handHeightPercent = math< float >::lmap( rHand.y - rShoulder.y,
-		mHandHeightMin, mHandHeightMax, 0, 1 );
-		handHeightPercent = math< float >::clamp( handHeightPercent, 0, 1 );
-		*/
+		// FIXME: this is dependent on user height!
+		float handHeight = rHand.y - rShoulder.y;
+		float handHeightNorm = lmap< float >( handHeight,
+											  mHandHeightMin, mHandHeightMax, 0, 1 );
+		handHeightNorm = math< float >::clamp( handHeightNorm, 0, 1 );
 
 		// distance of hands
 		float handsDistanceNorm = lmap< float >( lHand.distance( rHand ),
@@ -220,27 +252,50 @@ void KinectPlayer::detectThrowing()
 		if ( armAngle > M_PI )
 			armAngle = 2 * M_PI - armAngle;
 
-		mArmAngleNorm = lmap< float >( armAngle, mArmAngleMin, mArmAngleMax, 0, 1 );
-		mArmAngleNorm = math< float >::clamp( mArmAngleNorm, 0, 1 );
+		float armAngleNorm = lmap< float >( armAngle, mArmAngleMin, mArmAngleMax, 0, 1 );
+		armAngleNorm = math< float >::clamp( armAngleNorm, 0, 1 );
 
-		/*
 		// ball speed
-		ballSpeedPercent = ofMap(ballPosition.distance(pBallPosition), ballSpeedMin, ballSpeedMax, 0, 1, true);
+		Vec3f ballVelocity( 0, 0, 0 );
+		float ballSpeedNorm = 0;
+		if ( mHasBall )
+		{
+			ballVelocity = mBallInitialPos - mBallInitialPrevPos;
+			ballSpeedNorm = lmap< float >( ballVelocity.length(), mBallSpeedMin, mBallSpeedMax, 0, 1 );
+			ballSpeedNorm = math< float >::clamp( ballSpeedNorm, 0, 1 );
+		}
+		mBallInitialPrevPos = mBallInitialPos;
 
-		// all parameters taken into account
-		shootPercent = hasBall * handHeightPercent * handsDistancePercent * armLengthPercent * ballSpeedPercent;
-
-*/
 		// if the hands are too far away, the ball is dropped
 		if ( handsDistanceNorm > mHandsDistanceLimitNorm )
 			mHasBall = false;
 		else
+		if ( handHeightNorm < mHandHeightLimitNorm && !mIsThrowing )
 			mHasBall = true;
+
+		// all parameters taken into account
+		float throwCoeff = mHasBall * handHeightNorm * mArmAngleNorm * ballSpeedNorm;
+		if ( throwCoeff >= mThrowThreshold )
+		{
+			throwBall();
+		}
+
+		mArmAngleNorm = armAngleNorm;
+		mHandHeight = handHeight;
+		mHandHeightNorm = handHeightNorm;
+		mBallSpeed = ballVelocity.length();
+		mBallSpeedNorm = ballSpeedNorm;
+		mThrowCoeff = throwCoeff;
+
 		/*
 		// ha kozel van a ket kez es a kez lent van es eppen nincs dobas, felveszi a labdat^M
 		else if (handHeightPercent < movementThreshold && !shooting)^M
 		hasBall = true;^M
 		*/
+	}
+	else
+	{
+		mHasBall = false;
 	}
 }
 
@@ -314,6 +369,7 @@ void KinectPlayer::throwBall()
 
 	mBallColor = ColorA::white();
 	mIsThrowing = true;
+	mHasBall = false;
 	mTimelineRef->clear();
 	mTimelineRef->apply( &mBallColor, ColorA::white(), mBallLifetime - 2. );
 	mTimelineRef->appendTo( &mBallColor, ColorA( 1, 1, 1, 0 ), 2. );

@@ -42,7 +42,7 @@ class KinectPlayer
 		};
 
 	public:
-		void setup( Physics *physics, const ci::fs::path &path = "" );
+		void setup( Physics *physics );
 
 		void update();
 		void draw();
@@ -80,11 +80,24 @@ class KinectPlayer
 
 		float mArmAngleMin;
 		float mArmAngleMax;
-		float mArmAngleNorm;
 
 		float mHandsDistanceMin;
 		float mHandsDistanceMax;
 		float mHandsDistanceLimitNorm;
+		float mHandHeightMin;
+		float mHandHeightMax;
+		float mHandHeightLimitNorm;
+		float mBallSpeedMin;
+		float mBallSpeedMax;
+		float mThrowThreshold;
+
+		// throw detection debug display variables
+		float mArmAngleNorm;
+		float mHandHeight;
+		float mHandHeightNorm;
+		float mBallSpeed;
+		float mBallSpeedNorm;
+		float mThrowCoeff;
 
 		void expireBallThrowing();
 		float mBallLifetime;
@@ -99,6 +112,7 @@ class KinectPlayer
 		mndl::assimp::AssimpNodeRef mRightElbowNode;
 
 		ci::Vec3f mBallInitialPos; // ball starting position when the user is holding it
+		ci::Vec3f mBallInitialPrevPos; // ball position in previous frame
 		ci::TimelineRef mTimelineRef;
 
 		ci::Vec3f mDirection;
