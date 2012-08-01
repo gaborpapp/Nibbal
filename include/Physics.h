@@ -32,8 +32,8 @@ class Grid
 	};
 
 public:
-	Grid::Grid();
-	Grid::~Grid();
+	Grid();
+	~Grid();
 
 	void      setDirection( ci::Vec3i corner, ci::Vec3f direction );
 	ci::Vec3f getDirection( ci::Vec3i corner );
