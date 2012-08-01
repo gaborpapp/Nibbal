@@ -48,8 +48,10 @@ void AdDisplay::setup( const fs::path &adFolder, Vec2i size )
 	vector< string > switchNames;
 	switchNames.push_back( "fade" );
 	switchNames.push_back( "hard from left" );
+	switchNames.push_back( "hard from right" );
 	switchNames.push_back( "soft from left" );
-	mParams.addPersistentParam( "Switch type", switchNames, &mSwitchType, 2 );
+	switchNames.push_back( "soft from right" );
+	mParams.addPersistentParam( "Switch type", switchNames, &mSwitchType, 3 );
 	mParams.addPersistentParam( "Smooth border", &mSmoothSwitchBorder, 0.20, "min=0 max=1 step=0.01" );
 
 	mTimelineRef = Timeline::create();
