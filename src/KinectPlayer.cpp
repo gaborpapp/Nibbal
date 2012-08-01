@@ -53,15 +53,15 @@ void KinectPlayer::setup( Physics *physic )
 
 	mParams.addPersistentParam( "Draw depth", &mDrawDepth, false );
 	mParams.addPersistentParam( "Draw ideal grid", &mDrawGrid, false );
-	mParams.addPersistentParam( "Smoothing", &mSmoothing, .7, "min=0 max=1 step=.05" );
+	mParams.addPersistentParam( "Smoothing", &mSmoothing, .05, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 	mParams.addSeparator();
 
-	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime,10., "min=2 max=20 step=.1" );
+	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime, 4., "min=2 max=20 step=.1" );
 	mParams.addSeparator();
 	mParams.addText( "Kinect throw detection" );
-	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, .5, "min=0 max=3.14 step=.01" );
-	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 2.9, "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, .1, "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 3.14, "min=0 max=3.14 step=.01" );
 
 	mParams.addPersistentParam( "Hands distance min", &mHandsDistanceMin, 450, "min=0 max=5000 step=10" );
 	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
@@ -69,8 +69,8 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addPersistentParam( "Hand height min", &mHandHeightMin, -300 );
 	mParams.addPersistentParam( "Hand height max", &mHandHeightMax, 200 );
 	mParams.addPersistentParam( "Hand height limit", &mHandHeightLimitNorm, 0., "min=0 max=1 step=0.1" );
-	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .01, "min=0.005 max=0.03 step=.005" );
-	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .025, "min=0.005 max=0.03 step=.005" );
+	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .005, "min=0.005 max=0.03 step=.005" );
+	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .05, "min=0.005 max=0.1 step=.005" );
 	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .5, "min=0 max=1 step=.01" );
 
 	mParams.addSeparator();
@@ -171,8 +171,12 @@ void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSke
 void KinectPlayer::update()
 {
 #if USE_KINECT
+	bool NIupdated = false;
 	if ( mNI.checkNewDepthFrame() )
+	{
 		mDepthTexture = mNI.getDepthImage();
+		NIupdated = true;
+	}
 
 	mNIUserTracker.setSmoothing( mSmoothing );
 
@@ -195,7 +199,9 @@ void KinectPlayer::update()
 		transformNode( "neck", userId, XN_SKEL_NECK );
 	}
 
-	detectThrowing();
+	// only update throwing detection at the rate of the kinect
+	if ( NIupdated )
+		detectThrowing();
 #endif
 
 	mPlayerAiMesh.update();
@@ -223,7 +229,8 @@ void KinectPlayer::detectThrowing()
 		const float palmCoeff = .25f;
 		Vec3f meshLHand = meshLWrist + meshLLowerArm * palmCoeff;
 		Vec3f meshRHand = meshRWrist + meshRLowerArm * palmCoeff;
-		mBallInitialPos = ( meshLHand + meshRHand ) / 2.f;
+		Vec3f meshBallPos = ( meshLHand + meshRHand ) / 2.f;
+		mBallInitialPos = lerp< Vec3f >( mBallInitialPos, meshBallPos, .3f );
 
 		/*
 		// length of right arm
@@ -311,7 +318,7 @@ void KinectPlayer::draw()
 		// disabling depth write otherwise the player's mesh
 		// can itersect with the ball, more or less works if
 		// the camera is at the player's back
-		gl::disableDepthWrite();
+		//gl::disableDepthWrite();
 		gl::pushModelView();
 		if ( mHasBall )
 		{
@@ -330,7 +337,7 @@ void KinectPlayer::draw()
 		mBallAiMesh.draw();
 		gl::disableAlphaBlending();
 		gl::popModelView();
-		gl::enableDepthWrite();
+		//gl::enableDepthWrite();
 	}
 
 	gl::pushModelView();
