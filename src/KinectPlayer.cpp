@@ -340,8 +340,13 @@ void KinectPlayer::draw()
 		gl::setMatricesWindow( app::getWindowSize() );
 		gl::setViewport( app::getWindowBounds() );
 
-		gl::color( Color::white() );
-		gl::draw( mDepthTexture, Rectf( app::getWindowBounds() ) / 3.f );
+		gl::enableAlphaBlending();
+		gl::color( ColorA::gray( 1, .8 ) );
+		Rectf trect = Rectf( app::getWindowBounds() ) / 4.f;
+		trect.offset( Vec2f( app::getWindowSize() ) * Vec2f( .75f, 0 ) );
+		gl::draw( mDepthTexture, trect );
+		gl::disableAlphaBlending();
+
 		gl::popMatrices();
 	}
 

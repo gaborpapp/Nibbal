@@ -13,7 +13,7 @@ env['APP_SOURCES'] += ['Crowd/' + s for s in ['CPerson.cpp', 'Crowd.cpp',
 env.Append(CPPPATH = ['#../include/Display', '#../include/Crowd',
 					  '#../include/Crowd/ParticleSystem'])
 
-env['ASSETS'] = ['models', 'ads', 'crowd']
+env['ASSETS'] = ['models', 'ads', 'crowd', 'gfx']
 env['RESOURCES'] = ['shaders']
 env['DEBUG'] = 0
 

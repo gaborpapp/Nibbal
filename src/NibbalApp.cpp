@@ -17,8 +17,12 @@
 
 #include "cinder/Cinder.h"
 #include "cinder/app/AppBasic.h"
+#include "cinder/Area.h"
+#include "cinder/ImageIo.h"
 #include "cinder/gl/gl.h"
+#include "cinder/gl/Texture.h"
 #include "cinder/MayaCamUI.h"
+
 #include "AntTweakBar.h"
 
 #include "PParams.h"
@@ -59,9 +63,15 @@ class NibbalApp : public AppBasic
 		MayaCamUI mMayaCam;
 
 		float mFps;
+		bool mCameraLock;
 		float mCameraFov;
 		Vec3f mCameraEyePoint;
 		Vec3f mCameraCenterOfInterestPoint;
+
+		gl::Texture mForegroundLayer;
+		Area mForegroundArea;
+
+		bool mDrawBranding;
 };
 
 void NibbalApp::prepareSettings( Settings *settings )
@@ -96,6 +106,8 @@ void NibbalApp::setup()
 	gl::enableDepthWrite();
 
 	showAllParams( false );
+
+	mForegroundLayer = gl::Texture( loadImage( getAssetPath( "gfx/foreground.png" ) ) );
 }
 
 void NibbalApp::shutdown()
@@ -125,7 +137,10 @@ void NibbalApp::setupParams()
 	mFps = 0;
 	mParams.addParam( "Fps", &mFps, "", true );
 	mParams.addSeparator();
+	mParams.addPersistentParam( "Draw branding", &mDrawBranding, true );
+	mParams.addSeparator();
 	mParams.addText( "Camera" );
+	mParams.addPersistentParam( "Lock camera", &mCameraLock, true );
 	mParams.addPersistentParam( "Fov", &mCameraFov, 39.9f, "min=20 max=90 step=.1" );
 	mParams.addPersistentParam( "Eye", &mCameraEyePoint, Vec3f( 0, 2, -3 ), "", true );
 	mParams.addPersistentParam( "Center of Interest", &mCameraCenterOfInterestPoint, Vec3f( 0, 2, 0 ), "", true );
@@ -152,12 +167,25 @@ void NibbalApp::draw()
 {
 	gl::clear( Color::black() );
 
+	gl::setViewport( getWindowBounds() );
 	gl::setMatrices( mMayaCam.getCamera() );
 
 	mScene.draw();
 
 	mPhysics.draw();
 
+	if ( mDrawBranding )
+	{
+		gl::setMatricesWindow( getWindowSize() );
+		gl::disableDepthRead();
+		gl::disableDepthWrite();
+		gl::enableAlphaBlending();
+		gl::color( ColorA::white() );
+		gl::draw( mForegroundLayer, mForegroundArea );
+		gl::disableAlphaBlending();
+		gl::enableDepthRead();
+		gl::enableDepthWrite();
+	}
 	params::PInterfaceGl::draw();
 }
 
@@ -224,19 +252,28 @@ void NibbalApp::keyDown( KeyEvent event )
 
 void NibbalApp::mouseDown( MouseEvent event )
 {
-	mMayaCam.mouseDown( event.getPos() );
+	if ( !mCameraLock )
+		mMayaCam.mouseDown( event.getPos() );
 }
 
 void NibbalApp::mouseDrag( MouseEvent event )
 {
-	mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
+	if ( !mCameraLock )
+		mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
 }
 
 void NibbalApp::resize( ResizeEvent event )
 {
-	CameraPersp cam = mMayaCam.getCamera();
-	cam.setAspectRatio( getWindowAspectRatio() );
-	mMayaCam.setCurrentCam( cam );
+	if ( !mCameraLock )
+	{
+		CameraPersp cam = mMayaCam.getCamera();
+		cam.setAspectRatio( getWindowAspectRatio() );
+		mMayaCam.setCurrentCam( cam );
+	}
+
+	Area dstArea = getWindowBounds();
+	Area srcArea = mForegroundLayer.getBounds();
+	mForegroundArea = Area::proportionalFit( srcArea, dstArea, false, true );
 }
 
 } // namespace Nibbal
