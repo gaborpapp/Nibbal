@@ -86,6 +86,7 @@ class KinectPlayer
 		float mHandsDistanceMax;
 		float mHandsDistanceLimitNorm;
 		float mBallVelocityScale;
+		float mBallVelocityDeflectionLimit;
 		float mBallSpeedMin;
 		float mBallSpeedMax;
 		float mThrowThreshold;

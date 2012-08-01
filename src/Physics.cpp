@@ -1,5 +1,5 @@
 #include "cinder/app/App.h"
-#include <assert.h>
+#include "cinder/CinderMath.h"
 
 #include "Physics.h"
 
@@ -52,7 +52,29 @@ void Physics::throwBall( Vec3f pos, Vec3f vel )
 	}
 	else
 	{
-		velIdeal = mGridThrow->calcDirection( pos, velIdeal, vel );
+		//velIdeal = mGridThrow->calcDirection( pos, velIdeal, vel );
+		// calculate angle between ideal and original velocity
+		Vec3f a = vel.normalized();
+		Vec3f b = velIdeal.normalized();
+		float angle = math< float >::acos( a.dot( b ) );
+		// angle deflection
+		const float limit1 = mDeflectionLimit;
+		const float limit2 = mDeflectionLimit * 1.5;
+		if ( angle <= limit1 ) // below 1st it's the ideal
+		{
+			velIdeal = velIdeal;
+		}
+		else
+		if ( angle <= limit2 ) // between the two it's interpolated
+		{
+			float t = lmap< float >( angle, limit1, limit2, 0, 1 );
+			t = math< float >::clamp( t, 0, 1 );
+			velIdeal = lerp< Vec3f >( velIdeal, vel, t );
+		}
+		else // and the original above
+		{
+			velIdeal = vel;
+		}
 	}
 
 	mBall = bullet::createRigidSphere( mWorld, size, 32, 1.0f, pos );
@@ -111,7 +133,6 @@ void Physics::addBox( Vec3f size, Vec3f translate )
 
 void Physics::update( float fps )
 {
-//	mWorld->update( 240 );
 	float time = (float)app::getElapsedSeconds();
 	mWorld->update( time - mTime, fps );
 	//mWorld->update( 1, 240 );

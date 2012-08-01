@@ -62,6 +62,8 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addSeparator();
 
 	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime, 4., "min=2 max=20 step=.1" );
+	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
+	mParams.addPersistentParam( "Velocity deflection limit", &mBallVelocityDeflectionLimit, .3, "min=0 max=1.57 step=.01" );
 	mParams.addSeparator();
 	mParams.addText( "Kinect throw detection" );
 	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, .1, "min=0 max=3.14 step=.01" );
@@ -71,7 +73,6 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
 
-	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
 	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .005, "min=0.005 max=0.03 step=.005" );
 	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .06, "min=0.005 max=0.1 step=.005" );
 	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .64, "min=0 max=1 step=.01" );
@@ -235,6 +236,7 @@ void KinectPlayer::update()
 
 	mPlayerAiMesh.update();
 	mPhysics->enableGridDisplay( mDrawGrid );
+	mPhysics->setDirectionDeflection( mBallVelocityDeflectionLimit );
 	_checkBallPoint();
 }
 
@@ -345,8 +347,11 @@ void KinectPlayer::draw()
 
 		gl::popModelView();
 
-		gl::color( Color( 1, 0, 0 ) );
-		gl::drawVector( mBallInitialPos, mBallInitialPos + mBallVelocity * mBallVelocityScale * .1 );
+		if ( mDrawGrid )
+		{
+			gl::color( Color( 1, 0, 0 ) );
+			gl::drawVector( mBallInitialPos, mBallInitialPos + mBallVelocity * mBallVelocityScale * .1 );
+		}
 	}
 
 	gl::pushModelView();

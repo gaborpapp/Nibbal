@@ -83,6 +83,7 @@ class Physics
 		ci::Matrix44f getBallMatrix();
 
 		void enableGridDisplay( bool enable = true ) { mDrawGrid = enable; }
+		void setDirectionDeflection( float deflection ) { mDeflectionLimit = deflection; }
 
 	private:
 		bullet::DynamicsWorldRef   mWorld;
@@ -91,6 +92,7 @@ class Physics
 		std::shared_ptr< Grid >    mGridThrow;
 
 		bool mDrawGrid;
+		float mDeflectionLimit;
 };
 
 } // namespace Nibbal
