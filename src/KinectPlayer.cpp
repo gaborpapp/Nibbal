@@ -170,28 +170,28 @@ void KinectPlayer::setupNode( const string &name, const Quatf &qrot )
 void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSkeletonJoint skelJoint )
 {
 #if USE_KINECT
-	float oriConf;
-	Matrix33f ori = mNIUserTracker.getJointOrientation( userId, skelJoint, &oriConf );
+		float oriConf;
+		Matrix33f ori = mNIUserTracker.getJointOrientation( userId, skelJoint, &oriConf );
 
-	if ( oriConf >= mMinOriConf )
-	{
-		// change rotation coordinate directions
-		ori.m10 *= -1;
-		ori.m01 *= -1;
-		ori.m21 *= -1;
-		ori.m12 *= -1;
-		Quatf q( ori );
-		assimp::AssimpNodeRef nodeRef = mPlayerAiMesh.getAssimpNode( nodeName );
-		// apply skeleton pose relatively to the bone bind pose
-		nodeRef->setOrientation( nodeRef->getInitialOrientation() * q );
-	}
+		if ( oriConf >= mMinOriConf )
+		{
+			// change rotation coordinate directions
+			ori.m10 *= -1;
+			ori.m01 *= -1;
+			ori.m21 *= -1;
+			ori.m12 *= -1;
+			Quatf q( ori );
+			assimp::AssimpNodeRef nodeRef = mPlayerAiMesh.getAssimpNode( nodeName );
+			// apply skeleton pose relatively to the bone bind pose
+			nodeRef->setOrientation( nodeRef->getInitialOrientation() * q );
+		}
 #endif
 }
 
 void KinectPlayer::update()
 {
 #if USE_KINECT
-	if ( KINECT_TIME_LIMIT )
+	if( KINECT_TIME_LIMIT )
 	{
 		if ( ( app::getElapsedSeconds() - mTimerLimit ) > KINECT_TIME_LIMIT )
 			mDisableKinect = true;
