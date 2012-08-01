@@ -59,7 +59,7 @@ void KinectPlayer::setup( Physics *physic, const fs::path &path )
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
 
 	mParams.addSeparator();
-	mBallInitialPos = mPosition = Vec3f( 0.0f, 2.0f, 1.0f );
+	mBallInitialPos = mPosition = Vec3f( 0.0f, 2.0f, 0.5f );
 	mDirection = Vec3f( 0.15f, 5.99f, 3.73f );
 
 	mParams.addParam( "Position" , &mPosition  );
@@ -309,7 +309,12 @@ void KinectPlayer::expireBallThrowing()
 void KinectPlayer::throwBall()
 {
 	mBallPoint.Init();
+
+#if USE_KINECT
 	mPhysics->throwBall( mBallInitialPos, mDirection );
+#else
+	mPhysics->throwBall( mPosition, mDirection );
+#endif
 
 	mBallColor = ColorA::white();
 	mIsThrowing = true;
