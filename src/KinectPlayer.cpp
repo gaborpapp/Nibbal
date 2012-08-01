@@ -52,6 +52,7 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addPersistentSizeAndPosition();
 
 	mParams.addPersistentParam( "Draw depth", &mDrawDepth, false );
+	mParams.addPersistentParam( "Draw ideal grid", &mDrawGrid, false );
 	mParams.addPersistentParam( "Smoothing", &mSmoothing, .7, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 	mParams.addSeparator();
@@ -198,6 +199,7 @@ void KinectPlayer::update()
 #endif
 
 	mPlayerAiMesh.update();
+	mPhysics->enableGridDisplay( mDrawGrid );
 	_checkBallPoint();
 }
 

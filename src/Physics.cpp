@@ -24,7 +24,8 @@ void Physics::setup()
 
 void Physics::draw()
 {
-	mGridThrow->draw();
+	if ( mDrawGrid )
+		mGridThrow->draw();
 // 	for( bullet::Iter object = mWorld->begin(); object != mWorld->end(); ++object )
 // 	{
 // 		gl::pushModelView();
@@ -192,7 +193,11 @@ void Grid::draw()
 				                    , mPos000.y + y * mSize
 				                    , mPos000.z + z * mSize );
 
+				Vec3f dir = getDirection( Vec3i( x, y, z ) );
+				gl::color( Color::white() );
 				gl::drawSphere( corner, .01f );
+				gl::color( Color( 1, 0, 0 ) );
+				gl::drawVector( corner, corner + .1 * dir );
 			}
 		}
 	}

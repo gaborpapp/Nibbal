@@ -75,11 +75,15 @@ class Physics
 		ci::Vec3f     getBallPos();
 		ci::Matrix44f getBallMatrix();
 
+		void enableGridDisplay( bool enable = true ) { mDrawGrid = enable; }
+
 	private:
 		bullet::DynamicsWorldRef   mWorld;
 		bullet::CollisionObjectRef mBall;
 		float                      mTime;
 		std::shared_ptr< Grid >    mGridThrow;
+
+		bool mDrawGrid;
 };
 
 } // namespace Nibbal

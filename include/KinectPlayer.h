@@ -77,6 +77,7 @@ class KinectPlayer
 		float mSmoothing;
 		float mMinOriConf;
 		bool mDrawDepth;
+		bool mDrawGrid;
 
 		float mArmAngleMin;
 		float mArmAngleMax;
