@@ -16,7 +16,7 @@ void Physics::setup()
 {
 	mWorld = bullet::createWorld();
 	mBall = 0;
-	mTime = (float)ci::app::getElapsedSeconds();
+	mTime = (float)app::getElapsedSeconds();
 	mGridThrow = shared_ptr< Grid >( new Grid );
 
 	mWorld->getWorld()->setGravity( btVector3( 0.0f, -9.8f, 0.0f ));
@@ -47,7 +47,13 @@ void Physics::throwBall( Vec3f pos, Vec3f vel )
 
 	Vec3f velIdeal = mGridThrow->calcDirection( pos );
 	if( velIdeal == Vec3f())
+	{
 		velIdeal = vel;
+	}
+	else
+	{
+		velIdeal = mGridThrow->calcDirection( pos, velIdeal, vel );
+	}
 //	Vec3f velIdeal = vel;
 
 	mBall = bullet::createRigidSphere( mWorld, size, 32, 1.0f, pos );
@@ -107,7 +113,7 @@ void Physics::addBox( Vec3f size, Vec3f translate )
 void Physics::update( float fps )
 {
 //	mWorld->update( 240 );
-	float time = (float)ci::app::getElapsedSeconds();
+	float time = (float)app::getElapsedSeconds();
 	mWorld->update( time - mTime, fps );
 	//mWorld->update( 1, 240 );
 	mTime = time;
@@ -119,7 +125,7 @@ Grid::Grid()
 , mSize( 0 )
 , mDirections( 0 )
 {
-	_setup( Vec3f( -0.5f, 1.5f, 0.0f ), Vec3i( 3, 3, 3 ), 0.5f);
+	_setup( Vec3f( -0.5f, 1.5f, 0.0f ), Vec3i( 3, 3, 3 ), 0.5f, Vec3f( 0.0f, 2.0f, 0.5f ), 0.2f, 0.35f );
 
 	setDirection( Vec3i( 0, 0, 0 ), Vec3f( 0.45f, 6.9f, 4.8f   ));
 	setDirection( Vec3i( 1, 0, 0 ), Vec3f(  0.0f, 6.9f, 4.8f   ));
@@ -179,21 +185,47 @@ Vec3f Grid::getDirection( Vec3i corner )
 	return mDirections[corner.x][corner.y][corner.z];
 }
 
-Vec3f Grid::calcDirection( ci::Vec3f pos )
+Vec3f Grid::calcDirection( Vec3f pos )
 {
 	Vec3i corner = _getCorner( pos );
 
 	if( ! _isValidCorner( corner ))
 	{
-		app::console() << "no section found" << endl;
+		//app::console() << "no section found" << endl;
 		return Vec3f( 0.0f, 0.0f, 0.0f );
 	}
 
-	return _getInterpolation( corner, pos );
+	return _getTrilinearInterpolation( corner, pos );
+}
+
+Vec3f Grid::calcDirection( Vec3f pos, Vec3f velIdeal, Vec3f vel )
+{
+	float length = ( mPosSensitive - pos ).length();
+
+	/**/ if( length < mRadiusSensitive )
+	{
+		//app::console() << "inside ideal area" << endl;
+		return velIdeal;
+	}
+	else if( length > mRadiusBorder )
+	{
+		//app::console() << "outside ideal area" << endl;
+		return vel;
+	}
+	else
+	{
+		//app::console() << "interpolate ideal area" << endl;
+		float x = _getLinearInterpolation( mRadiusSensitive, velIdeal.x, mRadiusBorder, vel.x, length );
+		float y = _getLinearInterpolation( mRadiusSensitive, velIdeal.y, mRadiusBorder, vel.y, length );
+		float z = _getLinearInterpolation( mRadiusSensitive, velIdeal.z, mRadiusBorder, vel.z, length );
+		return Vec3f( x, y, z );
+	}
 }
 
 void Grid::draw()
 {
+	gl::enableAlphaBlending();
+
 	for( int x = 0; x < mNumCorner.x; ++x )
 	{
 		for( int y = 0; y < mNumCorner.y; ++y )
@@ -212,6 +244,13 @@ void Grid::draw()
 			}
 		}
 	}
+
+	gl::color( ColorA( 0.7f, 0.3f, 0.3f, 0.3f ));
+	gl::drawSphere( mPosSensitive, mRadiusSensitive );
+	gl::color( ColorA( 0.3f, 0.7f, 0.3f, 0.3f ));
+	gl::drawSphere( mPosSensitive, mRadiusBorder    );
+
+	gl::disableAlphaBlending();
 }
 
 void Grid::_allocArray()
@@ -254,16 +293,20 @@ void Grid::_freeArray()
 	delete [] mDirections;
 }
 
-void Grid::_setup( Vec3f pos000, Vec3i numCorner, float size )
+void Grid::_setup( Vec3f pos000, Vec3i numCorner, float size, Vec3f posSensitive, float radiusSensitive, float radiusBorder )
 {
 	mPos000     = pos000;
 	mNumCorner  = numCorner;
 	mSize       = size;
 
 	_allocArray();
+
+	mPosSensitive    = posSensitive;
+	mRadiusSensitive = radiusSensitive;
+	mRadiusBorder    = radiusBorder;
 }
 
-bool Grid::_isValidCorner( ci::Vec3i corner )
+bool Grid::_isValidCorner( Vec3i corner )
 {
 	if( corner.x <  0
 	 || corner.x >= mNumCorner.x
@@ -286,7 +329,7 @@ Vec3i Grid::_getCorner( Vec3f pos )
 	return corner;
 }
 
-Vec3i Grid::_getCornerOffset( Vec3i corner, Offset offset )
+Vec3i Grid::_getCorner( Vec3i corner, Offset offset )
 {
 	switch( offset )
 	{
@@ -311,16 +354,16 @@ Vec3f Grid::_getPos( Vec3i corner )
 	return mPos000 + Vec3f( corner ) * mSize;
 }
 
-Vec3f Grid::_getInterpolation( Vec3i corner, Vec3f pos )
+Vec3f Grid::_getTrilinearInterpolation( Vec3i corner, Vec3f pos )
 {
-	Vec3f pos000 = _getPos( _getCornerOffset( corner, O_000 ));
-	Vec3f pos001 = _getPos( _getCornerOffset( corner, O_001 ));
-	Vec3f pos010 = _getPos( _getCornerOffset( corner, O_010 ));
-	Vec3f pos011 = _getPos( _getCornerOffset( corner, O_011 ));
-	Vec3f pos100 = _getPos( _getCornerOffset( corner, O_100 ));
-	Vec3f pos101 = _getPos( _getCornerOffset( corner, O_101 ));
-	Vec3f pos110 = _getPos( _getCornerOffset( corner, O_110 ));
-	Vec3f pos111 = _getPos( _getCornerOffset( corner, O_111 ));
+	Vec3f pos000 = _getPos( _getCorner( corner, O_000 ));
+	Vec3f pos001 = _getPos( _getCorner( corner, O_001 ));
+	Vec3f pos010 = _getPos( _getCorner( corner, O_010 ));
+	Vec3f pos011 = _getPos( _getCorner( corner, O_011 ));
+	Vec3f pos100 = _getPos( _getCorner( corner, O_100 ));
+	Vec3f pos101 = _getPos( _getCorner( corner, O_101 ));
+	Vec3f pos110 = _getPos( _getCorner( corner, O_110 ));
+	Vec3f pos111 = _getPos( _getCorner( corner, O_111 ));
 
 	float x0 = pos000.x;
 	float x1 = pos100.x;
@@ -333,10 +376,10 @@ Vec3f Grid::_getInterpolation( Vec3i corner, Vec3f pos )
 	float yd = ( pos.y - y0 ) / ( y1 - y0 );
 	float zd = ( pos.z - z0 ) / ( z1 - z0 );
 
-	Vec3f c00 = getDirection( _getCornerOffset( corner, O_000 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_100 )) * xd;
-	Vec3f c10 = getDirection( _getCornerOffset( corner, O_010 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_110 )) * xd;
-	Vec3f c01 = getDirection( _getCornerOffset( corner, O_001 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_101 )) * xd;
-	Vec3f c11 = getDirection( _getCornerOffset( corner, O_011 )) * ( 1 - xd ) + getDirection( _getCornerOffset( corner, O_111 )) * xd;
+	Vec3f c00 = getDirection( _getCorner( corner, O_000 )) * ( 1 - xd ) + getDirection( _getCorner( corner, O_100 )) * xd;
+	Vec3f c10 = getDirection( _getCorner( corner, O_010 )) * ( 1 - xd ) + getDirection( _getCorner( corner, O_110 )) * xd;
+	Vec3f c01 = getDirection( _getCorner( corner, O_001 )) * ( 1 - xd ) + getDirection( _getCorner( corner, O_101 )) * xd;
+	Vec3f c11 = getDirection( _getCorner( corner, O_011 )) * ( 1 - xd ) + getDirection( _getCorner( corner, O_111 )) * xd;
 
 	Vec3f c0  = c00 * ( 1 - yd ) + c10 * yd;
 	Vec3f c1  = c01 * ( 1 - yd ) + c11 * yd;
@@ -346,6 +389,13 @@ Vec3f Grid::_getInterpolation( Vec3i corner, Vec3f pos )
 	//app::console() << " pos: " << pos << " vec: " << c << endl;
 
 	return c;
+}
+
+float Grid::_getLinearInterpolation( float x0, float y0, float x1, float y1, float x )
+{
+	float y = y0 + (( x - x0 ) * (( y1 - y0 ) / ( x1 - x0 )));
+
+	return y;
 }
 
 } // namespace Nibbal

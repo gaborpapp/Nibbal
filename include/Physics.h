@@ -38,25 +38,32 @@ public:
 	void      setDirection( ci::Vec3i corner, ci::Vec3f direction );
 	ci::Vec3f getDirection( ci::Vec3i corner );
 	ci::Vec3f calcDirection( ci::Vec3f pos );
+	ci::Vec3f calcDirection( ci::Vec3f pos, ci::Vec3f velIdeal, ci::Vec3f vel );
 
 	void draw();
 
 private:
-	void _setup( ci::Vec3f pos000, ci::Vec3i numCorner, float size );
+	void _setup( ci::Vec3f pos000, ci::Vec3i numCorner, float size, ci::Vec3f posSensitive, float radiusSensitive, float radiusBorder );
 	void _allocArray();
 	void _freeArray();
 	bool      _isValidCorner( ci::Vec3i corner );
 	ci::Vec3i _getCorner( ci::Vec3f pos );
-	ci::Vec3i _getCornerOffset( ci::Vec3i corner, Offset offset );
+	ci::Vec3i _getCorner( ci::Vec3i corner, Offset offset );
 	ci::Vec3f _getPos( ci::Vec3i corner );
-	ci::Vec3f _getInterpolation( ci::Vec3i corner, ci::Vec3f pos );
+	ci::Vec3f _getTrilinearInterpolation( ci::Vec3i corner, ci::Vec3f pos );
+	float     _getLinearInterpolation( float x0, float y0, float x1, float y1, float x );
 
 private:
+	// grid for perfect throwing
 	ci::Vec3f mPos000;
 	ci::Vec3i mNumCorner;
 	float     mSize;
-
 	ci::Vec3f ***mDirections;  // 3D array
+
+	// sensitive are for perfect throwing
+	ci::Vec3f mPosSensitive;
+	float     mRadiusSensitive;
+	float     mRadiusBorder;
 };
 
 class Physics
