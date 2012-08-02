@@ -264,12 +264,9 @@ void NibbalApp::mouseDrag( MouseEvent event )
 
 void NibbalApp::resize( ResizeEvent event )
 {
-	if ( !mCameraLock )
-	{
-		CameraPersp cam = mMayaCam.getCamera();
-		cam.setAspectRatio( getWindowAspectRatio() );
-		mMayaCam.setCurrentCam( cam );
-	}
+	CameraPersp cam = mMayaCam.getCamera();
+	cam.setAspectRatio( getWindowAspectRatio() );
+	mMayaCam.setCurrentCam( cam );
 
 	Area dstArea = getWindowBounds();
 	Area srcArea = mForegroundLayer.getBounds();
