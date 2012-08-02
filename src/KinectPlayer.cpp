@@ -105,7 +105,7 @@ void KinectPlayer::setup( Physics *physic )
 
 	// setup bind pose
 	// new model
-	//*
+	/*
 	Quatf q0( Vec3f( 0, 1, 0 ), 0.0 );
 	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
 	setupNode( "root", q2 );
@@ -122,10 +122,10 @@ void KinectPlayer::setup( Physics *physic )
 	q = Quatf( Vec3f( 0, 1, 0 ), -M_PI / 4 );
 	setupNode( "l_ulna", q * q2 );
 	setupNode( "l_humerus", q * q2 );
-	//*/
+	*/
 
 	// old model
-	/*
+	//*
 	Quatf q( Vec3f( 0, 1, 0 ), M_PI / 4 );
 	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
 	setupNode( "root", q2 );
@@ -141,7 +141,7 @@ void KinectPlayer::setup( Physics *physic )
 	setupNode( "l_knee", q2 );
 	setupNode( "r_hip", q2 );
 	setupNode( "r_knee", q2 );
-	*/
+	//*/
 
 	mLeftWristNode = mPlayerAiMesh.getAssimpNode( "l_wrist" );
 	mRightWristNode = mPlayerAiMesh.getAssimpNode( "r_wrist" );
