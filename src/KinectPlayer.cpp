@@ -63,6 +63,7 @@ void KinectPlayer::setup( Physics *physic )
 
 	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime, 3., "min=2 max=20 step=.1" );
 	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
+	mParams.addPersistentParam( "Ball position smoothing", &mBallPositionSmoothing, .3, "min=0 max=1 step=.01" );
 	mParams.addPersistentParam( "Velocity deflection limit", &mBallVelocityDeflectionLimit, .3, "min=0 max=1.57 step=.01" );
 	mParams.addSeparator();
 	mParams.addText( "Kinect throw detection" );
@@ -267,7 +268,7 @@ void KinectPlayer::detectThrowing()
 		Vec3f meshLHand = meshLWrist + meshLLowerArm * palmCoeff;
 		Vec3f meshRHand = meshRWrist + meshRLowerArm * palmCoeff;
 		Vec3f meshBallPos = ( meshLHand + meshRHand ) / 2.f;
-		mBallInitialPos = lerp< Vec3f >( mBallInitialPos, meshBallPos, .3f );
+		mBallInitialPos = lerp< Vec3f >( mBallInitialPos, meshBallPos, mBallPositionSmoothing );
 
 		// hand below shoulder
 		float handsBelowShoulder = ( rHand.y < rShoulder.y ) && ( lHand.y < rShoulder.y );

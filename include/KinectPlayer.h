@@ -113,6 +113,7 @@ class KinectPlayer
 		ci::Vec3f mBallInitialPos; // ball starting position when the user is holding it
 		ci::Vec3f mBallInitialPrevPos; // ball position in previous frame
 		ci::Vec3f mBallVelocity;
+		float mBallPositionSmoothing;
 		ci::TimelineRef mTimelineRef;
 
 		ci::Vec3f mDirection;
