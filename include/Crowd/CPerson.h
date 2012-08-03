@@ -12,7 +12,7 @@ public:
 	void setup(ParticleSystem * psys, ci::Vec3f center, ci::ImageSourceRef  _head, ci::ImageSourceRef  _torso, ci::ImageSourceRef  _arm, ci::ImageSourceRef  _leg);
 	void update();
 	void draw();
-	void drawLimb(BaseParticle * a, BaseParticle * b, ci::gl::Texture img );
+	void drawLimb(BaseParticle * a, BaseParticle * b, const ci::gl::Texture &img );
 	void energize(float e, int delay = 0);
 	void normalize();
 

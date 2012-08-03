@@ -99,12 +99,6 @@ void ParticleSystem::update()
 	}
 }
 
-void ParticleSystem::clampVelocity(BaseParticle * p)
-{
-	p->movement.x = math<float>::min( math<float>::max( p->movement.x, -maxVelocity ), maxVelocity );
-	p->movement.y = math<float>::min( math<float>::max( p->movement.y, -maxVelocity ), maxVelocity );
-}
-
 void ParticleSystem::deleteSpring(BaseParticle * p)
 {
 	for (vector<BaseParticleSpring*>::iterator i = springs.begin(); i != springs.end();)

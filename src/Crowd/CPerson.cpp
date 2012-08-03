@@ -257,7 +257,7 @@ void CPerson::update()
 
 void CPerson::draw()
 {
-	Color( color.r, color.g, color.b);
+	gl::color( Color( color.r, color.g, color.b) );
 
 	drawLimb(l_shoulder, l_elbow, armImg);
 	drawLimb(l_elbow, l_hand, armImg);
@@ -277,9 +277,9 @@ void CPerson::draw()
 	drawLimb(neck, head, headImg);
 }
 
-void CPerson::drawLimb(BaseParticle * a, BaseParticle * b, gl::Texture img )
+void CPerson::drawLimb(BaseParticle * a, BaseParticle * b, const gl::Texture &img )
 {
-	if (img == NULL) return;
+	//if (!img) return;
 
 	float ratio = img.getHeight() / (float)img.getWidth();
 	float length = ( a->position - b->position ).length() * 1.2f;

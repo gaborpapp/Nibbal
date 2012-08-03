@@ -21,13 +21,13 @@ void Scene::setup( Physics *physics )
 
 	mDisplay.setup();
 	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ));
-	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 560 ));
+	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 560 ) );
 
 	// load scene
 	mSceneAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/scene/scene.obj" ) );
 	mSceneAiMesh.disableSkinning();
 	mSceneAiMesh.disableMaterials();
-	if ( mSceneAiMesh.getNumMeshes() >= 2 )
+
 	{
 		// set repeat wrapping for floor, this property is not stored in .obj
 		gl::Texture &floorTexture = mSceneAiMesh.getAssimpNodeTexture( "court_Plane" );
@@ -49,7 +49,7 @@ void Scene::setup( Physics *physics )
 		adsTexture.setWrap( GL_REPEAT, GL_REPEAT );
 		adsTexture.unbind();
 
-		// set crowd
+		// set crowd with wrapping
 		gl::Texture &crowdTexture = mSceneAiMesh.getAssimpNodeTexture( "crowd_crowd_plane" );
 		assert( crowdTexture );
 		crowdTexture = mCrowd.getTexture();
@@ -155,6 +155,7 @@ void Scene::update()
 void Scene::draw()
 {
 	mSceneAiMesh.draw();
+
 	mKinectPlayer.draw();
 }
 

@@ -64,7 +64,7 @@ void Crowd::setup( const fs::path &crowdFolder, Vec2i size )
 		for (int x = LEFT_MARGIN; x < width - RIGHT_MARGIN; x += stepX)
 		{
 			CPerson cp;
-			cp.setup( &psys, Vec3f( x - width / 2.0f + Rand::randFloat() * spread, y + Rand::randFloat() * spread, 0.0f), getRandomImage(&heads), getRandomImage(&torsos), getRandomImage(&arms), getRandomImage(&legs));
+			cp.setup( &psys, Vec3f( x - width / 2.0f + Rand::randFloat() * spread, y + Rand::randFloat() * spread, 0.0f ), getRandomImage(&heads), getRandomImage(&torsos), getRandomImage(&arms), getRandomImage(&legs));
 			int light = (int)(y / (float)height * 200 + 10);
 			cp.color.r = cp.color.g = cp.color.b = (float)light;
 

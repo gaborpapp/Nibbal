@@ -24,14 +24,16 @@ void BaseParticleSpring::setup(BaseParticle * _p1, BaseParticle * _p2, float _sp
 		distance = ( p1->position - p2->position ).length();
 	}
 }
+
 void BaseParticleSpring::update()
 {
 	if (p1 == NULL || p2 == NULL) return;
 
-	float d = ( p1->position - p2->position ).length();
+	float d2 = ( p1->position - p2->position ).lengthSquared();
 
-	if (d == 0) return;
+	if (d2 == 0.f) return;
 
+	float d = math<float>::sqrt( d2 );
 	float dx = (p2->position.x - p1->position.x) / d;
 	float dy = (p2->position.y - p1->position.y) / d;
 

@@ -37,7 +37,12 @@ public:
 
 	int getNumOfParticles();
 
-	void clampVelocity(BaseParticle * p);
+	inline void clampVelocity(BaseParticle * p)
+	{
+		p->movement.x = ci::math<float>::clamp( p->movement.x, -maxVelocity, maxVelocity );
+		p->movement.y = ci::math<float>::clamp( p->movement.y, -maxVelocity, maxVelocity );
+	}
+
 	void deleteSpring(BaseParticle * p);
 
 	std::vector<BaseParticle*> particles;
