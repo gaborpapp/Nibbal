@@ -481,5 +481,5 @@ void KinectPlayer::_checkBallPoint()
 		}
 	}
 }
-
+	
 } // namespace Nibbal
