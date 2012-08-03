@@ -135,6 +135,9 @@
     <ClCompile Include="..\src\Crowd\ParticleSystem\ParticleSystem.cpp">
       <Filter>Source Files\Crowd\ParticleSystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AdDisplay.h">
@@ -246,6 +249,9 @@
       <Filter>Header Files\Crowd\ParticleSystem</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ListenerMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

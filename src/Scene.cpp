@@ -22,6 +22,7 @@ void Scene::setup( Physics *physics )
 	mDisplay.setup();
 	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ));
 	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 560 ) );
+	mAudio.setup( app::getAssetPath( "sounds" ));
 
 	// load scene
 	mSceneAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/scene/scene.obj" ) );
@@ -142,6 +143,7 @@ void Scene::startGame()
 	mDisplay.setHome( 78 );
 	mDisplay.setGuest( 80 );
 	mDisplay.start();
+	mAudio.play( "crowd-sports", 0.5f, true );
 }
 
 void Scene::update()
@@ -170,11 +172,13 @@ void Scene::eventGoal()
 	app::console() << "GOAL" << endl;
 	mCrowd.wave( Rand::randFloat( 1.8f, 2.5f ));
 	mDisplay.setHome( mDisplay.getHome() + 1 );
+	mAudio.play( "goal" );
 }
 
 void Scene::eventMiss()
 {
 	app::console() << "MISS" << endl;
+	mAudio.play( "no goal" );
 }
 
 void Scene::eventTimeOver()

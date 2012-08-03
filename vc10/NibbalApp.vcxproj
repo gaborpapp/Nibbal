@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNI.cpp" />
     <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNIUserTracker.cpp" />
     <ClCompile Include="..\src\AdDisplay.cpp" />
+    <ClCompile Include="..\src\Audio.cpp" />
     <ClCompile Include="..\src\Crowd\CPerson.cpp" />
     <ClCompile Include="..\src\Crowd\Crowd.cpp" />
     <ClCompile Include="..\src\Crowd\ParticleSystem\BaseParticle.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNIBufferManager.h" />
     <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-NI\src\CiNIUserTracker.h" />
     <ClInclude Include="..\include\AdDisplay.h" />
+    <ClInclude Include="..\include\Audio.h" />
     <ClInclude Include="..\include\Crowd\CPerson.h" />
     <ClInclude Include="..\include\Crowd\Crowd.h" />
     <ClInclude Include="..\include\Crowd\ParticleSystem\BaseParticle.h" />

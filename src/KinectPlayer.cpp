@@ -443,38 +443,41 @@ void KinectPlayer::_checkBallPoint()
 
 	mBallPoint.mPos = ballPosAct;
 
-	if( ballPosPrev.y <= ballPosAct.y )
-	{
-		mBallPoint.mState = BallPoint::S_NOT_VALID;
-		return;
-	}
-
-	if( ballPosAct.x >= ringPos.x - ringRadius
+	if( ballPosAct.x >= ringPos.x - ringRadius	// inside the ring cylinder
 	 && ballPosAct.x <= ringPos.x + ringRadius
 	 && ballPosAct.z >= ringPos.z - ringRadius
 	 && ballPosAct.z <= ringPos.z + ringRadius )
 	{
-		if( ballPosAct.y > ringPos.y )  // above
+		if( ballPosAct.y > ringPos.y )			// above the ring
 		{
 			mBallPoint.mState = BallPoint::S_ABOVE;
+			return;
 		}
 		else
 		{
-			if( mBallPoint.mState == BallPoint::S_ABOVE )
+			if( ballPosPrev.y > ballPosAct.y )	// falling down
 			{
-				mBallPoint.mState = BallPoint::S_GOAL;
-				mListenerMap->callCallback( ET_GOAL );
+				if( mBallPoint.mState == BallPoint::S_ABOVE )
+				{
+					mBallPoint.mState = BallPoint::S_GOAL;
+					mListenerMap->callCallback( ET_GOAL );
+				}
+				else
+				{
+					mBallPoint.mState = BallPoint::S_MISS;
+					mListenerMap->callCallback( ET_MISS );
+				}
 			}
-			else if( ballPosPrev.y > ballPosAct.y )
+			else
 			{
-				mBallPoint.mState = BallPoint::S_MISS;
-				mListenerMap->callCallback( ET_MISS );
+				mBallPoint.mState = BallPoint::S_NOT_VALID;
 			}
 		}
 	}
 	else
 	{
-		if( ballPosAct.y < ringPos.y )     // below
+		if( ballPosAct.y < ringPos.y			// below the ring
+		 && ballPosPrev.y > ballPosAct.y )		// falling down
 		{
 			mListenerMap->callCallback( ET_MISS );
 			mBallPoint.mState = BallPoint::S_MISS;
