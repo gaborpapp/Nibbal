@@ -2,7 +2,7 @@ env = Environment()
 
 env['APP_TARGET'] = 'NibbalApp'
 env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp',
-		'Scene.cpp', 'AdDisplay.cpp', 'Physics.cpp']
+		'Scene.cpp', 'AdDisplay.cpp', 'Physics.cpp', 'Audio.cpp']
 env['APP_SOURCES'] += ['Display/' + s for s in ['Display.cpp', 'DisplayTimer.cpp',
 	'LedDigit.cpp', 'LedBase.cpp', 'LedSeparator.cpp', 'DisplayCounter.cpp',
 	'LedCounter.cpp', 'LedTimer.cpp']]
@@ -14,7 +14,7 @@ env.Append(CPPPATH = ['#../include/Display', '#../include/Crowd',
 					  '#../include/Crowd/ParticleSystem'])
 
 env['ASSETS'] = ['models/ball/*', 'models/player/*', 'models/scene/*',
-	'ads/*', 'crowd', 'gfx/*']
+	'ads/*', 'crowd', 'gfx/*', 'sounds/*']
 env['RESOURCES'] = ['shaders']
 env['DEBUG'] = 0
 

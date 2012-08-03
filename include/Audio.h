@@ -11,7 +11,7 @@ namespace Nibbal {
 class Audio
 {
 	public:
-		Audio::~Audio();
+		~Audio();
 		void setup( const ci::fs::path &audioFolder );
 
 		void  play( std::string name, float volume = 1.0f, bool loop = false );
@@ -21,7 +21,7 @@ class Audio
 		float getVolume( std::string name );
 
 	private:
-		ci::audio::TrackRef Audio::_findTrack( std::string name );
+		ci::audio::TrackRef _findTrack( std::string name );
 		void _loadAudios( const ci::fs::path folder );
 
 	private:
