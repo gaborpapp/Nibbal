@@ -61,20 +61,20 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 	mParams.addSeparator();
 
-	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime, 4., "min=2 max=20 step=.1" );
+	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime, 3., "min=2 max=20 step=.1" );
 	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
 	mParams.addPersistentParam( "Velocity deflection limit", &mBallVelocityDeflectionLimit, .3, "min=0 max=1.57 step=.01" );
 	mParams.addSeparator();
 	mParams.addText( "Kinect throw detection" );
-	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, .1, "min=0 max=3.14 step=.01" );
-	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 3., "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, 1.4, "min=0 max=3.14 step=.01" );
+	mParams.addPersistentParam( "Arm angle max", &mArmAngleMax, 2.8, "min=0 max=3.14 step=.01" );
 
 	mParams.addPersistentParam( "Hands distance min", &mHandsDistanceMin, 450, "min=0 max=5000 step=10" );
 	mParams.addPersistentParam( "Hands distance max", &mHandsDistanceMax, 900, "min=0 max=5000 step=10.05" );
 	mParams.addPersistentParam( "Hands normalized distance limit", &mHandsDistanceLimitNorm, .7, "min=0 max=1 step=.05" );
 
 	mParams.addPersistentParam( "Ball speed min", &mBallSpeedMin, .005, "min=0.005 max=0.03 step=.005" );
-	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .06, "min=0.005 max=0.1 step=.005" );
+	mParams.addPersistentParam( "Ball speed max", &mBallSpeedMax, .045, "min=0.005 max=0.1 step=.005" );
 	mParams.addPersistentParam( "Throw threshold", &mThrowThreshold, .64, "min=0 max=1 step=.01" );
 
 	mParams.addSeparator();
@@ -105,27 +105,29 @@ void KinectPlayer::setup( Physics *physic )
 
 	// setup bind pose
 	// new model
-	/*
+	assimp::AssimpNodeRef sceneRef = mPlayerAiMesh.getAssimpNode( "Scene001" );
+	assert( sceneRef );
+	// NOTE: player_0004.dae has a wrong position needs to be repositioned
+	sceneRef->setPosition( Vec3f( 0, 1.14, 1.1 ) );
+
 	Quatf q0( Vec3f( 0, 1, 0 ), 0.0 );
-	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
-	setupNode( "root", q2 );
-	setupNode( "neck", q2 );
-	setupNode( "l_hip", q2 );
-	setupNode( "l_knee", q2 );
-	setupNode( "r_hip", q2 );
-	setupNode( "r_knee", q2 );
+	setupNode( "root", Quatf( 0, -M_PI / 2, 0 ) * Quatf( 0, M_PI / 2, 0 ) );
+	setupNode( "neck", q0 );
+	setupNode( "l_hip", q0 );
+	setupNode( "l_knee", q0 );
+	setupNode( "r_hip", q0 );
+	setupNode( "r_knee", q0 );
 
-	Quatf q( Vec3f( 0, 1, 0 ), M_PI / 4 );
-	setupNode( "r_humerus", q * q2 );
-	setupNode( "r_ulna", q * q2);
+	Quatf q1( Vec3f( 0, 0, 1 ), -M_PI / 4 );
+	setupNode( "r_humerus", q1 );
+	setupNode( "r_ulna", q1 );
 
-	q = Quatf( Vec3f( 0, 1, 0 ), -M_PI / 4 );
-	setupNode( "l_ulna", q * q2 );
-	setupNode( "l_humerus", q * q2 );
-	*/
+	q1 = Quatf( Vec3f( 0, 0, 1 ), M_PI / 4 );
+	setupNode( "l_ulna", q1 );
+	setupNode( "l_humerus", q1 );
 
 	// old model
-	//*
+	/*
 	Quatf q( Vec3f( 0, 1, 0 ), M_PI / 4 );
 	Quatf q2( Vec3f( 1, 0, 0 ), -M_PI / 2 );
 	setupNode( "root", q2 );
@@ -141,7 +143,7 @@ void KinectPlayer::setup( Physics *physic )
 	setupNode( "l_knee", q2 );
 	setupNode( "r_hip", q2 );
 	setupNode( "r_knee", q2 );
-	//*/
+	*/
 
 	mLeftWristNode = mPlayerAiMesh.getAssimpNode( "l_wrist" );
 	mRightWristNode = mPlayerAiMesh.getAssimpNode( "r_wrist" );
@@ -413,13 +415,13 @@ void KinectPlayer::throwBall()
 #endif
 
 	mBallColor = ColorA::white();
-	mIsThrowing = true;
-	mHasBall = false;
 	mTimelineRef->clear();
 	mTimelineRef->apply( &mBallColor, ColorA::white(), mBallLifetime - 2. );
 	mTimelineRef->appendTo( &mBallColor, ColorA( 1, 1, 1, 0 ), 2. );
 	mTimelineRef->add( std::bind( &KinectPlayer::expireBallThrowing, this ),
 			app::timeline().getCurrentTime() + mBallLifetime );
+	mHasBall = false;
+	mIsThrowing = true;
 }
 
 #ifdef CINDER_MSW
