@@ -21,5 +21,6 @@ env['DEBUG'] = 0
 env = SConscript('../../../blocks/Cinder-Assimp/scons/SConscript', exports = 'env')
 env = SConscript('../../../blocks/Cinder-Bullet/scons/SConscript', exports = 'env')
 env = SConscript('../../../blocks/Cinder-NI/scons/SConscript', exports = 'env')
+env = SConscript('../../../blocks/Cinder-FMOD/scons/SConscript', exports = 'env')
 
 SConscript('../../../scons/SConscript', exports = 'env')
