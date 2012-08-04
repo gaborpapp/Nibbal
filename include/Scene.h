@@ -60,6 +60,7 @@ class Scene
 		Crowd                    mCrowd;
 		Audio                    mAudio;
 		unsigned short           mGoals;
+		unsigned short           mThrowBalls;
 
 		ci::params::PInterfaceGl mParams;
 

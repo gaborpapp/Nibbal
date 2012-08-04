@@ -427,7 +427,8 @@ void NibbalApp::eventNewUser()
 
 void NibbalApp::eventWin()
 {
-	if ( mInfiniteMode )
+	if( mInfiniteMode
+	 || mState != STATE_GAME )
 		return;
 
 	mState = STATE_WIN;
@@ -437,7 +438,8 @@ void NibbalApp::eventWin()
 
 void NibbalApp::eventLose()
 {
-	if ( mInfiniteMode )
+	if( mInfiniteMode
+	 || mState != STATE_GAME )
 		return;
 
 	mState = STATE_LOSE;

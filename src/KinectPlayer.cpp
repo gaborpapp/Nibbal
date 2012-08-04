@@ -93,7 +93,7 @@ void KinectPlayer::setup( Physics *physic )
 
 	mParams.addSeparator();
 	mBallInitialPos = mPosition = Vec3f( 0.0f, 2.0f, 0.5f );
-	mDirection = Vec3f( 0.15f, 5.99f, 3.73f );
+	mDirection = Vec3f( 0.15f, 5.99f, 1.77f );
 
 	mParams.addParam( "Position" , &mPosition  );
 	mParams.addParam( "Direction", &mDirection );
