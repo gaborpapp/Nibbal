@@ -148,6 +148,10 @@ void NibbalApp::setup()
 	mStateSave = mState;
 	mScene.initGame();
 
+#if USE_KINECT == 0
+	eventNewUser();
+#endif
+
 	if ( mFullscreen )
 		setFullScreen( true );
 }
@@ -243,7 +247,11 @@ void NibbalApp::draw()
 	gl::setViewport( getWindowBounds() );
 	gl::setMatrices( mMayaCam.getCamera() );
 
-	mScene.draw();
+	bool drawPlayer = false;
+	if( mState == STATE_GAME )
+		drawPlayer = true;
+
+	mScene.draw( drawPlayer );
 
 	mPhysics.draw();
 
