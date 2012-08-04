@@ -30,7 +30,7 @@ class Scene
 		void setup( Physics *physics );
 
 		void update();
-		void draw();
+		void draw( bool drawPlayer );
 
 		void throwBall();
 		void initGame();

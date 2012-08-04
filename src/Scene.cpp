@@ -112,6 +112,14 @@ void Scene::setupPhysics( Physics *physics )
 	{
 		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "backboard_basketball_hoop_body" );
 		physics->addMesh( mesh );
+
+		// make bigger for bounce problem in slow machine
+		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
+		Vec3f center = boundingBox.getCenter();
+		Vec3f size   = boundingBox.getSize();
+		size   += Vec3f( 0.0f, 0.0f, 1.0f );
+		center += Vec3f( 0.0f, 0.0f, 0.5f );
+		physics->addBox( size, center );
 	}
 
 	// Create the ring
@@ -177,10 +185,11 @@ void Scene::update()
 	mCrowd.update();
 }
 
-void Scene::draw()
+void Scene::draw( bool drawPlayer )
 {
 	mSceneAiMesh.draw();
 
+	if( drawPlayer )
 	mKinectPlayer.draw();
 }
 
