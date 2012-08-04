@@ -11,49 +11,43 @@ Audio::~Audio()
 {
 	stopAll();
 
-	mTracks.clear();
-	mAudios.clear();
+	mPlayers.clear();
 }
 
 void Audio::setup( const fs::path &audioFolder )
 {
-	_loadAudios( audioFolder );
+	_loadPlayers( audioFolder );
 }
 
 void Audio::play( string name, float volume /* = 1.0f */, bool loop /* = false */ )
 {
-	audio::TrackRef track = _findTrack( name );
+	stop( name );
 
-	if( ! track )
-	{
-		audio::SourceRef aud = mAudios[ name ];
+	shared_ptr< FmodexPlayer > player = mPlayers[ name ];
 
-		if( ! aud )
-			return;
+	if( ! player )
+		return;
 
-		track = audio::Output::addTrack( aud );
-		mTracks.insert( make_pair( name, track ));
-	}
-
-	track->setTime( 0 );
-	track->setLooping( loop );
-	track->play();
+	player->setPosition( 0 );
+	player->setVolume( volume );
+	player->setLoop( loop );
+	player->play();
 }
 
 void Audio::stop( string name )
 {
-	audio::TrackRef track = _findTrack( name );
+	shared_ptr< FmodexPlayer > player = mPlayers[ name ];
 
-	if( ! track )
+	if( ! player )
 		return;
 
-	track->stop();
-	track->setTime( 0 );
+	player->stop();
+	player->setPosition( 0 );
 }
 
 void Audio::stopAll()
 {
-	for( std::map< std::string, ci::audio::TrackRef >::iterator it = mTracks.begin(); it != mTracks.end(); ++it )
+	for( map< string, shared_ptr< FmodexPlayer > >::iterator it = mPlayers.begin(); it != mPlayers.end(); ++it )
 	{
 		it->second->stop();
 	}
@@ -61,46 +55,34 @@ void Audio::stopAll()
 
 void Audio::setVolume( string name, float volume )
 {
-	audio::TrackRef track = _findTrack( name );
+	shared_ptr< FmodexPlayer > player = mPlayers[ name ];
 
-	if( ! track )
+	if( ! player )
 		return;
 
-	track->setVolume( volume );
+	player->setVolume( volume );
 }
 
 float Audio::getVolume( string name )
 {
-	audio::TrackRef track = _findTrack( name );
+	shared_ptr< FmodexPlayer > player = mPlayers[ name ];
 
-	if( ! track )
+	if( ! player )
 		return 0.0f;
 
-	return track->getVolume();
+	return player->volume;
 }
 
-audio::TrackRef Audio::_findTrack( string name )
-{
-	std::map< std::string, ci::audio::TrackRef >::iterator it = mTracks.lower_bound( name );
-
-	if( it != mTracks.end() && !( mTracks.key_comp()( name, it->first )))
-	{
-		return it->second;
-	}
-
-	return audio::TrackRef();
-}
-
-void Audio::_loadAudios( const fs::path folder )
+void Audio::_loadPlayers( const fs::path folder )
 {
 	for( fs::directory_iterator it( folder ); it != fs::directory_iterator(); ++it )
 	{
 		if( fs::is_regular_file( *it ))
 		{
 			string name = folder.string() + "/" + it->path().filename().string();
-			audio::SourceRef aud = audio::load( name );
-			string n = it->path().stem().string();
-			mAudios.insert( make_pair( it->path().stem().string(), aud ));
+			std::shared_ptr< FmodexPlayer > player = shared_ptr< FmodexPlayer >( new FmodexPlayer );
+			player->loadSound( name );
+			mPlayers.insert( make_pair( it->path().stem().string(), player ));
 		}
 	}
 }

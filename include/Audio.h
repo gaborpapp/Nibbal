@@ -3,8 +3,7 @@
 
 #include "cinder/Cinder.h"
 #include "cinder/Filesystem.h"
-#include "cinder/Audio/Io.h"
-#include "cinder/Audio/Output.h"
+#include "FmodexPlayer.h"
 
 namespace Nibbal {
 
@@ -21,12 +20,10 @@ class Audio
 		float getVolume( std::string name );
 
 	private:
-		ci::audio::TrackRef _findTrack( std::string name );
-		void _loadAudios( const ci::fs::path folder );
+		void _loadPlayers( const ci::fs::path folder );
 
 	private:
-		std::map< std::string, ci::audio::SourceRef > mAudios;
-		std::map< std::string, ci::audio::TrackRef  > mTracks;
+		std::map< std::string, std::shared_ptr< FmodexPlayer > > mPlayers;
 };
 
 } // namespace Nibbal
