@@ -62,7 +62,7 @@ void Scene::setup( Physics *physics )
 	mKinectPlayer.setup( physics );
 	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_GOAL, &Scene::eventGoal, this );
 	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_MISS, &Scene::eventMiss, this );
-	mDisplay     .addCallback<Scene>( &Scene::eventTimeOver, this );
+	mDisplay.addCallback<Scene>( &Scene::eventTimeOver, this );
 
 	setupPhysics( physics );
 
@@ -137,7 +137,7 @@ void Scene::setupPhysics( Physics *physics )
 void Scene::startGame()
 {
 	mDisplay.setActive( true );
-	mDisplay.setTimeAct( 00, 00  );
+	mDisplay.setTimeAct( 11, 00  );
 	mDisplay.setTimeMax( 12, 00  );
 	mDisplay.setPeriod( 4 );
 	mDisplay.setHome( 78 );

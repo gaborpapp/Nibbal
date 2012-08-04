@@ -70,8 +70,21 @@ class NibbalApp : public AppBasic
 
 		gl::Texture mForegroundLayer;
 		Area mForegroundArea;
+		gl::Texture mIdleText;
+		gl::Texture mWinText;
+		gl::Texture mLoseText;
 
 		bool mDrawBranding;
+		bool mInfiniteMode;
+
+		enum {
+			STATE_IDLE,
+			STATE_GAME,
+			STATE_WIN,
+			STATE_LOSE
+		};
+
+		int mState;
 };
 
 void NibbalApp::prepareSettings( Settings *settings )
@@ -108,6 +121,12 @@ void NibbalApp::setup()
 	showAllParams( false );
 
 	mForegroundLayer = gl::Texture( loadImage( getAssetPath( "gfx/foreground.png" ) ) );
+	mIdleText = gl::Texture( loadImage( getAssetPath( "gfx/start.png" ) ) );
+	mWinText = gl::Texture( loadImage( getAssetPath( "gfx/win.png" ) ) );
+	mLoseText = gl::Texture( loadImage( getAssetPath( "gfx/try_again.png" ) ) );
+
+	//mState = STATE_IDLE;
+	mState = STATE_GAME;
 }
 
 void NibbalApp::shutdown()
@@ -138,6 +157,7 @@ void NibbalApp::setupParams()
 	mParams.addParam( "Fps", &mFps, "", true );
 	mParams.addSeparator();
 	mParams.addPersistentParam( "Draw branding", &mDrawBranding, true );
+	mParams.addPersistentParam( "Infinite mode", &mInfiniteMode, false );
 	mParams.addSeparator();
 	mParams.addText( "Camera" );
 	mParams.addPersistentParam( "Lock camera", &mCameraLock, true );
@@ -173,6 +193,35 @@ void NibbalApp::draw()
 	mScene.draw();
 
 	mPhysics.draw();
+
+	if ( !mInfiniteMode )
+	{
+		gl::Texture t;
+
+		switch ( mState )
+		{
+			case STATE_IDLE:
+				t = mIdleText;
+				break;
+
+			case STATE_WIN:
+				t = mWinText;
+				break;
+
+			case STATE_LOSE:
+				t = mLoseText;
+				break;
+
+			default:
+				break;
+		}
+
+		if ( t )
+		{
+			gl::draw( t, Area::proportionalFit( t.getBounds(), getWindowBounds(), true, true ) );
+		}
+
+	}
 
 	if ( mDrawBranding )
 	{

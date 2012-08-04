@@ -4,13 +4,14 @@
 
 #include "PParams.h"
 
-#include "AssimpLoader.h"
-#include "Display.h"
 #include "AdDisplay.h"
-#include "CinderBullet.h"
-#include "KinectPlayer.h"
-#include "Crowd.h"
+#include "AssimpLoader.h"
 #include "Audio.h"
+#include "CinderBullet.h"
+#include "Crowd.h"
+#include "Display.h"
+#include "KinectPlayer.h"
+#include "ListenerMap.h"
 #include "Physics.h"
 
 namespace Nibbal {
@@ -18,6 +19,14 @@ namespace Nibbal {
 class Scene
 {
 	public:
+		enum EventType
+		{
+			ET_NEW_USER,
+			ET_NO_USER,
+			ET_WIN,
+			ET_LOSE
+		};
+
 		void setup( Physics *physics );
 
 		void update();
@@ -25,12 +34,17 @@ class Scene
 
 		void throwBall();
 
+		template<typename T>
+		void addCallback( EventType type, void (T::* callbackFunction)(), T * callbackObject )
+		{
+			mListenerMap->addCallback<T>( (int)type, callbackFunction, callbackObject );
+		}
+
 	private:
 		void eventGoal();
 		void eventMiss();
 		void eventTimeOver();
 
-	private:
 		void setupPhysics( Physics *physics );
 		void startGame();
 
@@ -43,6 +57,8 @@ class Scene
 		Audio                    mAudio;
 
 		ci::params::PInterfaceGl mParams;
+
+		std::shared_ptr<ListenerMap> mListenerMap;
 };
 
 } // namespace Nibbal
