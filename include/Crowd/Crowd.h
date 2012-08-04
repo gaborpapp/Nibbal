@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "cinder/Filesystem.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/Texture.h"
@@ -32,10 +34,13 @@ public:
 	void energize( float e );
 	void wave( float e );
 
+	int getNumVariants() { return mNumVariants; }
+	void setNumVariants( int variants ) { mNumVariants = variants; }
+	void setCrowdSeed( uint32_t seed ) { mCrowdSeed = seed; }
+
 protected:
 	void _updateFbo();
 
-protected:
 	int stepX, stepY;
 	int width, height;
 
@@ -48,4 +53,9 @@ protected:
 	std::vector<ci::ImageSourceRef> legs;
 
 	ci::gl::Fbo mFbo;
+
+	int mNumVariants;
+	uint32_t mCrowdSeed;
+
+	std::vector< ci::gl::Fbo > mPersonFbos;
 };

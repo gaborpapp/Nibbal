@@ -1,9 +1,11 @@
 #include <assert.h>
+#include <sstream>
 
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
 
+#include "PParams.h"
 #include "Scene.h"
 
 using namespace ci;
@@ -14,15 +16,18 @@ namespace Nibbal {
 
 void Scene::setup( Physics *physics )
 {
-	/*
-	mParams = params::PInterfaceGl( "Scene", Vec2i( 300, 300 ) );
-	mParams.addPersistentSizeAndPosition();
-	*/
-
 	mDisplay.setup();
 	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ));
-	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 560 ) );
+	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 840 ) );
 	mAudio.setup( app::getAssetPath( "sounds" ));
+
+	mParams = params::PInterfaceGl( "Scene", Vec2i( 300, 300 ) );
+	mParams.addPersistentSizeAndPosition();
+	stringstream ss;
+	int n = mCrowd.getNumVariants();
+	ss << "min=1 max=" << n;
+	mParams.addPersistentParam( "People variants", &mPeopleNumVariants, n / 2, ss.str() );
+	mParams.addPersistentParam( "People seed", &mPeopleSeed, 587, "min=0" );
 
 	// load scene
 	mSceneAiMesh = assimp::AssimpLoader( app::getAssetPath( "models/scene/scene.obj" ) );
@@ -151,6 +156,9 @@ void Scene::update()
 	mDisplay.update();
 	mAdDisplay.update();
 	mKinectPlayer.update();
+
+	mCrowd.setNumVariants( mPeopleNumVariants );
+	mCrowd.setCrowdSeed( mPeopleSeed );
 	mCrowd.update();
 }
 

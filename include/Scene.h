@@ -59,6 +59,9 @@ class Scene
 		ci::params::PInterfaceGl mParams;
 
 		std::shared_ptr<ListenerMap> mListenerMap;
+
+		int mPeopleNumVariants;
+		int mPeopleSeed;
 };
 
 } // namespace Nibbal

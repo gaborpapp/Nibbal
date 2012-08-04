@@ -1,6 +1,7 @@
 #include <vector>
 
 #include "cinder/app/AppBasic.h"
+#include "cinder/gl/gl.h"
 #include "cinder/Utilities.h"
 #include "cinder/Rand.h"
 #include "cinder/Surface.h"
@@ -13,12 +14,16 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-static const int TOP_MARGIN    = 370;
-static const int BOTTOM_MARGIN = 90;
-static const int LEFT_MARGIN   = 55;
-static const int RIGHT_MARGIN  = 55;
+static const int TOP_MARGIN    = -120;
+static const int BOTTOM_MARGIN = 250;
+static const int LEFT_MARGIN   = 20;
+static const int RIGHT_MARGIN  = 0;
 
-Crowd::Crowd()
+static const int MAX_PEOPLE = 32;
+
+Crowd::Crowd() :
+	mNumVariants( MAX_PEOPLE ),
+	mCrowdSeed( 589 )
 {
 }
 
@@ -57,6 +62,21 @@ void Crowd::setup( const fs::path &crowdFolder, Vec2i size )
 	format.enableDepthBuffer( false );
 	mFbo = gl::Fbo( size.x, size.y, format );
 
+
+	const int w = 128;
+	const int h = 192;
+	for ( int i = 0; i < MAX_PEOPLE; ++i )
+	{
+		mPersonFbos.push_back( gl::Fbo( w, h, format ) );
+
+		CPerson cp;
+		cp.setup( &psys, Vec3f(  w / 2, h * .9 , 0 ),
+				getRandomImage(&heads), getRandomImage(&torsos),
+				getRandomImage(&arms), getRandomImage(&legs));
+		cp.color.r = cp.color.g = cp.color.b = 1.f;
+		addPerson(cp);
+	}
+	/*
 	float spread = 20;
 
 	for (int y = TOP_MARGIN; y < height - BOTTOM_MARGIN; y += stepY)
@@ -71,13 +91,14 @@ void Crowd::setup( const fs::path &crowdFolder, Vec2i size )
 			addPerson(cp);
 		}
 	}
+	*/
 }
 
 void Crowd::update()
 {
 	psys.update();
 
-	for (int i = 0; i < (int)people.size(); i++)
+	for ( int i = 0; i < mNumVariants; i++ )
 	{
 		people[i].update();
 	}
@@ -92,21 +113,62 @@ void Crowd::_updateFbo()
 	Area viewport = gl::getViewport();
 	gl::pushMatrices();
 
+	for (int i = 0; i < mNumVariants; i++)
+	{
+		mPersonFbos[ i ].bindFramebuffer();
+		gl::setMatricesWindow( mPersonFbos[ i ].getSize(), false );
+		gl::setViewport( mPersonFbos[ i ].getBounds() );
+		gl::clear( ColorA( 1, 0, 1, 0 ) );
+		gl::color( Color::white() );
+
+		people[ i ].draw();
+
+		mPersonFbos[ i ].unbindFramebuffer();
+	}
+
+
 	mFbo.bindFramebuffer();
 	gl::setMatricesWindow( mFbo.getSize(), false );
 	gl::setViewport( mFbo.getBounds() );
 
-	gl::translate( mFbo.getSize().x / 2.0f, 0.0f, 0.0f );
+	//gl::translate( mFbo.getSize().x / 2.0f, 0.0f, 0.0f );
 
 	gl::clear( Color::black() );
 	gl::color( Color::white() );
 
 	psys.draw();
 
+	Rand::randSeed( mCrowdSeed );
+	float spread = 20;
+	int fboW = mPersonFbos[ 0 ].getWidth();
+	for (int y = TOP_MARGIN; y < height - BOTTOM_MARGIN; y += stepY)
+	{
+		float light = lmap< float>( y, TOP_MARGIN, height - BOTTOM_MARGIN, .2, 1 );
+		gl::color( Color::gray( light ) );
+
+		for (int x = LEFT_MARGIN; x < width - RIGHT_MARGIN; x += stepX)
+		{
+			float x2 = x + Rand::randFloat( -spread, spread );
+			int r = Rand::randInt( mNumVariants );
+			gl::pushModelView();
+			gl::translate( x2, y );
+			gl::draw( mPersonFbos[ r ].getTexture() );
+			gl::popModelView();
+			if ( x2 + fboW > width )
+			{
+				gl::pushModelView();
+				gl::translate( x2 - width, y );
+				gl::draw( mPersonFbos[ r ].getTexture() );
+				gl::popModelView();
+			}
+		}
+	}
+	/*
 	for (int i = 0; i < (int)people.size(); i++)
 	{
 		people[i].draw();
 	}
+	*/
 
 	mFbo.unbindFramebuffer();
 
