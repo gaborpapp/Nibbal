@@ -298,6 +298,7 @@ void NibbalApp::drawState()
 
 		if ( t )
 		{
+			gl::setMatricesWindow( getWindowSize() );
 			gl::enableAlphaBlending();
 			gl::draw( t, Area::proportionalFit( t.getBounds(), getWindowBounds(), true, true ) );
 			gl::disableAlphaBlending();

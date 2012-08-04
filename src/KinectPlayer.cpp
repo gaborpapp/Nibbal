@@ -198,6 +198,8 @@ void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSke
 
 void KinectPlayer::update()
 {
+	mPhysics->enableGridDisplay( mDrawGrid );
+
 #if USE_KINECT
 	if( KINECT_TIME_LIMIT )
 	{
@@ -207,6 +209,13 @@ void KinectPlayer::update()
 
 	if ( mDisableKinect )
 		return;
+
+	bool NIupdated = false;
+	if ( mNI.checkNewDepthFrame() )
+	{
+		mDepthTexture = mNI.getDepthImage();
+		NIupdated = true;
+	}
 
 	if( mNIUserTracker.getNumUsers() == 0 )
 	{
@@ -221,13 +230,6 @@ void KinectPlayer::update()
 	{
 		mListenerMap->callCallback( ET_NEW_USER );
 		mActUser = user;
-	}
-
-	bool NIupdated = false;
-	if ( mNI.checkNewDepthFrame() )
-	{
-		mDepthTexture = mNI.getDepthImage();
-		NIupdated = true;
 	}
 
 	mNIUserTracker.setSmoothing( mSmoothing );
@@ -257,7 +259,6 @@ void KinectPlayer::update()
 #endif
 
 	mPlayerAiMesh.update();
-	mPhysics->enableGridDisplay( mDrawGrid );
 	mPhysics->setDirectionDeflection( mBallVelocityDeflectionLimit );
 	_checkBallPoint();
 }
@@ -343,41 +344,44 @@ void KinectPlayer::detectThrowing()
 }
 
 
-void KinectPlayer::draw()
+void KinectPlayer::draw( bool drawPlayer )
 {
-	// draw ball
-	if ( mHasBall || mIsThrowing )
+	if ( drawPlayer )
 	{
+		// draw ball
+		if ( mHasBall || mIsThrowing )
+		{
+			gl::pushModelView();
+			if ( mHasBall )
+			{
+				mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( Color::white() );
+				gl::translate( mBallInitialPos );
+			}
+			else
+				if ( mIsThrowing )
+				{
+					mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( mBallColor.value() );
+					Matrix44f matrix = mPhysics->getBallMatrix();
+					gl::multModelView( matrix );
+				}
+
+			gl::enableAlphaBlending();
+			mBallAiMesh.draw();
+			gl::disableAlphaBlending();
+
+			gl::popModelView();
+
+			if ( mDrawGrid )
+			{
+				gl::color( Color( 1, 0, 0 ) );
+				gl::drawVector( mBallInitialPos, mBallInitialPos + mBallVelocity * mBallVelocityScale * .1 );
+			}
+		}
+
 		gl::pushModelView();
-		if ( mHasBall )
-		{
-			mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( Color::white() );
-			gl::translate( mBallInitialPos );
-		}
-		else
-		if ( mIsThrowing )
-		{
-			mBallNodeRef->mMeshes[ 0 ]->mMaterial.setDiffuse( mBallColor.value() );
-			Matrix44f matrix = mPhysics->getBallMatrix();
-			gl::multModelView( matrix );
-		}
-
-		gl::enableAlphaBlending();
-		mBallAiMesh.draw();
-		gl::disableAlphaBlending();
-
+		mPlayerAiMesh.draw();
 		gl::popModelView();
-
-		if ( mDrawGrid )
-		{
-			gl::color( Color( 1, 0, 0 ) );
-			gl::drawVector( mBallInitialPos, mBallInitialPos + mBallVelocity * mBallVelocityScale * .1 );
-		}
 	}
-
-	gl::pushModelView();
-	mPlayerAiMesh.draw();
-	gl::popModelView();
 
 	if ( mDepthTexture && mDrawDepth )
 	{

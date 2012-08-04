@@ -189,8 +189,7 @@ void Scene::draw( bool drawPlayer )
 {
 	mSceneAiMesh.draw();
 
-	if( drawPlayer )
-	mKinectPlayer.draw();
+	mKinectPlayer.draw( drawPlayer );
 }
 
 void Scene::throwBall()
