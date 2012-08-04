@@ -92,7 +92,8 @@ class NibbalApp : public AppBasic
 			STATE_IDLE,
 			STATE_GAME,
 			STATE_WIN,
-			STATE_LOSE
+			STATE_LOSE,
+			STATE_INFINITE
 		};
 
 		int mState;
@@ -191,17 +192,33 @@ void NibbalApp::setupParams()
 
 void NibbalApp::update()
 {
-	if( mState == STATE_WIN
-	 || mState == STATE_LOSE )
+	if ( !mInfiniteMode )
 	{
-		if( (float)App::getElapsedSeconds() - mTimer > WAIT_WIN_LOSE_TIME )
+		if ( mState == STATE_INFINITE )
 		{
-			mState = mStateSave;
+			mState = STATE_IDLE;
+		}
 
-			if( mState == STATE_GAME )
-				mScene.startGame();
-			else
-				mScene.stopGame();
+		if ( mState == STATE_WIN
+		  || mState == STATE_LOSE )
+		{
+			if( (float)App::getElapsedSeconds() - mTimer > WAIT_WIN_LOSE_TIME )
+			{
+				mState = mStateSave;
+
+				if ( mState == STATE_GAME )
+					mScene.startGame();
+				else
+					mScene.stopGame();
+			}
+		}
+	}
+	else
+	{
+		if ( mState != STATE_INFINITE )
+		{
+			mState = STATE_INFINITE;
+			mScene.startGame();
 		}
 	}
 
@@ -367,6 +384,9 @@ void NibbalApp::resize( ResizeEvent event )
 
 void NibbalApp::eventNoUser()
 {
+	if ( mInfiniteMode )
+		return;
+
 	if( mState == STATE_WIN
 	 || mState == STATE_LOSE )
 	{
@@ -381,6 +401,9 @@ void NibbalApp::eventNoUser()
 
 void NibbalApp::eventNewUser()
 {
+	if ( mInfiniteMode )
+		return;
+
 	if( mState == STATE_WIN
 	 || mState == STATE_LOSE )
 	{
@@ -395,6 +418,9 @@ void NibbalApp::eventNewUser()
 
 void NibbalApp::eventWin()
 {
+	if ( mInfiniteMode )
+		return;
+
 	mState = STATE_WIN;
 	mTimer = (float)App::getElapsedSeconds();
 	mScene.stopGame();
@@ -402,6 +428,9 @@ void NibbalApp::eventWin()
 
 void NibbalApp::eventLose()
 {
+	if ( mInfiniteMode )
+		return;
+
 	mState = STATE_LOSE;
 	mTimer = (float)App::getElapsedSeconds();
 	mScene.stopGame();
