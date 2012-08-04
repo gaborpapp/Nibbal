@@ -160,7 +160,8 @@ void Scene::initGame()
 	mDisplay.setPeriod( 4 );
 	mDisplay.setHome( 78 );
 	mDisplay.setGuest( 80 );
-	mGoals = 0;
+	mGoals      = 0;
+	mThrowBalls = 0;
 }
 
 void Scene::startGame()
@@ -190,7 +191,7 @@ void Scene::draw( bool drawPlayer )
 	mSceneAiMesh.draw();
 
 	if( drawPlayer )
-	mKinectPlayer.draw();
+		mKinectPlayer.draw();
 }
 
 void Scene::throwBall()
@@ -214,20 +215,28 @@ void Scene::eventNewUser()
 void Scene::eventGoal()
 {
 	app::console() << "GOAL" << endl;
-	mCrowd.wave( Rand::randFloat( 1.8f, 2.5f ));
+	mCrowd.energize( Rand::randFloat( 1.8f, 2.5f ));
 	mDisplay.setHome( mDisplay.getHome() + 1 );
 	mAudio.play( "goal" );
 
 	mGoals++;
+	mThrowBalls++;
 
 	if( mGoals == 3 )
 		mListenerMap->callCallback( ET_WIN );
+	else if( mThrowBalls == 3 )
+		mListenerMap->callCallback( ET_LOSE );
 }
 
 void Scene::eventMiss()
 {
 	app::console() << "MISS" << endl;
 	mAudio.play( "no goal" );
+
+	mThrowBalls++;
+
+	if( mThrowBalls == 3 )
+		mListenerMap->callCallback( ET_LOSE );
 }
 
 void Scene::eventTimeOver()
