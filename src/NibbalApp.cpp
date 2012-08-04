@@ -76,6 +76,7 @@ class NibbalApp : public AppBasic
 
 		bool mDrawBranding;
 		bool mInfiniteMode;
+		bool mFullscreen;
 
 		enum {
 			STATE_IDLE,
@@ -127,6 +128,9 @@ void NibbalApp::setup()
 
 	//mState = STATE_IDLE;
 	mState = STATE_GAME;
+
+	if ( mFullscreen )
+		setFullScreen( true );
 }
 
 void NibbalApp::shutdown()
@@ -156,6 +160,7 @@ void NibbalApp::setupParams()
 	mFps = 0;
 	mParams.addParam( "Fps", &mFps, "", true );
 	mParams.addSeparator();
+	mParams.addPersistentParam( "Fullscreen", &mFullscreen, true );
 	mParams.addPersistentParam( "Draw branding", &mDrawBranding, true );
 	mParams.addPersistentParam( "Infinite mode", &mInfiniteMode, false );
 	mParams.addSeparator();
@@ -271,6 +276,7 @@ void NibbalApp::keyDown( KeyEvent event )
 				setFullScreen( false );
 				showCursor();
 			}
+			mFullscreen = isFullScreen();
 			break;
 
 		case KeyEvent::KEY_s:
