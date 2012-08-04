@@ -37,6 +37,8 @@ class KinectPlayer
 	public:
 		enum EventType
 		{
+			ET_NO_USER,
+			ET_NEW_USER,
 			ET_GOAL,
 			ET_MISS,
 		};
@@ -124,6 +126,7 @@ class KinectPlayer
 
 		float      mTimerLimit;
 		bool       mDisableKinect;
+		unsigned   mActUser;
 
 		std::shared_ptr<ListenerMap>  mListenerMap;
 };

@@ -37,6 +37,8 @@ using namespace std;
 
 namespace Nibbal {
 
+const float WAIT_WIN_LOSE_TIME = 5.0f;
+
 class NibbalApp : public AppBasic
 {
 	public:
@@ -56,6 +58,12 @@ class NibbalApp : public AppBasic
 		params::PInterfaceGl mParams;
 		void setupParams();
 		void showAllParams( bool visible );
+		void drawState();
+
+		void eventNoUser();
+		void eventNewUser();
+		void eventWin();
+		void eventLose();
 
 		Scene mScene;
 		Physics mPhysics;
@@ -77,6 +85,8 @@ class NibbalApp : public AppBasic
 		bool mDrawBranding;
 		bool mInfiniteMode;
 
+		float mTimer;
+
 		enum {
 			STATE_IDLE,
 			STATE_GAME,
@@ -85,6 +95,7 @@ class NibbalApp : public AppBasic
 		};
 
 		int mState;
+		int mStateSave;
 };
 
 void NibbalApp::prepareSettings( Settings *settings )
@@ -109,6 +120,11 @@ void NibbalApp::setup()
 		quit();
 	}
 
+	mScene.addCallback<NibbalApp>( Scene::ET_NO_USER , &NibbalApp::eventNoUser  , this );
+	mScene.addCallback<NibbalApp>( Scene::ET_NEW_USER, &NibbalApp::eventNewUser , this );
+	mScene.addCallback<NibbalApp>( Scene::ET_WIN     , &NibbalApp::eventWin     , this );
+	mScene.addCallback<NibbalApp>( Scene::ET_LOSE    , &NibbalApp::eventLose    , this );
+
 	CameraPersp cam;
 	cam.setPerspective( mCameraFov, getWindowAspectRatio(), 0.1f, 1000.0f );
 	cam.setEyePoint( mCameraEyePoint );
@@ -125,13 +141,15 @@ void NibbalApp::setup()
 	mWinText = gl::Texture( loadImage( getAssetPath( "gfx/win.png" ) ) );
 	mLoseText = gl::Texture( loadImage( getAssetPath( "gfx/try_again.png" ) ) );
 
-	//mState = STATE_IDLE;
-	mState = STATE_GAME;
+	mTimer = 0;
+	mState = STATE_IDLE;
+	mStateSave = mState;
+	mScene.initGame();
 }
 
 void NibbalApp::shutdown()
 {
-    params::PInterfaceGl::save();
+	params::PInterfaceGl::save();
 }
 
 void NibbalApp::setupParams()
@@ -168,8 +186,21 @@ void NibbalApp::setupParams()
 
 void NibbalApp::update()
 {
-	mFps = getAverageFps();
+	if( mState == STATE_WIN
+	 || mState == STATE_LOSE )
+	{
+		if( (float)App::getElapsedSeconds() - mTimer > WAIT_WIN_LOSE_TIME )
+		{
+			mState = mStateSave;
 
+			if( mState == STATE_GAME )
+				mScene.startGame();
+			else
+				mScene.stopGame();
+		}
+	}
+
+	mFps = getAverageFps();
 	mScene.update();
 	mPhysics.update( mFps );
 
@@ -194,35 +225,6 @@ void NibbalApp::draw()
 
 	mPhysics.draw();
 
-	if ( !mInfiniteMode )
-	{
-		gl::Texture t;
-
-		switch ( mState )
-		{
-			case STATE_IDLE:
-				t = mIdleText;
-				break;
-
-			case STATE_WIN:
-				t = mWinText;
-				break;
-
-			case STATE_LOSE:
-				t = mLoseText;
-				break;
-
-			default:
-				break;
-		}
-
-		if ( t )
-		{
-			gl::draw( t, Area::proportionalFit( t.getBounds(), getWindowBounds(), true, true ) );
-		}
-
-	}
-
 	if ( mDrawBranding )
 	{
 		gl::setMatricesWindow( getWindowSize() );
@@ -235,7 +237,42 @@ void NibbalApp::draw()
 		gl::enableDepthRead();
 		gl::enableDepthWrite();
 	}
+
+	drawState();
 	params::PInterfaceGl::draw();
+}
+
+void NibbalApp::drawState()
+{
+	if ( !mInfiniteMode )
+	{
+		gl::Texture t;
+
+		switch ( mState )
+		{
+		case STATE_IDLE:
+			t = mIdleText;
+			break;
+
+		case STATE_WIN:
+			t = mWinText;
+			break;
+
+		case STATE_LOSE:
+			t = mLoseText;
+			break;
+
+		default:
+			break;
+		}
+
+		if ( t )
+		{
+			gl::enableAlphaBlending();
+			gl::draw( t, Area::proportionalFit( t.getBounds(), getWindowBounds(), true, true ) );
+			gl::disableAlphaBlending();
+		}
+	}
 }
 
 // show/hide all bars except help, which is always hidden
@@ -320,6 +357,48 @@ void NibbalApp::resize( ResizeEvent event )
 	Area dstArea = getWindowBounds();
 	Area srcArea = mForegroundLayer.getBounds();
 	mForegroundArea = Area::proportionalFit( srcArea, dstArea, false, true );
+}
+
+void NibbalApp::eventNoUser()
+{
+	if( mState == STATE_WIN
+	 || mState == STATE_LOSE )
+	{
+		mStateSave = STATE_IDLE;
+		return;
+	}
+
+	mState     = STATE_IDLE;
+	mStateSave = mState;
+	mScene.stopGame();
+}
+
+void NibbalApp::eventNewUser()
+{
+	if( mState == STATE_WIN
+	 || mState == STATE_LOSE )
+	{
+		mStateSave = STATE_GAME;
+		return;
+	}
+
+	mState     = STATE_GAME;
+	mStateSave = mState;
+	mScene.startGame();
+}
+
+void NibbalApp::eventWin()
+{
+	mState = STATE_WIN;
+	mTimer = (float)App::getElapsedSeconds();
+	mScene.stopGame();
+}
+
+void NibbalApp::eventLose()
+{
+	mState = STATE_LOSE;
+	mTimer = (float)App::getElapsedSeconds();
+	mScene.stopGame();
 }
 
 } // namespace Nibbal

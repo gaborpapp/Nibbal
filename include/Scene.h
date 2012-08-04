@@ -21,8 +21,8 @@ class Scene
 	public:
 		enum EventType
 		{
-			ET_NEW_USER,
 			ET_NO_USER,
+			ET_NEW_USER,
 			ET_WIN,
 			ET_LOSE
 		};
@@ -33,6 +33,9 @@ class Scene
 		void draw();
 
 		void throwBall();
+		void initGame();
+		void startGame();
+		void stopGame();
 
 		template<typename T>
 		void addCallback( EventType type, void (T::* callbackFunction)(), T * callbackObject )
@@ -41,12 +44,13 @@ class Scene
 		}
 
 	private:
+		void eventNoUser();
+		void eventNewUser();
 		void eventGoal();
 		void eventMiss();
 		void eventTimeOver();
 
 		void setupPhysics( Physics *physics );
-		void startGame();
 
 		mndl::assimp::AssimpLoader mSceneAiMesh;
 
@@ -55,6 +59,7 @@ class Scene
 		KinectPlayer             mKinectPlayer;
 		Crowd                    mCrowd;
 		Audio                    mAudio;
+		unsigned short           mGoals;
 
 		ci::params::PInterfaceGl mParams;
 

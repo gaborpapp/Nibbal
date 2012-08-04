@@ -208,6 +208,21 @@ void KinectPlayer::update()
 	if ( mDisableKinect )
 		return;
 
+	if( mNIUserTracker.getNumUsers() == 0 )
+	{
+		mListenerMap->callCallback( ET_NO_USER );
+		mActUser = 0;
+		return;
+	}
+
+	unsigned user = mNIUserTracker.getClosestUserId();
+
+	if( mActUser != user )
+	{
+		mListenerMap->callCallback( ET_NEW_USER );
+		mActUser = user;
+	}
+
 	bool NIupdated = false;
 	if ( mNI.checkNewDepthFrame() )
 	{
@@ -249,13 +264,12 @@ void KinectPlayer::update()
 
 void KinectPlayer::detectThrowing()
 {
-	unsigned user = mNIUserTracker.getClosestUserId();
-	if ( user > 0 )
+	if ( mActUser > 0 )
 	{
-		Vec3f rShoulder = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_SHOULDER );
-		Vec3f rElbow = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_ELBOW );
-		Vec3f rHand = mNIUserTracker.getJoint3d( user, XN_SKEL_RIGHT_HAND );
-		Vec3f lHand = mNIUserTracker.getJoint3d( user, XN_SKEL_LEFT_HAND );
+		Vec3f rShoulder = mNIUserTracker.getJoint3d( mActUser, XN_SKEL_RIGHT_SHOULDER );
+		Vec3f rElbow = mNIUserTracker.getJoint3d( mActUser, XN_SKEL_RIGHT_ELBOW );
+		Vec3f rHand = mNIUserTracker.getJoint3d( mActUser, XN_SKEL_RIGHT_HAND );
+		Vec3f lHand = mNIUserTracker.getJoint3d( mActUser, XN_SKEL_LEFT_HAND );
 
 		// ball position in scene
 		Vec3f meshLWrist = mLeftWristNode->getDerivedPosition();

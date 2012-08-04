@@ -16,6 +16,8 @@ namespace Nibbal {
 
 void Scene::setup( Physics *physics )
 {
+	mListenerMap = std::shared_ptr<ListenerMap>( new ListenerMap() );
+
 	mDisplay.setup();
 	mAdDisplay.setup( app::getAssetPath( "ads" ), Vec2i( 1920, 210 ));
 	mCrowd.setup( app::getAssetPath( "crowd" ), Vec2i( 1280, 840 ) );
@@ -65,13 +67,16 @@ void Scene::setup( Physics *physics )
 	}
 
 	mKinectPlayer.setup( physics );
-	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_GOAL, &Scene::eventGoal, this );
-	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_MISS, &Scene::eventMiss, this );
-	mDisplay.addCallback<Scene>( &Scene::eventTimeOver, this );
+	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_NO_USER , &Scene::eventNoUser  , this );
+	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_NEW_USER, &Scene::eventNewUser , this );
+	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_GOAL    , &Scene::eventGoal    , this );
+	mKinectPlayer.addCallback<Scene>( KinectPlayer::ET_MISS    , &Scene::eventMiss    , this );
+	mDisplay     .addCallback<Scene>(                            &Scene::eventTimeOver, this );
 
 	setupPhysics( physics );
 
-	startGame();
+	mAudio.play( "crowd-sports", 0.5f, true );
+	initGame();
 }
 
 void Scene::setupPhysics( Physics *physics )
@@ -139,16 +144,26 @@ void Scene::setupPhysics( Physics *physics )
 	}
 }
 
-void Scene::startGame()
+void Scene::initGame()
 {
 	mDisplay.setActive( true );
-	mDisplay.setTimeAct( 11, 00  );
 	mDisplay.setTimeMax( 12, 00  );
+	mDisplay.setTimeAct( 11, 00  );
 	mDisplay.setPeriod( 4 );
 	mDisplay.setHome( 78 );
 	mDisplay.setGuest( 80 );
+	mGoals = 0;
+}
+
+void Scene::startGame()
+{
+	initGame();
 	mDisplay.start();
-	mAudio.play( "crowd-sports", 0.5f, true );
+}
+
+void Scene::stopGame()
+{
+	mDisplay.stop();
 }
 
 void Scene::update()
@@ -175,12 +190,29 @@ void Scene::throwBall()
 	mKinectPlayer.throwBall();
 }
 
+void Scene::eventNoUser()
+{
+	app::console() << "No user" << endl;
+	mListenerMap->callCallback( ET_NO_USER );
+}
+
+void Scene::eventNewUser()
+{
+	app::console() << "New user" << endl;
+	mListenerMap->callCallback( ET_NEW_USER );
+}
+
 void Scene::eventGoal()
 {
 	app::console() << "GOAL" << endl;
 	mCrowd.wave( Rand::randFloat( 1.8f, 2.5f ));
 	mDisplay.setHome( mDisplay.getHome() + 1 );
 	mAudio.play( "goal" );
+
+	mGoals++;
+
+	if( mGoals == 3 )
+		mListenerMap->callCallback( ET_WIN );
 }
 
 void Scene::eventMiss()
@@ -192,6 +224,7 @@ void Scene::eventMiss()
 void Scene::eventTimeOver()
 {
 	app::console() << "time over" << endl;
+	mListenerMap->callCallback( ET_LOSE );
 }
 
 } // namespace Nibbal
