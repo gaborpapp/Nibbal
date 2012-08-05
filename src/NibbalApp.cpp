@@ -148,9 +148,9 @@ void NibbalApp::setup()
 	mStateSave = mState;
 	mScene.initGame();
 
-#if USE_KINECT == 0
-	eventNewUser();
-#endif
+// #if USE_KINECT == 0
+// 	eventNewUser();
+// #endif
 
 	if ( mFullscreen )
 		setFullScreen( true );
@@ -200,7 +200,7 @@ void NibbalApp::update()
 	{
 		if ( mState == STATE_INFINITE )
 		{
-			mState = STATE_IDLE;
+			mState = mStateSave;
 		}
 
 		if ( mState == STATE_WIN
@@ -248,7 +248,8 @@ void NibbalApp::draw()
 	gl::setMatrices( mMayaCam.getCamera() );
 
 	bool drawPlayer = false;
-	if( mState == STATE_GAME )
+	if( mState == STATE_GAME
+	 || mState == STATE_INFINITE )
 		drawPlayer = true;
 
 	mScene.draw( drawPlayer );
@@ -393,35 +394,31 @@ void NibbalApp::resize( ResizeEvent event )
 
 void NibbalApp::eventNoUser()
 {
+	mStateSave = STATE_IDLE;
+
 	if ( mInfiniteMode )
 		return;
 
 	if( mState == STATE_WIN
 	 || mState == STATE_LOSE )
-	{
-		mStateSave = STATE_IDLE;
 		return;
-	}
 
-	mState     = STATE_IDLE;
-	mStateSave = mState;
+	mState = STATE_IDLE;
 	mScene.stopGame();
 }
 
 void NibbalApp::eventNewUser()
 {
+	mStateSave = STATE_GAME;
+
 	if ( mInfiniteMode )
 		return;
 
 	if( mState == STATE_WIN
 	 || mState == STATE_LOSE )
-	{
-		mStateSave = STATE_GAME;
 		return;
-	}
 
-	mState     = STATE_GAME;
-	mStateSave = mState;
+	mState = STATE_GAME;
 	mScene.startGame();
 }
 

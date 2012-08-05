@@ -185,7 +185,7 @@ void Crowd::addPerson(CPerson cp)
 
 void Crowd::energize(float n)
 {
-	for (int i = 0; i < (int)people.size(); i++)
+	for ( int i = 0; i < mNumVariants; i++ )
 	{
 		people[i].energize(n);
 	}
@@ -193,7 +193,7 @@ void Crowd::energize(float n)
 
 void Crowd::wave(float e)
 {
-	for (int i = 0; i < (int)people.size(); i++)
+	for ( int i = 0; i < mNumVariants; i++ )
 	{
 		people[i].energize(e, i * 3);
 	}
