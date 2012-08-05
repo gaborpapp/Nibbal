@@ -144,7 +144,8 @@ void NibbalApp::setup()
 	mLoseText = gl::Texture( loadImage( getAssetPath( "gfx/try_again.png" ) ) );
 
 	mTimer = 0;
-	mState = STATE_IDLE;
+	//mState = STATE_IDLE;
+	mState = STATE_INFINITE;
 	mStateSave = mState;
 	mScene.initGame();
 
@@ -153,7 +154,10 @@ void NibbalApp::setup()
 // #endif
 
 	if ( mFullscreen )
+	{
 		setFullScreen( true );
+		hideCursor();
+	}
 }
 
 void NibbalApp::shutdown()
