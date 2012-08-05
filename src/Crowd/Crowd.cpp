@@ -76,22 +76,6 @@ void Crowd::setup( const fs::path &crowdFolder, Vec2i size )
 		cp.color.r = cp.color.g = cp.color.b = 1.f;
 		addPerson(cp);
 	}
-	/*
-	float spread = 20;
-
-	for (int y = TOP_MARGIN; y < height - BOTTOM_MARGIN; y += stepY)
-	{
-		for (int x = LEFT_MARGIN; x < width - RIGHT_MARGIN; x += stepX)
-		{
-			CPerson cp;
-			cp.setup( &psys, Vec3f( x - width / 2.0f + Rand::randFloat() * spread, y + Rand::randFloat() * spread, 0.0f ), getRandomImage(&heads), getRandomImage(&torsos), getRandomImage(&arms), getRandomImage(&legs));
-			int light = (int)(y / (float)height * 200 + 10);
-			cp.color.r = cp.color.g = cp.color.b = (float)light;
-
-			addPerson(cp);
-		}
-	}
-	*/
 }
 
 void Crowd::update()
@@ -131,14 +115,15 @@ void Crowd::_updateFbo()
 	gl::setMatricesWindow( mFbo.getSize(), false );
 	gl::setViewport( mFbo.getBounds() );
 
-	//gl::translate( mFbo.getSize().x / 2.0f, 0.0f, 0.0f );
-
 	gl::clear( Color::black() );
 	gl::color( Color::white() );
 
 	psys.draw();
 
-	Rand::randSeed( mCrowdSeed );
+	// NOTE: rendering person variants needs its own random generator
+	// because CPerson::update() uses Rand for energy decrease, which
+	// would be static because of the constant random seed
+	mRand.seed( mCrowdSeed );
 	float spread = 20;
 	int fboW = mPersonFbos[ 0 ].getWidth();
 	for (int y = TOP_MARGIN; y < height - BOTTOM_MARGIN; y += stepY)
@@ -148,8 +133,8 @@ void Crowd::_updateFbo()
 
 		for (int x = LEFT_MARGIN; x < width - RIGHT_MARGIN; x += stepX)
 		{
-			float x2 = x + Rand::randFloat( -spread, spread );
-			int r = Rand::randInt( mNumVariants );
+			float x2 = x + mRand.nextFloat( -spread, spread );
+			int r = mRand.nextInt( mNumVariants );
 			gl::pushModelView();
 			gl::translate( x2, y );
 			gl::draw( mPersonFbos[ r ].getTexture() );
@@ -163,12 +148,6 @@ void Crowd::_updateFbo()
 			}
 		}
 	}
-	/*
-	for (int i = 0; i < (int)people.size(); i++)
-	{
-		people[i].draw();
-	}
-	*/
 
 	mFbo.unbindFramebuffer();
 

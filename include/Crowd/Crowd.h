@@ -4,9 +4,11 @@
 
 #include "cinder/Filesystem.h"
 #include "cinder/gl/Fbo.h"
+#include "cinder/Rand.h"
 #include "cinder/gl/Texture.h"
 #include "CPerson.h"
 #include "ParticleSystem/ParticleSystem.h"
+
 
 enum
 {
@@ -56,6 +58,7 @@ protected:
 
 	int mNumVariants;
 	uint32_t mCrowdSeed;
+	ci::Rand mRand;
 
 	std::vector< ci::gl::Fbo > mPersonFbos;
 };
