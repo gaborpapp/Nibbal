@@ -1,9 +1,10 @@
 
 #pragma once
 
+#include <map>
 #include "cinder/Cinder.h"
 #include "cinder/Filesystem.h"
-#include "FmodexPlayer.h"
+#include "OpenALAudio.h"
 
 namespace Nibbal {
 
@@ -16,14 +17,14 @@ class Audio
 		void  play( std::string name, float volume = 1.0f, bool loop = false );
 		void  stop( std::string name );
 		void  stopAll();
-		void  setVolume( std::string name, float volume );
-		float getVolume( std::string name );
 
 	private:
-		void _loadPlayers( const ci::fs::path folder );
+		unsigned _findTrack( std::string name );
+		void     _loadTracks( const ci::fs::path folder );
 
 	private:
-		std::map< std::string, std::shared_ptr< FmodexPlayer > > mPlayers;
+		mndl::openal::OpenALAudio         mAudio;
+		std::map< std::string, unsigned > mTracks;
 };
 
 } // namespace Nibbal

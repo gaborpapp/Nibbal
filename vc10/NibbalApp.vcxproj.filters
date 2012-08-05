@@ -43,8 +43,8 @@
     <Filter Include="Header Files\Crowd\ParticleSystem">
       <UniqueIdentifier>{db512fdb-1c19-4a6a-a544-03547056c5ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="blocks\fmod">
-      <UniqueIdentifier>{22920e75-bd27-4521-b460-4eb836ffa51d}</UniqueIdentifier>
+    <Filter Include="blocks\openal">
+      <UniqueIdentifier>{a1337770-8e7e-46b3-b081-e6c693d190e7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,11 +141,8 @@
     <ClCompile Include="..\src\Audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-FMOD\src\Fmodex3DSoundPlayer.cpp">
-      <Filter>blocks\fmod</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-FMOD\src\FmodexPlayer.cpp">
-      <Filter>blocks\fmod</Filter>
+    <ClCompile Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-OpenAL\src\OpenALAudio.cpp">
+      <Filter>blocks\openal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,11 +260,8 @@
     <ClInclude Include="..\include\Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-FMOD\include\Fmodex3DSoundPlayer.h">
-      <Filter>blocks\fmod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-FMOD\include\FmodexPlayer.h">
-      <Filter>blocks\fmod</Filter>
+    <ClInclude Include="..\..\..\Program Files (x86)\cinder_0.8.4\blocks\Cinder-OpenAL\src\OpenALAudio.h">
+      <Filter>blocks\openal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

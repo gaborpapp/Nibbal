@@ -241,6 +241,7 @@ void Scene::eventMiss()
 void Scene::eventTimeOver()
 {
 	app::console() << "time over" << endl;
+	mAudio.play( "buzzer" );
 	mListenerMap->callCallback( ET_LOSE );
 }
 
