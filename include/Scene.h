@@ -58,7 +58,7 @@ class Scene
 		AdDisplay                mAdDisplay;
 		KinectPlayer             mKinectPlayer;
 		Crowd                    mCrowd;
-		Audio                    mAudio;
+		openal::Audio            mAudio;
 		unsigned short           mGoals;
 		unsigned short           mThrowBalls;
 

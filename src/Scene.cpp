@@ -111,7 +111,7 @@ void Scene::setupPhysics( Physics *physics )
 	// Create the backboard
 	{
 		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "backboard_basketball_hoop_body" );
-		physics->addMesh( mesh );
+//		physics->addMesh( mesh );
 
 		// make bigger for bounce problem in slow machine
 		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();

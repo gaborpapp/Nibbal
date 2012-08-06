@@ -6,6 +6,7 @@ using namespace ci;
 using namespace std;
 
 namespace Nibbal {
+namespace openal {
 
 Audio::~Audio()
 {
@@ -78,4 +79,5 @@ void Audio::_loadTracks( const fs::path folder )
 	}
 }
 
+} // namespace openal
 } // namespace Nibbal

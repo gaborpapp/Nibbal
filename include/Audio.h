@@ -7,6 +7,7 @@
 #include "OpenALAudio.h"
 
 namespace Nibbal {
+namespace openal {
 
 class Audio
 {
@@ -27,4 +28,5 @@ class Audio
 		std::map< std::string, unsigned > mTracks;
 };
 
+} // namespace openal
 } // namespace Nibbal

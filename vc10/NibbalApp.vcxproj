@@ -140,7 +140,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>cinder_d.lib;assimp.lib;openni.lib;libvorbis_static_d.lib;libvorbisfile_static_d.lib;libogg_static_d.lib;OpenAL32.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;BulletSoftBody_debug.lib;ConvexDecomposition_debug.lib;HACD_debug.lib;LinearMath_debug.lib;OpenGLSupport_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;$(CINDER_DIR)\blocks\Cinder-OpenAl\lib\msw;$(OPEN_NI_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;$(CINDER_DIR)\blocks\Cinder-OpenAL\lib\msw;$(OPEN_NI_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -162,7 +162,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>cinder.lib;assimp.lib;openni.lib;libvorbis_static.lib;libvorbisfile_static.lib;libogg_static.lib;OpenAL32.lib;BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;ConvexDecomposition.lib;HACD.lib;LinearMath.lib;OpenGLSupport.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;$(CINDER_DIR)\blocks\Cinder-OpenAl\lib\msw;$(OPEN_NI_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;$(CINDER_DIR)\blocks\Cinder-OpenAL\lib\msw;$(OPEN_NI_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
