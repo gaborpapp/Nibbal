@@ -1,4 +1,5 @@
-env = Environment()
+import os
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
 
 env['APP_TARGET'] = 'NibbalApp'
 env['APP_SOURCES'] = ['NibbalApp.cpp', 'PParams.cpp', 'KinectPlayer.cpp',
@@ -21,6 +22,7 @@ env['DEBUG'] = 0
 env = SConscript('../../../blocks/Cinder-Assimp/scons/SConscript', exports = 'env')
 env = SConscript('../../../blocks/Cinder-Bullet/scons/SConscript', exports = 'env')
 env = SConscript('../../../blocks/Cinder-NI/scons/SConscript', exports = 'env')
-env = SConscript('../../../blocks/Cinder-FMOD/scons/SConscript', exports = 'env')
+#env = SConscript('../../../blocks/Cinder-FMOD/scons/SConscript', exports = 'env')
+env = SConscript('../../../blocks/Cinder-OpenAL/scons/SConscript', exports = 'env')
 
 SConscript('../../../scons/SConscript', exports = 'env')
