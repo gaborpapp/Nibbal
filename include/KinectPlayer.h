@@ -93,6 +93,10 @@ class KinectPlayer
 		float mBallSpeedMax;
 		float mThrowThreshold;
 
+		bool mEnableCcd;
+		float mCcdMotionThres;
+		float mCcdSweptSphereRadius;
+
 		// throw detection debug display variables
 		float mArmAngleNorm;
 		float mHandsBelowShoulder;

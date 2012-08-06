@@ -8,7 +8,7 @@ using namespace std;
 
 namespace Nibbal {
 
-static const float BALL_RADIUS = 0.12f;
+static const float BALL_RADIUS = 0.125f;
 static const Vec3f RING_POS    = Vec3f( 0.0f, 2.99f, 4.64f );
 static const float RING_RADIUS = 0.278f;
 
@@ -82,6 +82,24 @@ void Physics::throwBall( Vec3f pos, Vec3f vel )
 	body->setAngularFactor( 0.82f );
 	body->setRestitution( .75f );
 	body->setLinearVelocity( btVector3( velIdeal.x, velIdeal.y, velIdeal.z ));
+}
+
+void Physics::enableCcd( bool enable, float motionThres, float sweptSphereRadius )
+{
+	if ( mBall )
+	{
+		btRigidBody* body = bullet::toBulletRigidBody( mBall );
+		if ( enable )
+		{
+			body->setCcdMotionThreshold( motionThres );
+			body->setCcdSweptSphereRadius( sweptSphereRadius );
+		}
+		else
+		{
+			body->setCcdMotionThreshold( .0f );
+			body->setCcdSweptSphereRadius( .0f );
+		}
+	}
 }
 
 Vec3f Physics::getRingPos()

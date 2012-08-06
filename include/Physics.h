@@ -85,6 +85,8 @@ class Physics
 		void enableGridDisplay( bool enable = true ) { mDrawGrid = enable; }
 		void setDirectionDeflection( float deflection ) { mDeflectionLimit = deflection; }
 
+		void enableCcd( bool enable, float motionThres, float sweptSphereRadius );
+
 	private:
 		bullet::DynamicsWorldRef   mWorld;
 		bullet::CollisionObjectRef mBall;

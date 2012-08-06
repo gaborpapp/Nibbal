@@ -10,7 +10,7 @@ using namespace mndl;
 
 #define USE_KINECT           0
 #define USE_KINECT_RECORDING 0
-#define KINECT_TIME_LIMIT    300 // set to 0 to disable KINECT_TIME_LIMIT
+#define KINECT_TIME_LIMIT    0 // set to 0 to disable KINECT_TIME_LIMIT
 
 namespace Nibbal {
 
@@ -55,16 +55,21 @@ void KinectPlayer::setup( Physics *physic )
 	mParams = params::PInterfaceGl( "Kinect Player", Vec2i( 300, 300 ) );
 	mParams.addPersistentSizeAndPosition();
 
+	mParams.addText( "Kinect" );
 	mParams.addPersistentParam( "Draw depth", &mDrawDepth, false );
 	mParams.addPersistentParam( "Draw ideal grid", &mDrawGrid, false );
 	mParams.addPersistentParam( "Smoothing", &mSmoothing, .70, "min=0 max=1 step=.05" );
 	mParams.addPersistentParam( "Min ori confidence", &mMinOriConf, .7, "min=0 max=1 step=.05" );
 	mParams.addSeparator();
 
+	mParams.addText( "Physics" );
 	mParams.addPersistentParam( "Ball lifetime", &mBallLifetime, 3., "min=2 max=20 step=.1" );
 	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
 	mParams.addPersistentParam( "Ball position smoothing", &mBallPositionSmoothing, .3, "min=0 max=1 step=.01" );
 	mParams.addPersistentParam( "Velocity deflection limit", &mBallVelocityDeflectionLimit, .3, "min=0 max=1.57 step=.01" );
+	mParams.addPersistentParam( "Enable continuous collision detection", &mEnableCcd, true );
+	mParams.addPersistentParam( "Ccd motion threshold", &mCcdMotionThres, 0.125f, "min=0 max=1 step=0.001" );
+	mParams.addPersistentParam( "Ccd swept sphere radius", &mCcdSweptSphereRadius, 0.05f, "min=0 max=.124 step=0.001" );
 	mParams.addSeparator();
 	mParams.addText( "Kinect throw detection" );
 	mParams.addPersistentParam( "Arm angle min", &mArmAngleMin, 1.4, "min=0 max=3.14 step=.01" );
@@ -199,6 +204,7 @@ void KinectPlayer::transformNode( const string &nodeName, unsigned userId, XnSke
 void KinectPlayer::update()
 {
 	mPhysics->enableGridDisplay( mDrawGrid );
+	mPhysics->enableCcd( mEnableCcd, mCcdMotionThres, mCcdSweptSphereRadius );
 
 #if USE_KINECT
 	if( KINECT_TIME_LIMIT )
