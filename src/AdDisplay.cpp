@@ -99,6 +99,7 @@ void AdDisplay::update()
 
 	gl::clear( Color::black() );
 
+	// FIXME: switching is wrong from left for more than 2 ads
 	size_t otherAdIndex = mCurrentAdIndex + 1;
 	if ( otherAdIndex >= mAds.size() )
 		otherAdIndex = 0;

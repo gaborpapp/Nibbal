@@ -67,7 +67,7 @@ void KinectPlayer::setup( Physics *physic )
 	mParams.addPersistentParam( "Ball velocity scale", &mBallVelocityScale, 120, "min=1 max=1000" );
 	mParams.addPersistentParam( "Ball position smoothing", &mBallPositionSmoothing, .3, "min=0 max=1 step=.01" );
 	mParams.addPersistentParam( "Velocity deflection limit", &mBallVelocityDeflectionLimit, .3, "min=0 max=1.57 step=.01" );
-	mParams.addPersistentParam( "Enable continuous collision detection", &mEnableCcd, true );
+	mParams.addPersistentParam( "Enable continuous collision detection", &mEnableCcd, false );
 	mParams.addPersistentParam( "Ccd motion threshold", &mCcdMotionThres, 0.125f, "min=0 max=1 step=0.001" );
 	mParams.addPersistentParam( "Ccd swept sphere radius", &mCcdSweptSphereRadius, 0.05f, "min=0 max=.124 step=0.001" );
 	mParams.addSeparator();

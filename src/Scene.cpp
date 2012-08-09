@@ -103,16 +103,19 @@ void Scene::setupPhysics( Physics *physics )
 	}
 
 	// Create the lines
+	/*
 	{
 		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "felfestes_lines" );
 		physics->addMesh( mesh );
 	}
+	*/
 
 	// Create the backboard
 	{
 		TriMesh mesh = mSceneAiMesh.getAssimpNodeMesh( "backboard_basketball_hoop_body" );
-//		physics->addMesh( mesh );
+		physics->addMesh( mesh );
 
+		/*
 		// make bigger for bounce problem in slow machine
 		ci::AxisAlignedBox3f boundingBox = mesh.calcBoundingBox();
 		Vec3f center = boundingBox.getCenter();
@@ -120,6 +123,7 @@ void Scene::setupPhysics( Physics *physics )
 		size   += Vec3f( 0.0f, 0.0f, 1.0f );
 		center += Vec3f( 0.0f, 0.0f, 0.5f );
 		physics->addBox( size, center );
+		*/
 	}
 
 	// Create the ring
@@ -152,11 +156,19 @@ void Scene::setupPhysics( Physics *physics )
 	}
 }
 
-void Scene::initGame()
+void Scene::initGame( bool infinite )
 {
 	mDisplay.setActive( true );
-	mDisplay.setTimeMax( 12, 00  );
-	mDisplay.setTimeAct( 11, 00  );
+	if ( infinite )
+	{
+		mDisplay.setTimeMax( 99, 59  );
+		mDisplay.setTimeAct( 00, 00  );
+	}
+	else
+	{
+		mDisplay.setTimeMax( 12, 00  );
+		mDisplay.setTimeAct( 11, 00  );
+	}
 	mDisplay.setPeriod( 4 );
 	mDisplay.setHome( 78 );
 	mDisplay.setGuest( 80 );
@@ -164,9 +176,9 @@ void Scene::initGame()
 	mThrowBalls = 0;
 }
 
-void Scene::startGame()
+void Scene::startGame( bool infinite /* = false */ )
 {
-	initGame();
+	initGame( infinite );
 	mDisplay.start();
 }
 
@@ -201,13 +213,13 @@ void Scene::throwBall()
 
 void Scene::eventNoUser()
 {
-	app::console() << "No user" << endl;
+	//app::console() << "No user" << endl;
 	mListenerMap->callCallback( ET_NO_USER );
 }
 
 void Scene::eventNewUser()
 {
-	app::console() << "New user" << endl;
+	//app::console() << "New user" << endl;
 	mListenerMap->callCallback( ET_NEW_USER );
 }
 

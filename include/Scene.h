@@ -33,8 +33,8 @@ class Scene
 		void draw( bool drawPlayer );
 
 		void throwBall();
-		void initGame();
-		void startGame();
+		void initGame( bool infinite = false );
+		void startGame( bool infinite = false );
 		void stopGame();
 
 		template<typename T>

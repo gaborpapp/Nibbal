@@ -118,8 +118,8 @@ void LedTimer::setTimeMax( unsigned short minutes, unsigned short seconds )
 {
 	stop();
 
-	if( minutes < 59
-	 && seconds < 59 )
+	if( minutes <= 99
+	 && seconds <= 59 )
 		mSecondsMax = 60 * minutes + seconds;
 	else
 		mSecondsMax = 0;
@@ -133,8 +133,8 @@ void LedTimer::setTimeAct( unsigned short minutes, unsigned short seconds )
 {
 	stop();
 
-	if( minutes < 59
-	 && seconds < 59
+	if( minutes <= 99
+	 && seconds <= 59
 	 && 60 * minutes + seconds <= mSecondsMax )
 		mSecondsAct = 60 * minutes + seconds;
 	else
