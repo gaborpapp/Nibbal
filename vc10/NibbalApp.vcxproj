@@ -139,7 +139,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>cinder_d.lib;assimp.lib;openni.lib;libvorbis_static_d.lib;libvorbisfile_static_d.lib;libogg_static_d.lib;OpenAL32_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;BulletSoftBody_debug.lib;ConvexDecomposition_debug.lib;HACD_debug.lib;LinearMath_debug.lib;OpenGLSupport_debug.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cinder_d.lib;assimpD.lib;openni.lib;libvorbis_static_d.lib;libvorbisfile_static_d.lib;libogg_static_d.lib;OpenAL32_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;BulletSoftBody_debug.lib;ConvexDecomposition_debug.lib;HACD_debug.lib;LinearMath_debug.lib;OpenGLSupport_debug.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(CINDER_DIR)\lib;$(CINDER_DIR)\lib\msw;$(CINDER_DIR)\blocks\Cinder-Assimp\lib\msw;$(CINDER_DIR)\blocks\Cinder-Bullet\lib\msw;$(CINDER_DIR)\blocks\Cinder-OpenAL\lib\msw;$(OPEN_NI_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
